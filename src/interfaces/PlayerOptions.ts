@@ -130,4 +130,9 @@ export interface PlayerOptions {
    * Defaults to `false`.
    */
   crossfade?: boolean;
+  /**
+   * applies an FFT processor. android only.
+   * Defaults to `false`.
+   */
+  useFFTProcessor?: boolean;
 }
