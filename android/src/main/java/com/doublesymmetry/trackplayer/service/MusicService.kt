@@ -55,6 +55,7 @@ import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import kotlin.system.exitProcess
 import androidx.core.net.toUri
+import com.lovegaoshi.kotlinaudio.utils.calcFFTBand
 
 @OptIn(UnstableApi::class)
 @MainThread
@@ -193,6 +194,7 @@ class MusicService : HeadlessJsMediaService() {
             return
         }
         Timber.tag("APM").d("RNTP musicservice set up")
+        val fftSampleRate = playerOptions?.getDouble(USE_FFT_PROCESSOR)?.toInt() ?: 0
         val mPlayerOptions = PlayerOptions(
             crossfade = playerOptions?.getBoolean(CROSSFADE, false) ?: false,
             cacheSize = playerOptions?.getDouble(MAX_CACHE_SIZE_KEY)?.toLong() ?: 0,
@@ -208,8 +210,7 @@ class MusicService : HeadlessJsMediaService() {
             handleAudioBecomingNoisy = playerOptions?.getBoolean(HANDLE_NOISY, true) ?: true,
             alwaysShowNext = playerOptions?.getBoolean(ALWAYS_SHOW_NEXT, true) ?: true,
             handleAudioFocus = playerOptions?.getBoolean(AUTO_HANDLE_INTERRUPTIONS) ?: true,
-            useFFTProcessor = playerOptions?.getBoolean(USE_FFT_PROCESSOR) ?: false,
-
+            useFFTProcessor = fftSampleRate,
             bufferOptions = BufferOptions(
                 playerOptions?.getDouble(MIN_BUFFER_KEY)?.toMilliseconds()?.toInt(),
                 playerOptions?.getDouble(MAX_BUFFER_KEY)?.toMilliseconds()?.toInt(),
@@ -221,7 +222,8 @@ class MusicService : HeadlessJsMediaService() {
         )
         player = QueuedAudioPlayer(this@MusicService, mPlayerOptions)
         player.fftEmitter = {v -> emit(MusicEvents.FFT_UPDATED, Bundle().apply {
-            putDoubleArray("data", v)
+            // pass the raw data: putDoubleArray("data", v)
+            putDoubleArray("data", calcFFTBand(v, fftSampleRate).toDoubleArray())
         })}
         fakePlayer.release()
         mediaSession.player = player.player

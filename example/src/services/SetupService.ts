@@ -31,8 +31,7 @@ export const SetupService = async (background = false) => {
   await setupPlayer(
     {
       autoHandleInterruptions: true,
-      crossfade: true,
-      useFFTProcessor: true,
+      useFFTProcessor: 512,
     },
     background
   );

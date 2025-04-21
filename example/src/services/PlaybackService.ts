@@ -128,10 +128,6 @@ export async function PlaybackService() {
     console.log('Event.PlaybackPlayWhenReadyChanged', event);
   });
 
-  TrackPlayer.addEventListener(Event.fftUpdate, (event) => {
-    console.log('Event.FFTUpdate', event.data.length);
-  });
-
   TrackPlayer.addEventListener(Event.PlaybackState, (event) => {
     console.log('Event.PlaybackState', event);
     RNTPWidgetModule?.updateWidget();

@@ -193,8 +193,8 @@ abstract class AudioPlayer internal constructor(
     private fun initExoPlayer(name: String): ExoPlayer {
         // HACK: horrible memleak, but I cant think of how to track exoplayers
         val nameHolder = arrayOf("")
-        val renderer = if (true || options.useFFTProcessor) APMRenderersFactory(
-            context, object: FFTAudioProcessor.FFTListener {
+        val renderer = if (options.useFFTProcessor > 0) APMRenderersFactory(
+            context, options.useFFTProcessor, object: FFTAudioProcessor.FFTListener {
             override fun onFFTReady(
                 sampleRateHz: Int,
                 channelCount: Int,

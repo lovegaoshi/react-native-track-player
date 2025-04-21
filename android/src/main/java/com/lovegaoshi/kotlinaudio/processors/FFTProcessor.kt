@@ -3,7 +3,6 @@ package com.lovegaoshi.kotlinaudio.processors
 
 import android.media.AudioTrack
 import android.media.AudioTrack.ERROR_BAD_VALUE
-import android.util.Log
 import androidx.media3.common.C
 import androidx.media3.common.Format
 import androidx.media3.common.audio.AudioProcessor
@@ -22,10 +21,9 @@ import kotlin.math.max
  * which will be forwarded to the listener
  */
 @UnstableApi
-class FFTAudioProcessor : AudioProcessor {
+class FFTAudioProcessor(val sampleRate: Int) : AudioProcessor {
 
     companion object {
-        const val SAMPLE_SIZE = 4096
 
         // From DefaultAudioSink.java:160 'MIN_BUFFER_DURATION_US'
         private const val EXO_MIN_BUFFER_DURATION_US: Long = 250000
@@ -36,9 +34,9 @@ class FFTAudioProcessor : AudioProcessor {
         // From DefaultAudioSink.java:173 'BUFFER_MULTIPLICATION_FACTOR'
         private const val EXO_BUFFER_MULTIPLICATION_FACTOR = 4
 
-        // Extra size next in addition to the AudioTrack buffer size
-        private const val BUFFER_EXTRA_SIZE = SAMPLE_SIZE * 8
     }
+    // Extra size next in addition to the AudioTrack buffer size
+    private val bufferExtraSize =  sampleRate * 8
 
     private var fft: FFT? = null
 
@@ -53,12 +51,12 @@ class FFTAudioProcessor : AudioProcessor {
 
     private lateinit var srcBuffer: ByteBuffer
     private var srcBufferPosition = 0
-    private val tempByteArray = ByteArray(SAMPLE_SIZE * 2)
+    private val tempByteArray = ByteArray( sampleRate * 2)
 
     private var audioTrackBufferSize = 0
 
-    private val src = DoubleArray(SAMPLE_SIZE)
-    private val dst = DoubleArray(SAMPLE_SIZE + 2)
+    private val src = DoubleArray( sampleRate)
+    private val dst = DoubleArray( sampleRate + 2)
 
 
     interface FFTListener {
@@ -121,11 +119,11 @@ class FFTAudioProcessor : AudioProcessor {
         this.inputAudioFormat = inputAudioFormat
         isActive = true
 
-        fft = FFT(SAMPLE_SIZE)
+        fft = FFT( sampleRate)
 
         audioTrackBufferSize = getDefaultBufferSizeInBytes(inputAudioFormat)
 
-        srcBuffer = ByteBuffer.allocate(audioTrackBufferSize + BUFFER_EXTRA_SIZE)
+        srcBuffer = ByteBuffer.allocate(audioTrackBufferSize + bufferExtraSize)
         srcBufferPosition = 0
         return inputAudioFormat
     }
@@ -186,7 +184,7 @@ class FFTAudioProcessor : AudioProcessor {
         srcBufferPosition += buffer.array().size
         // Since this is PCM 16 bit, each sample will be 2 bytes.
         // So to get the sample size in the end, we need to take twice as many bytes off the buffer
-        val bytesToProcess = SAMPLE_SIZE * 2
+        val bytesToProcess =  sampleRate * 2
         var currentByte: Byte? = null
         while (srcBufferPosition > audioTrackBufferSize) {
             srcBuffer.position(0)

@@ -6,13 +6,13 @@ import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.audio.AudioSink
 import androidx.media3.exoplayer.audio.DefaultAudioSink
 import com.lovegaoshi.kotlinaudio.processors.FFTAudioProcessor
-import timber.log.Timber
 
 @UnstableApi
 class APMRenderersFactory(
-    context: Context, mFFTListener: FFTAudioProcessor.FFTListener? = null) : DefaultRenderersFactory(context) {
+    context: Context, sampleRate: Int = 4096,
+    mFFTListener: FFTAudioProcessor.FFTListener? = null) : DefaultRenderersFactory(context) {
 
-    val mFFTAudioProcessor = FFTAudioProcessor()
+    val mFFTAudioProcessor = FFTAudioProcessor(sampleRate)
     init {
         mFFTAudioProcessor.listener = mFFTListener
     }
