@@ -10,7 +10,7 @@ export async function PlaybackService() {
     await SetupService(true);
     await QueueInitialTracksService();
   })();
-  
+
   console.log('registering playback listeners');
   TrackPlayer.addEventListener(Event.RemotePause, () => {
     console.log('Event.RemotePause');
@@ -98,10 +98,13 @@ export async function PlaybackService() {
       // content updates.
       console.log('Event.RemoteBrowse', event);
     });
-    
-    TrackPlayer.addEventListener(Event.PlaybackAnimatedVolumeChanged, (event) => {
-      console.log('Event.PlaybackAnimatedVolumeChanged', event.data);
-    });
+
+    TrackPlayer.addEventListener(
+      Event.PlaybackAnimatedVolumeChanged,
+      (event) => {
+        console.log('Event.PlaybackAnimatedVolumeChanged', event.data);
+      }
+    );
   }
 
   TrackPlayer.addEventListener(Event.RemoteCustomAction, (event) => {
@@ -123,6 +126,10 @@ export async function PlaybackService() {
 
   TrackPlayer.addEventListener(Event.PlaybackPlayWhenReadyChanged, (event) => {
     console.log('Event.PlaybackPlayWhenReadyChanged', event);
+  });
+
+  TrackPlayer.addEventListener(Event.fftUpdate, (event) => {
+    console.log('Event.FFTUpdate', event.data.length);
   });
 
   TrackPlayer.addEventListener(Event.PlaybackState, (event) => {

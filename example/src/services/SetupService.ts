@@ -32,6 +32,7 @@ export const SetupService = async (background = false) => {
     {
       autoHandleInterruptions: true,
       crossfade: true,
+      useFFTProcessor: true,
     },
     background
   );

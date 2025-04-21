@@ -48,6 +48,7 @@ class MusicEvents(private val reactContext: ReactContext) : BroadcastReceiver() 
         const val PLAYBACK_ERROR = "playback-error"
         const val PLAYBACK_ANIMATED_VOLUME_CHANGED = "playback-animated-volume-changed"
         const val PLAYBACK_RESUME = "playback-resume-android"
+        const val FFT_UPDATED = "fft-updated"
 
         // Metadata Events
         const val METADATA_CHAPTER_RECEIVED = "metadata-chapter-received"

@@ -161,4 +161,8 @@ export enum Event {
    * typical controllers are media notification and Android Auto.
    **/
   connectorDisconnected = 'android-controller-disconnected',
+  /**
+   * Fired when there is an fft update
+   **/
+  fftUpdate = 'fft-updated',
 }

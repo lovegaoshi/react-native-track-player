@@ -220,7 +220,9 @@ class MusicService : HeadlessJsMediaService() {
             skipSilence = playerOptions?.getBoolean(SKIP_SILENCE) ?: false
         )
         player = QueuedAudioPlayer(this@MusicService, mPlayerOptions)
-        player.fftEmitter = {v -> Timber.tag("APMFFT").d("RNTP.FFT: $v")}
+        player.fftEmitter = {v -> emit(MusicEvents.FFT_UPDATED, Bundle().apply {
+            putDoubleArray("data", v)
+        })}
         fakePlayer.release()
         mediaSession.player = player.player
         observeEvents()
