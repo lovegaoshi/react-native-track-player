@@ -1,6 +1,5 @@
 import {
   AppRegistry,
-  DeviceEventEmitter,
   NativeEventEmitter,
   Platform,
   Animated,
@@ -25,9 +24,7 @@ import resolveAssetSource from './resolveAssetSource';
 
 const isAndroid = Platform.OS === 'android';
 
-const emitter = !isAndroid
-  ? new NativeEventEmitter(TrackPlayer)
-  : DeviceEventEmitter;
+const emitter = new NativeEventEmitter(TrackPlayer);
 
 const animatedVolume = new Animated.Value(1);
 
