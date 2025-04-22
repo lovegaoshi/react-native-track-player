@@ -3,6 +3,7 @@ package com.lovegaoshi.kotlinaudio.processors
 
 import android.media.AudioTrack
 import android.media.AudioTrack.ERROR_BAD_VALUE
+import android.util.Log
 import androidx.media3.common.C
 import androidx.media3.common.Format
 import androidx.media3.common.audio.AudioProcessor
@@ -205,6 +206,7 @@ class FFTAudioProcessor(val sampleRate: Int) : AudioProcessor {
             srcBuffer.compact()
             srcBufferPosition -= bytesToProcess
             srcBuffer.position(srcBufferPosition)
+            Log.d("APMFFT","${audioTrackBufferSize}")
             fft?.fft(src, dst)
 
             listener?.onFFTReady(inputAudioFormat.sampleRate, inputAudioFormat.channelCount, dst)

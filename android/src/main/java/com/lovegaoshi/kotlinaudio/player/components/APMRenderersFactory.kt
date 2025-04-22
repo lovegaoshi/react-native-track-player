@@ -5,7 +5,9 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.audio.AudioSink
 import androidx.media3.exoplayer.audio.DefaultAudioSink
+import androidx.media3.exoplayer.audio.TeeAudioProcessor
 import com.lovegaoshi.kotlinaudio.processors.FFTAudioProcessor
+import com.lovegaoshi.kotlinaudio.processors.TeeListener
 
 @UnstableApi
 class APMRenderersFactory(
@@ -16,6 +18,7 @@ class APMRenderersFactory(
     init {
         mFFTAudioProcessor.listener = mFFTListener
     }
+    val teeProcessor = TeeAudioProcessor(TeeListener(sampleRate))
 
 
     override fun buildAudioSink(
@@ -26,7 +29,7 @@ class APMRenderersFactory(
         return DefaultAudioSink.Builder(context)
             .setEnableFloatOutput(enableFloatOutput)
             .setEnableAudioTrackPlaybackParams(enableAudioTrackPlaybackParams)
-            .setAudioProcessors(arrayOf(mFFTAudioProcessor))
+            .setAudioProcessors(arrayOf(teeProcessor))
             .build()
     }
 
