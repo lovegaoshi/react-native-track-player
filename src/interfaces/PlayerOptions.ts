@@ -131,7 +131,7 @@ export interface PlayerOptions {
    */
   crossfade?: boolean;
   /**
-   * applies an FFT processor. android only.
+   * applies an FFT processor with the given sampling size. android only.
    * Defaults to 0 (disables it).
    */
   useFFTProcessor?: number;

@@ -108,15 +108,15 @@ class TeeListener(
             src[i] = short.toFloat()
         }
 
-        
+        val srcCopy = src.clone()
         // DC bin is located at index 0, 1, nyquist at index n-2, n-1
-        fft.fft(src, FloatArray(sampleRate + 2) )
+        fft.fft(srcCopy, FloatArray(sampleRate))
         // Fill amplitude data
         // The resulting graph is mirrored, so get only left part
-        for (i in 0 until src.size / 2) {
-            val real = src[i * 2]
-            val imaginary = src[i * 2 + 1]
-            val amplitude = sqrt(real.pow(2f) + imaginary.pow(2f))
+        for (i in 0 until srcCopy.size / 2) {
+            val real = srcCopy[i * 2]
+            val imaginary = srcCopy[i * 2 + 1]
+            val amplitude = sqrt(real.pow(2) + imaginary.pow(2))
 
             chartData[i] = amplitude
         }
