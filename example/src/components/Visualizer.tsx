@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text } from 'react-native';
 import { useTrackPlayerEvents, Event } from 'react-native-track-player';
 
-export const FFT = () => {
+export const Visualizer = () => {
   const [fftArray, setFFTArray] = React.useState<number[]>([]);
   useTrackPlayerEvents([Event.fftUpdate], async (event) => {
     setFFTArray(event.data);

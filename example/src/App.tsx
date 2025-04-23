@@ -13,7 +13,13 @@ import TrackPlayer, {
   AndroidAutoContentStyle,
 } from 'react-native-track-player';
 
-import { PlayerControls, Progress, Spacer, TrackInfo, FFT } from './components';
+import {
+  PlayerControls,
+  Progress,
+  Spacer,
+  TrackInfo,
+  Visualizer,
+} from './components';
 import { QueueInitialTracksService, SetupService } from './services';
 import DemoAndroidAutoHierarchy from './services/AndroidAutoHierarchy';
 import { SponsorCard } from './components/SponsorCard';
@@ -59,7 +65,7 @@ const Inner: React.FC = () => {
         <Spacer />
         <PlayerControls />
         <Spacer mode={'expand'} />
-        <FFT />
+        <Visualizer />
       </View>
     </SafeAreaView>
   );

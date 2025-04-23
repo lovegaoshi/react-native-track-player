@@ -55,7 +55,6 @@ import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import kotlin.system.exitProcess
 import androidx.core.net.toUri
-import com.lovegaoshi.kotlinaudio.utils.calcFFTBand
 
 @OptIn(UnstableApi::class)
 @MainThread
@@ -223,7 +222,8 @@ class MusicService : HeadlessJsMediaService() {
         player = QueuedAudioPlayer(this@MusicService, mPlayerOptions)
         player.fftEmitter = {v -> emit(MusicEvents.FFT_UPDATED, Bundle().apply {
             // pass the raw data: putDoubleArray("data", v)
-            putDoubleArray("data", calcFFTBand(v, fftSampleRate).toDoubleArray())
+            putDoubleArray("data", v)
+
         })}
         fakePlayer.release()
         mediaSession.player = player.player

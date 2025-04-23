@@ -35,7 +35,7 @@ import com.lovegaoshi.kotlinaudio.player.components.Cache
 import com.lovegaoshi.kotlinaudio.player.components.FocusManager
 import com.lovegaoshi.kotlinaudio.player.components.MediaFactory
 import com.lovegaoshi.kotlinaudio.player.components.setupBuffer
-import com.lovegaoshi.kotlinaudio.processors.FFTAudioProcessor
+import com.lovegaoshi.kotlinaudio.processors.FFTEmitter
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.async
@@ -194,16 +194,15 @@ abstract class AudioPlayer internal constructor(
         // HACK: horrible memleak, but I cant think of how to track exoplayers
         val nameHolder = arrayOf("")
         val renderer = if (options.useFFTProcessor > 0) APMRenderersFactory(
-            context, options.useFFTProcessor, object: FFTAudioProcessor.FFTListener {
-            override fun onFFTReady(
-                sampleRateHz: Int,
-                channelCount: Int,
-                fft: DoubleArray
-            ) {
-                if (this@AudioPlayer.exoPlayer.toString() == nameHolder[0]) {
-                    fftEmitter(fft)
+            context, options.useFFTProcessor, object: FFTEmitter {
+                override fun onSpectrumReady(spectrum: FloatArray, maxRawAmp: Float) {
+                    return
                 }
-            }
+                override fun onFrequencyFFTReady(fft: DoubleArray, max: Float) {
+                    if (this@AudioPlayer.exoPlayer.toString() == nameHolder[0]) {
+                        fftEmitter(fft)
+                    }
+                }
 
         }) else DefaultRenderersFactory(context)
         renderer.setExtensionRendererMode(DefaultRenderersFactory.EXTENSION_RENDERER_MODE_PREFER)

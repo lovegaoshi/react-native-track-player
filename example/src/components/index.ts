@@ -5,4 +5,4 @@ export * from './Progress';
 export * from './TrackInfo';
 export * from './ActionSheet';
 export * from './Spacer';
-export * from './FFT';
+export * from './Visualizer';

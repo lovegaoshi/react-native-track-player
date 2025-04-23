@@ -6,19 +6,16 @@ import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.audio.AudioSink
 import androidx.media3.exoplayer.audio.DefaultAudioSink
 import androidx.media3.exoplayer.audio.TeeAudioProcessor
-import com.lovegaoshi.kotlinaudio.processors.FFTAudioProcessor
+import com.lovegaoshi.kotlinaudio.processors.FFTEmitter
 import com.lovegaoshi.kotlinaudio.processors.TeeListener
 
 @UnstableApi
 class APMRenderersFactory(
-    context: Context, sampleRate: Int = 4096,
-    mFFTListener: FFTAudioProcessor.FFTListener? = null) : DefaultRenderersFactory(context) {
-
-    val mFFTAudioProcessor = FFTAudioProcessor(sampleRate)
-    init {
-        mFFTAudioProcessor.listener = mFFTListener
-    }
-    val teeProcessor = TeeAudioProcessor(TeeListener(sampleRate))
+    context: Context,
+    sampleRate: Int = 4096,
+    emitter: FFTEmitter?
+) : DefaultRenderersFactory(context) {
+    val teeProcessor = TeeAudioProcessor(TeeListener(sampleRate, emitter))
 
 
     override fun buildAudioSink(

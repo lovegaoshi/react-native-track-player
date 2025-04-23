@@ -1,6 +1,22 @@
-// credits: https://stackoverflow.com/a/10114298
-// https://www.ee.columbia.edu/~ronw/code/MEAPsoft/doc/html/FFT_8java-source.html
-// please note this is GPL v2. if APM-RNTP decides to adapt this, it will be relicensed to AGPLv3.
+/***************************************************************
+ 00089   * fft.c
+ 00090   * Douglas L. Jones
+ 00091   * University of Illinois at Urbana-Champaign
+ 00092   * January 19, 1992
+ 00093   * http://cnx.rice.edu/content/m12016/latest/
+ 00094   *
+ 00095   *   fft: in-place radix-2 DIT DFT of a complex input
+ 00096   *
+ 00097   *   input:
+ 00098   * n: length of FFT: must be a power of two
+ 00099   * m: n = 2**m
+ 00100   *   input/output
+ 00101   * x: double array of length n with real part of data
+ 00102   * y: double array of length n with imag part of data
+ 00103   *
+ 00104   *   Permission to copy and use this program is granted
+ 00105   *   as long as this header is included.
+ ***************************************************************/
 package com.lovegaoshi.kotlinaudio.utils;
 
 public class FFT {
@@ -30,9 +46,9 @@ public class FFT {
 
     }
 
-    public void fft(double[] x, double[] y) {
+    public void fft(float[] x, float[] y) {
         int i, j, k, n1, n2, a;
-        double c, s, t1, t2;
+        float c, s, t1, t2;
 
         // Bit-reverse
         j = 0;
@@ -65,8 +81,8 @@ public class FFT {
             a = 0;
 
             for (j = 0; j < n1; j++) {
-                c = cos[a];
-                s = sin[a];
+                c = (float) cos[a];
+                s = (float) sin[a];
                 a += 1 << (m - i - 1);
 
                 for (k = j; k < n; k = k + n2) {
