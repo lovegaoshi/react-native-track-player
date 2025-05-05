@@ -2,6 +2,8 @@
 
 import android.content.Context
 import android.media.AudioManager
+import android.media.audiofx.Equalizer
+import android.media.audiofx.LoudnessEnhancer
 import androidx.annotation.CallSuper
 import androidx.annotation.OptIn
 import androidx.media3.common.AudioAttributes
@@ -54,6 +56,8 @@ abstract class AudioPlayer internal constructor(
     // for crossfading
     private var exoPlayer1: ExoPlayer
     private var exoPlayer2: ExoPlayer? = null
+    private var loudnessEnhancers = ArrayList<LoudnessEnhancer>()
+    private var equalizers = ArrayList<Equalizer>()
     private var currentExoPlayer = true
 
     var exoPlayer: ExoPlayer
@@ -224,6 +228,8 @@ abstract class AudioPlayer internal constructor(
             .build()
         mPlayer.setAudioAttributes(audioAttributes, options.handleAudioFocus)
         nameHolder[0] = mPlayer.toString()
+        loudnessEnhancers.add(LoudnessEnhancer(mPlayer.audioSessionId))
+        equalizers.add(Equalizer(0, mPlayer.audioSessionId))
         return mPlayer
     }
 
@@ -257,6 +263,17 @@ abstract class AudioPlayer internal constructor(
     open fun load(item: AudioItem) {
         players().forEach { p -> p.addMediaItem(audioItem2MediaItem(item)) }
         exoPlayer.prepare()
+    }
+
+    fun setLoudnessEnhance(gain: Int) {
+        loudnessEnhancers.forEach { l -> {
+            l.setTargetGain(gain)
+            l.setEnabled(true)
+        }}
+    }
+
+    fun setEqualizer() {
+        equalizers.forEach { equalizer -> equalizer}
     }
 
     fun togglePlaying() {
