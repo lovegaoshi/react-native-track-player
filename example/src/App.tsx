@@ -19,10 +19,10 @@ import {
   Spacer,
   TrackInfo,
   Visualizer,
+  EQ,
 } from './components';
 import { QueueInitialTracksService, SetupService } from './services';
 import DemoAndroidAutoHierarchy from './services/AndroidAutoHierarchy';
-import { SponsorCard } from './components/SponsorCard';
 
 export default function App() {
   return <Inner />;
@@ -62,9 +62,9 @@ const Inner: React.FC = () => {
       <View style={styles.contentContainer}>
         <TrackInfo track={track} />
         <Progress live={track?.isLiveStream} />
-        <Spacer />
         <PlayerControls />
-        <Spacer mode={'expand'} />
+        {/* uncomment this for EQ and loudness enhancer */}
+        {/*<EQ /> */}
         <Visualizer />
       </View>
     </SafeAreaView>
@@ -77,6 +77,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#212121',
     alignItems: 'center',
     justifyContent: 'center',
+    // @ts-expect-error web platform compatibility
     minHeight: Platform.OS === 'web' ? '100vh' : '100%',
   },
   contentContainer: {
