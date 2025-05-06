@@ -75,6 +75,22 @@ class MusicService : HeadlessJsMediaService() {
     private var lastWake: Long = 0
     var lastConnectedPackage: String = ""
 
+    fun setEqualizerPreset(preset: Int) {
+        player.setEqualizerPreset(preset)
+    }
+
+    fun getCurrentEqualizerPreset(): Int {
+        return player.getCurrentEQPreset()
+    }
+
+    fun getEqualizerPresets(): List<String> {
+        return player.getEqualizerPresets()
+    }
+
+    fun setLoudnessEnhance(gain: Int) {
+        player.setLoudnessEnhance(gain)
+    }
+
     fun crossFadePrepare(previous: Boolean = false) { player.crossFadePrepare(previous) }
 
     fun switchExoPlayer(

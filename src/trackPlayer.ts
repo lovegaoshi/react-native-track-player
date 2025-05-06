@@ -798,3 +798,35 @@ export async function getLastConnectedPackage(): Promise<string | undefined> {
   if (!isAndroid) return;
   return TrackPlayer.getLastConnectedPackage();
 }
+
+/**
+ * android only. set loudnessEnhance via audiofx's loudnessEnhancer. gain is in mB (1dB=100mB)
+ */
+export async function setLoudnessEnhance(gain = 0) {
+  if (!isAndroid) return;
+  TrackPlayer.setLoudnessEnhance(gain);
+}
+
+/**
+ * android only. set equalizer preset.
+ */
+export async function setEqualizerPreset(preset = 0) {
+  if (!isAndroid) return;
+  TrackPlayer.setEqualizerPreset(preset);
+}
+
+/**
+ * android only. get the current equalizer preset index (int).
+ */
+export async function getCurrentEqualizerPreset() {
+  if (!isAndroid) return -1;
+  return TrackPlayer.getCurrentEqualizerPreset();
+}
+
+/**
+ * android only. get the current eq preset names.
+ */
+export async function getEqualizerPresets(): Promise<string[]> {
+  if (!isAndroid) return [];
+  return TrackPlayer.getEqualizerPresets();
+}

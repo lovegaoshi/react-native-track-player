@@ -296,6 +296,28 @@ class MusicModule(reactContext: ReactApplicationContext) : ReactContextBaseJavaM
     }
 
     @ReactMethod
+    fun setEqualizerPreset(preset: Int, callback: Promise) = launchInScope {
+        musicService.setEqualizerPreset(preset)
+        callback.resolve(null)
+    }
+
+    @ReactMethod
+    fun getCurrentEqualizerPreset(callback: Promise) = launchInScope {
+        callback.resolve(musicService.getCurrentEqualizerPreset())
+    }
+    @ReactMethod
+    fun getEqualizerPresets(callback: Promise) = launchInScope {
+        callback.resolve(Arguments.fromList(musicService.getEqualizerPresets()))
+    }
+
+
+    @ReactMethod
+    fun setLoudnessEnhance(gain: Int, callback: Promise) = launchInScope {
+        musicService.setLoudnessEnhance(gain)
+        callback.resolve(null)
+    }
+
+    @ReactMethod
     fun add(data: ReadableArray?, insertBeforeIndex: Int, callback: Promise) = launchInScope {
         if (verifyServiceBoundOrReject(callback)) return@launchInScope
 

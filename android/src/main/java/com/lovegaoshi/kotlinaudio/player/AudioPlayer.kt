@@ -266,14 +266,32 @@ abstract class AudioPlayer internal constructor(
     }
 
     fun setLoudnessEnhance(gain: Int) {
-        loudnessEnhancers.forEach { l -> {
+        loudnessEnhancers.forEach { l ->
             l.setTargetGain(gain)
-            l.setEnabled(true)
-        }}
+            l.enabled = true
+        }
     }
 
-    fun setEqualizer() {
-        equalizers.forEach { equalizer -> equalizer}
+    fun setEqualizerPreset(preset: Int) {
+        equalizers.forEach { equalizer ->
+            equalizer.usePreset(preset.toShort())
+            equalizer.enabled = true
+        }
+    }
+
+    fun getCurrentEQPreset(): Int {
+        if (equalizers.isEmpty()) {
+            return -1
+        }
+        return equalizers[0].currentPreset.toInt()
+    }
+
+    fun getEqualizerPresets(): List<String> {
+        if (equalizers.isEmpty()) {
+            return arrayListOf()
+        }
+        return Array(equalizers[0].numberOfPresets.toInt()) { i -> i }
+            .map { i -> equalizers[0].getPresetName(i.toShort()) }
     }
 
     fun togglePlaying() {
@@ -343,6 +361,8 @@ abstract class AudioPlayer internal constructor(
             p.removeListener(playerListener)
             p.release()
         }
+        equalizers.forEach { e -> e.release() }
+        loudnessEnhancers.forEach { e -> e.release() }
         cache?.release()
         cache = null
     }
