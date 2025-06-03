@@ -20,6 +20,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.cache.SimpleCache
 import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.analytics.AnalyticsListener
 import com.lovegaoshi.kotlinaudio.event.PlayerEventHolder
 import com.lovegaoshi.kotlinaudio.models.AudioItem
 import com.lovegaoshi.kotlinaudio.models.audioItem2MediaItem
@@ -228,8 +229,8 @@ abstract class AudioPlayer internal constructor(
             .build()
         mPlayer.setAudioAttributes(audioAttributes, options.handleAudioFocus)
         nameHolder[0] = mPlayer.toString()
-        loudnessEnhancers.add(LoudnessEnhancer(mPlayer.audioSessionId))
-        equalizers.add(Equalizer(0, mPlayer.audioSessionId))
+        // https://github.com/androidx/media/issues/2319
+        mPlayer.addAnalyticsListener(AudioFxInitListener())
         return mPlayer
     }
 
@@ -438,6 +439,13 @@ abstract class AudioPlayer internal constructor(
         }
     }
 
+    inner class AudioFxInitListener: AnalyticsListener {
+        @OptIn(UnstableApi::class)
+        override fun onAudioSessionIdChanged(eventTime: AnalyticsListener.EventTime, audioSessionId: Int) {
+            loudnessEnhancers.add(LoudnessEnhancer(audioSessionId))
+            equalizers.add(Equalizer(0, audioSessionId))
+        }
+    }
     inner class PlayerListener : Listener {
 
         /**
