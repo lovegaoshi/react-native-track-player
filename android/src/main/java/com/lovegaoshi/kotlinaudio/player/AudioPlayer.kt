@@ -6,7 +6,6 @@ import android.media.audiofx.Equalizer
 import android.media.audiofx.LoudnessEnhancer
 import androidx.annotation.CallSuper
 import androidx.annotation.OptIn
-import android.util.Log
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
 import androidx.media3.common.MediaItem
@@ -448,7 +447,7 @@ abstract class AudioPlayer internal constructor(
             val enhancer = LoudnessEnhancer(audioSessionId)
             loudnessEnhancers.add(enhancer)
         } catch (e: RuntimeException) {
-            Log.e("AudioFxInitListener", "LoudnessEnhancer init failed: ${e.message}")
+             Timber.e("AudioFxInitListener", "LoudnessEnhancer init failed: ${e.message}")
         }
 
         // Try to add Equalizer
@@ -456,7 +455,7 @@ abstract class AudioPlayer internal constructor(
             val equalizer = Equalizer(0, audioSessionId)
             equalizers.add(equalizer)
         } catch (e: RuntimeException) {
-            Log.e("AudioFxInitListener", "Equalizer init failed: ${e.message}")
+            Timber.e("AudioFxInitListener", "Equalizer init failed: ${e.message}")
         }
     }
 }
