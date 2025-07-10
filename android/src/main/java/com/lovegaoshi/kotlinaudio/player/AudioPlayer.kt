@@ -447,7 +447,7 @@ abstract class AudioPlayer internal constructor(
             val enhancer = LoudnessEnhancer(audioSessionId)
             loudnessEnhancers.add(enhancer)
         } catch (e: RuntimeException) {
-             Timber.e("AudioFxInitListener", "LoudnessEnhancer init failed: ${e.message}")
+             Timber.tag("APMAudioFx").e("[AudioFx] failed to load loudnessEnhancer. it's fine if in dev!")
         }
 
         // Try to add Equalizer
@@ -455,7 +455,7 @@ abstract class AudioPlayer internal constructor(
             val equalizer = Equalizer(0, audioSessionId)
             equalizers.add(equalizer)
         } catch (e: RuntimeException) {
-            Timber.e("AudioFxInitListener", "Equalizer init failed: ${e.message}")
+            Timber.tag("APMAudioFx").e("[AudioFx] failed to load equalizer. it's fine if in dev!")
         }
     }
 }
