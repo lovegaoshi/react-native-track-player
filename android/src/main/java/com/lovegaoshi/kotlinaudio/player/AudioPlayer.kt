@@ -439,7 +439,7 @@ abstract class AudioPlayer internal constructor(
         }
     }
 
-    inner class AudioFxInitListener : AnalyticsListener {
+    inner class AudioFxInitListener: AnalyticsListener {
         @OptIn(UnstableApi::class)
         override fun onAudioSessionIdChanged(eventTime: AnalyticsListener.EventTime, audioSessionId: Int) {
             // Try to add LoudnessEnhancer
