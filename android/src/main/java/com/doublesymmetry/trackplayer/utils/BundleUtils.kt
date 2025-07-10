@@ -12,7 +12,6 @@ import androidx.media3.common.StarRating
 import androidx.media3.common.ThumbRating
 import com.doublesymmetry.trackplayer.R
 import com.facebook.react.views.imagehelper.ResourceDrawableIdHelper
-import com.facebook.react.views.imagehelper.ResourceDrawableIdHelper.Companion.instance
 
 /**
  * @author Milen Pivchev @mpivchev
@@ -28,7 +27,7 @@ object BundleUtils {
         } else if (obj is Bundle) {
             // require/import
             val uri = obj.getString("uri")
-            val helper = ResourceDrawableIdHelper.getInstance()
+            val helper = ResourceDrawableIdHelper.instance
             val id = helper.getResourceDrawableId(context, uri)
             return if (id > 0) {
                 // In production, we can obtain the resource uri
@@ -87,7 +86,7 @@ object BundleUtils {
 
         val bundle = options.getBundle(propertyName) ?: return null
 
-        val helper = instance
+        val helper = ResourceDrawableIdHelper.instance
         val icon = helper.getResourceDrawableId(context, bundle.getString("uri"))
         return if (icon == 0) null else icon
     }
