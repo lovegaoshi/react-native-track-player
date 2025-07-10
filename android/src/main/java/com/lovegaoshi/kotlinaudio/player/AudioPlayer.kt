@@ -439,26 +439,26 @@ abstract class AudioPlayer internal constructor(
         }
     }
 
-   inner class AudioFxInitListener : AnalyticsListener {
-    @OptIn(UnstableApi::class)
-    override fun onAudioSessionIdChanged(eventTime: AnalyticsListener.EventTime, audioSessionId: Int) {
-        // Try to add LoudnessEnhancer
-        try {
-            val enhancer = LoudnessEnhancer(audioSessionId)
-            loudnessEnhancers.add(enhancer)
-        } catch (e: RuntimeException) {
-             Timber.tag("APMAudioFx").e("[AudioFx] failed to load loudnessEnhancer. it's fine if in dev!")
-        }
+    inner class AudioFxInitListener : AnalyticsListener {
+        @OptIn(UnstableApi::class)
+        override fun onAudioSessionIdChanged(eventTime: AnalyticsListener.EventTime, audioSessionId: Int) {
+            // Try to add LoudnessEnhancer
+            try {
+                val enhancer = LoudnessEnhancer(audioSessionId)
+                loudnessEnhancers.add(enhancer)
+            } catch (e: RuntimeException) {
+                Timber.tag("APMAudioFx").e("[AudioFx] failed to load loudnessEnhancer. it's fine if in dev!")
+            }
 
-        // Try to add Equalizer
-        try {
-            val equalizer = Equalizer(0, audioSessionId)
-            equalizers.add(equalizer)
-        } catch (e: RuntimeException) {
-            Timber.tag("APMAudioFx").e("[AudioFx] failed to load equalizer. it's fine if in dev!")
+            // Try to add Equalizer
+            try {
+                val equalizer = Equalizer(0, audioSessionId)
+                equalizers.add(equalizer)
+            } catch (e: RuntimeException) {
+                Timber.tag("APMAudioFx").e("[AudioFx] failed to load equalizer. it's fine if in dev!")
+            }
         }
     }
-}
 
     inner class PlayerListener : Listener {
 
