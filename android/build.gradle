@@ -1,10 +1,13 @@
 import com.android.Version
 
 buildscript {
+    ext.getExtOrDefault = {name ->
+        return rootProject.ext.has(name) ? rootProject.ext.get(name) : project.properties['TrackPlayer_' + name]
+    }
+
     repositories {
-        mavenLocal()
-        mavenCentral()
         google()
+        mavenCentral()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:8.8.2'
@@ -14,6 +17,10 @@ buildscript {
 
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
+
+if (!rootProject.ext.has("native")) {
+    apply plugin: 'com.facebook.react'
+}
 
 def getExtOrIntegerDefault(name, defaultInt) {
     try {

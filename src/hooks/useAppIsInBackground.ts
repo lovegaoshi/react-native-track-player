@@ -1,18 +1,19 @@
-import { useState, useEffect } from 'react';
-import { AppState, AppStateStatus } from 'react-native';
+import { useState, useEffect, useRef } from 'react';
+import { AppState, AppStateStatus, NativeEventSubscription } from 'react-native';
 
 export function useAppIsInBackground() {
   const [state, setState] = useState<AppStateStatus>('active');
+  const eventListener = useRef<NativeEventSubscription>(undefined);
 
   useEffect(() => {
     const onStateChange = (nextState: AppStateStatus) => {
       setState(nextState);
     };
 
-    AppState.addEventListener('change', onStateChange);
+    eventListener.current = AppState.addEventListener('change', onStateChange);
 
     return () => {
-      AppState.removeEventListener('change', onStateChange);
+      eventListener.current?.remove();
     };
   }, []);
   return state === 'background';
