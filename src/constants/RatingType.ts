@@ -1,4 +1,4 @@
-import TrackPlayer from '../TrackPlayerModule';
+import {Constants as TrackPlayer} from '../../specs/NativeTrackPlayer';
 
 export enum RatingType {
   Heart = TrackPlayer.RATING_HEART,

@@ -6,7 +6,7 @@ import {
 } from 'react-native';
 
 import { Event, RepeatMode, State, AndroidAutoContentStyle } from './constants';
-import TrackPlayer from './TrackPlayerModule';
+import TrackPlayer from '../specs/NativeTrackPlayer';
 import type {
   AddTrack,
   EventPayloadByEvent,
@@ -90,13 +90,6 @@ export function addEventListener<T extends Event>(
     : (event: EventPayloadByEvent[T]) => void
 ) {
   return emitter.addListener(event, listener);
-}
-
-/**
- * @deprecated This method should not be used, most methods reject when service is not bound.
- */
-export function isServiceRunning(): Promise<boolean> {
-  return TrackPlayer.isServiceRunning();
 }
 
 // MARK: - Queue API
@@ -266,15 +259,6 @@ export async function updateMetadataForTrack(
     ...metadata,
     artwork: resolveImportedAssetOrPath(metadata.artwork),
   });
-}
-
-/**
- * @deprecated Nominated for removal in the next major version. If you object
- * to this, please describe your use-case in the following issue:
- * https://github.com/doublesymmetry/react-native-track-player/issues/1653
- */
-export function clearNowPlayingMetadata(): Promise<void> {
-  return TrackPlayer.clearNowPlayingMetadata();
 }
 
 /**
@@ -604,6 +588,7 @@ export async function getPitch(): Promise<number> {
  * index.
  */
 export async function getTrack(index: number): Promise<Track | undefined> {
+    // @ts-expect-error codegen issues
   return TrackPlayer.getTrack(index);
 }
 
@@ -611,6 +596,7 @@ export async function getTrack(index: number): Promise<Track | undefined> {
  * Gets the whole queue.
  */
 export async function getQueue(): Promise<Track[]> {
+    // @ts-expect-error codegen issues
   return TrackPlayer.getQueue();
 }
 
@@ -626,41 +612,8 @@ export async function getActiveTrackIndex(): Promise<number | undefined> {
  * Gets the active track or undefined if there is no current track.
  */
 export async function getActiveTrack(): Promise<Track | undefined> {
+    // @ts-expect-error codegen issues
   return (await TrackPlayer.getActiveTrack()) ?? undefined;
-}
-
-/**
- * Gets the index of the current track or null if there is no current track.
- *
- * @deprecated use `TrackPlayer.getActiveTrackIndex()` instead.
- */
-export async function getCurrentTrack(): Promise<number | null> {
-  return TrackPlayer.getActiveTrackIndex();
-}
-
-/**
- * Gets the duration of the current track in seconds.
- * @deprecated Use `TrackPlayer.getProgress().then((progress) => progress.duration)` instead.
- */
-export async function getDuration(): Promise<number> {
-  return TrackPlayer.getDuration();
-}
-
-/**
- * Gets the buffered position of the current track in seconds.
- *
- * @deprecated Use `TrackPlayer.getProgress().then((progress) => progress.buffered)` instead.
- */
-export async function getBufferedPosition(): Promise<number> {
-  return TrackPlayer.getBufferedPosition();
-}
-
-/**
- * Gets the playback position of the current track in seconds.
- * @deprecated Use `TrackPlayer.getProgress().then((progress) => progress.position)` instead.
- */
-export async function getPosition(): Promise<number> {
-  return TrackPlayer.getPosition();
 }
 
 /**
@@ -669,14 +622,8 @@ export async function getPosition(): Promise<number> {
  * duration in seconds.
  */
 export async function getProgress(): Promise<Progress> {
+    // @ts-expect-error codegen issues    
   return TrackPlayer.getProgress();
-}
-
-/**
- * @deprecated use (await getPlaybackState()).state instead.
- */
-export async function getState(): Promise<State> {
-  return (await TrackPlayer.getPlaybackState()).state;
 }
 
 /**
@@ -685,6 +632,7 @@ export async function getState(): Promise<State> {
  * @see https://rntp.dev/docs/api/constants/state
  */
 export async function getPlaybackState(): Promise<PlaybackState> {
+    // @ts-expect-error codegen issues
   return TrackPlayer.getPlaybackState();
 }
 
