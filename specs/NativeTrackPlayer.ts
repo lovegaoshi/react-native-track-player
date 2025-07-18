@@ -4,7 +4,7 @@ import { type UnsafeObject } from 'react-native/Libraries/Types/CodegenTypes';
 
 export interface Spec extends TurboModule {
   // init and config
-  setupPlayer(options: UnsafeObject, background?: boolean): Promise<void>;
+  setupPlayer(options: UnsafeObject, background: boolean): Promise<void>;
   updateOptions(options: UnsafeObject): Promise<void>;
 
   // player api
@@ -33,9 +33,9 @@ export interface Spec extends TurboModule {
   move(fromIndex: number, toIndex: number): Promise<void>;
   remove(indexes: number[]): Promise<void>;
   removeUpcomingTracks(): Promise<void>;
-  skip(index: number, initialPosition?: number): Promise<void>;
-  skipToNext(initialPosition?: number): Promise<void>;
-  skipToPrevious(initialPosition?: number): Promise<void>;
+  skip(index: number, initialPosition: number): Promise<void>;
+  skipToNext(initialPosition: number): Promise<void>;
+  skipToPrevious(initialPosition: number): Promise<void>;
   updateMetadataForTrack(
     trackIndex: number,
     metadata: UnsafeObject
@@ -48,20 +48,23 @@ export interface Spec extends TurboModule {
   getTrack(index: number): Promise<UnsafeObject | undefined>;
   getActiveTrackIndex(): Promise<number | undefined>;
   getActiveTrack(): Promise<UnsafeObject | undefined>;
-  setBrowseTree(browseTree: UnsafeObject): string;
-  setPlaybackState(mediaID: string): void;
-  setBrowseTreeStyle(browsableStyle: number, playableStyle: number): void;
-  crossFadePrepare(previous?: boolean): void;
+  setBrowseTree(browseTree: UnsafeObject): Promise<string>;
+  setPlaybackState(mediaID: string): Promise<void>;
+  setBrowseTreeStyle(
+    browsableStyle: number,
+    playableStyle: number
+  ): Promise<void>;
+  crossFadePrepare(previous?: boolean): Promise<void>;
   switchExoPlayer(
     fadeDuration: number,
     fadeInterval: number,
     fadeToVolume: number
-  ): void;
-  getLastConnectedPackage(): string | undefined;
-  setLoudnessEnhance(gain: number): void;
-  setEqualizerPreset(preset: number): void;
-  getCurrentEqualizerPreset(): number;
-  getEqualizerPresets(): string[];
+  ): Promise<void>;
+  getLastConnectedPackage(): Promise<string | undefined>;
+  setLoudnessEnhance(gain: number): Promise<void>;
+  setEqualizerPreset(preset: number): Promise<void>;
+  getCurrentEqualizerPreset(): Promise<number>;
+  getEqualizerPresets(): Promise<string[]>;
 
   // event listeners
   addListener(eventName: string): void;
@@ -123,21 +126,25 @@ export interface Spec extends TurboModule {
     interval?: number,
     msg?: string
   ): void;
-  fadeOutPause(duration?: number, interval?: number): void;
-  fadeOutNext(duration?: number, interval?: number, toVolume?: number): void;
+  fadeOutPause(duration?: number, interval?: number): Promise<void>;
+  fadeOutNext(
+    duration?: number,
+    interval?: number,
+    toVolume?: number
+  ): Promise<void>;
   fadeOutPrevious(
     duration?: number,
     interval?: number,
     toVolume?: number
-  ): void;
+  ): Promise<void>;
   fadeOutJump(
     index: number,
     duration?: number,
     interval?: number,
     toVolume?: number
-  ): void;
-  setPitch(pitch: number): void;
-  getPitch(): number;
+  ): Promise<void>;
+  setPitch(pitch: number): Promise<void>;
+  getPitch(): Promise<number>;
 }
 
 const module = TurboModuleRegistry.getEnforcing<Spec>('TrackPlayer');

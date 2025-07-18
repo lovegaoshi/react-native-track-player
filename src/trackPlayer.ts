@@ -63,9 +63,7 @@ export async function setupPlayer(
   options: PlayerOptions = {},
   background = false
 ): Promise<void> {
-  return isAndroid
-    ? TrackPlayer.setupPlayer(options, background)
-    : TrackPlayer.setupPlayer(options);
+  return TrackPlayer.setupPlayer(options, background);
 }
 
 /**
