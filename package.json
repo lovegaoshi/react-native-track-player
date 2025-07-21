@@ -34,7 +34,8 @@
     "android/build.gradle",
     "android/proguard-rules.txt",
     "web/**/*",
-    "*.podspec"
+    "*.podspec",
+    "specs"
   ],
   "contributors": [
     {
