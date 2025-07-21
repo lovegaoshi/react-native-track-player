@@ -28,7 +28,7 @@ export interface Spec extends TurboModule {
   // playlist management
   add(
     tracks: UnsafeObject[],
-    insertBeforeIndex?: number
+    insertBeforeIndex: number,
   ): Promise<number | void>;
   move(fromIndex: number, toIndex: number): Promise<void>;
   remove(indexes: number[]): Promise<void>;
@@ -38,7 +38,7 @@ export interface Spec extends TurboModule {
   skipToPrevious(initialPosition: number): Promise<void>;
   updateMetadataForTrack(
     trackIndex: number,
-    metadata: UnsafeObject
+    metadata: UnsafeObject,
   ): Promise<void>;
   updateNowPlayingMetadata(metadata: UnsafeObject): Promise<void>;
   setQueue(tracks: UnsafeObject[]): Promise<void>;
@@ -52,13 +52,13 @@ export interface Spec extends TurboModule {
   setPlaybackState(mediaID: string): Promise<void>;
   setBrowseTreeStyle(
     browsableStyle: number,
-    playableStyle: number
+    playableStyle: number,
   ): Promise<void>;
   crossFadePrepare(previous: boolean): Promise<void>;
   switchExoPlayer(
     fadeDuration: number,
     fadeInterval: number,
-    fadeToVolume: number
+    fadeToVolume: number,
   ): Promise<void>;
   getLastConnectedPackage(): Promise<string | undefined>;
   setLoudnessEnhance(gain: number): Promise<void>;
@@ -123,24 +123,24 @@ export interface Spec extends TurboModule {
     volume: number,
     duration: number,
     interval: number,
-    msg: string
+    msg: string,
   ): Promise<void>;
   fadeOutPause(duration: number, interval: number): Promise<void>;
   fadeOutNext(
     duration: number,
     interval: number,
-    toVolume: number
+    toVolume: number,
   ): Promise<void>;
   fadeOutPrevious(
     duration: number,
     interval: number,
-    toVolume: number
+    toVolume: number,
   ): Promise<void>;
   fadeOutJump(
     index: number,
     duration: number,
     interval: number,
-    toVolume: number
+    toVolume: number,
   ): Promise<void>;
   setPitch(pitch: number): Promise<void>;
   getPitch(): Promise<number>;

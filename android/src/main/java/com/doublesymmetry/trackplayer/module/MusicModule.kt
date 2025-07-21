@@ -244,11 +244,11 @@ class MusicModule(reactContext: ReactApplicationContext) : NativeTrackPlayerSpec
     }
 
     @SuppressLint("UnspecifiedRegisterReceiverFlag")
-    override fun setupPlayer(options: ReadableMap?, background: Boolean, promise: Promise?) {
+    override fun setupPlayer(options: ReadableMap?, background: Boolean, promise: Promise) {
         if (isServiceBound) {
-            promise?.reject(
+            promise.reject(
                 "player_already_initialized",
-                "The player has already been initialized via s etupPlayer."
+                "The player has already been initialized via setupPlayer."
             )
             return
         }
@@ -257,7 +257,7 @@ class MusicModule(reactContext: ReactApplicationContext) : NativeTrackPlayerSpec
         if (!background
             && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
             && AppForegroundTracker.backgrounded) {
-            promise?.reject(
+            promise.reject(
                 "android_cannot_setup_player_in_background",
                 "On Android the app must be in the foreground when setting up the player."
             )
@@ -309,9 +309,9 @@ class MusicModule(reactContext: ReactApplicationContext) : NativeTrackPlayerSpec
         callback.resolve(null)
     }
 
-    override fun setEqualizerPreset(preset: Double, callback: Promise?) = launchInScope {
+    override fun setEqualizerPreset(preset: Double, callback: Promise) = launchInScope {
         musicService.setEqualizerPreset(preset.toInt())
-        callback?.resolve(null)
+        callback.resolve(null)
     }
 
     override fun getCurrentEqualizerPreset(callback: Promise) = launchInScope {
@@ -329,10 +329,10 @@ class MusicModule(reactContext: ReactApplicationContext) : NativeTrackPlayerSpec
     }
 
 
-    override fun add(data: ReadableArray?, insertBeforeIndex: Double?, callback: Promise) = launchInScope {
+    override fun add(data: ReadableArray?, insertBeforeIndex: Double, callback: Promise) = launchInScope {
         if (verifyServiceBoundOrReject(callback)) return@launchInScope
 
-        val insertB4Index = insertBeforeIndex?.toInt() ?: 0
+        val insertB4Index = insertBeforeIndex?.toInt()
 
         try {
             val tracks = readableArrayToTrackList(data)
@@ -434,7 +434,7 @@ class MusicModule(reactContext: ReactApplicationContext) : NativeTrackPlayerSpec
 
     override fun skip(index: Double, initialPosition: Double, callback: Promise) = launchInScope {
         if (verifyServiceBoundOrReject(callback)) return@launchInScope
-
+        musicService.skip(index.toInt())
         if (initialPosition >= 0) {
             musicService.seekTo(initialPosition.toFloat())
         }
