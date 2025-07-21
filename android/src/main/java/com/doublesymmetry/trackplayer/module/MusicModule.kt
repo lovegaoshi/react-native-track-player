@@ -332,7 +332,7 @@ class MusicModule(reactContext: ReactApplicationContext) : NativeTrackPlayerSpec
     override fun add(data: ReadableArray?, insertBeforeIndex: Double, callback: Promise) = launchInScope {
         if (verifyServiceBoundOrReject(callback)) return@launchInScope
 
-        val insertB4Index = insertBeforeIndex?.toInt()
+        val insertB4Index = insertBeforeIndex.toInt()
 
         try {
             val tracks = readableArrayToTrackList(data)
