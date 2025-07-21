@@ -27,7 +27,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.*
-import javax.annotation.Nonnull
 import androidx.core.net.toUri
 import com.facebook.react.module.annotations.ReactModule
 
