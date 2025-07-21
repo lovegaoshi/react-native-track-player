@@ -54,7 +54,7 @@ export interface Spec extends TurboModule {
     browsableStyle: number,
     playableStyle: number
   ): Promise<void>;
-  crossFadePrepare(previous?: boolean): Promise<void>;
+  crossFadePrepare(previous: boolean): Promise<void>;
   switchExoPlayer(
     fadeDuration: number,
     fadeInterval: number,
@@ -119,29 +119,28 @@ export interface Spec extends TurboModule {
 
   acquireWakeLock(): Promise<void>;
   abandonWakeLock(): Promise<void>;
-  validateOnStartCommandIntent(): Promise<boolean>;
   setAnimatedVolume(
-    volume?: number,
-    duration?: number,
-    interval?: number,
-    msg?: string
-  ): void;
-  fadeOutPause(duration?: number, interval?: number): Promise<void>;
+    volume: number,
+    duration: number,
+    interval: number,
+    msg: string
+  ): Promise<void>;
+  fadeOutPause(duration: number, interval: number): Promise<void>;
   fadeOutNext(
-    duration?: number,
-    interval?: number,
-    toVolume?: number
+    duration: number,
+    interval: number,
+    toVolume: number
   ): Promise<void>;
   fadeOutPrevious(
-    duration?: number,
-    interval?: number,
-    toVolume?: number
+    duration: number,
+    interval: number,
+    toVolume: number
   ): Promise<void>;
   fadeOutJump(
     index: number,
-    duration?: number,
-    interval?: number,
-    toVolume?: number
+    duration: number,
+    interval: number,
+    toVolume: number
   ): Promise<void>;
   setPitch(pitch: number): Promise<void>;
   getPitch(): Promise<number>;

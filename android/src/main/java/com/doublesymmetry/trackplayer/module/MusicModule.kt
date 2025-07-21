@@ -289,12 +289,6 @@ class MusicModule(reactContext: ReactApplicationContext) : NativeTrackPlayerSpec
         }
     }
 
-    @ReactMethod
-    @Deprecated("Backwards compatible function from the old android implementation. Should be removed in the next major release.")
-    fun isServiceRunning(callback: Promise) {
-        callback.resolve(isServiceBound)
-    }
-
     override fun updateOptions(data: ReadableMap?, callback: Promise) = launchInScope {
         if (verifyServiceBoundOrReject(callback)) return@launchInScope
 
@@ -644,48 +638,48 @@ class MusicModule(reactContext: ReactApplicationContext) : NativeTrackPlayerSpec
         callback.resolve(Arguments.fromBundle(musicService.getPlayerStateBundle(musicService.state)))
     }
 
-    @ReactMethod
-    fun setAnimatedVolume(volume: Float = 1f, duration: Int = 0, interval: Int = 20, msg: String = "", callback: Promise) = launchInScope {
+    override fun setAnimatedVolume(volume: Double, duration: Double, interval: Double, msg: String, callback: Promise) = launchInScope {
         if (verifyServiceBoundOrReject(callback)) return@launchInScope
-        musicService.setAnimatedVolume(volume, duration.toLong(), interval.toLong(), msg).await()
+        musicService.setAnimatedVolume(volume.toFloat(), duration.toLong(), interval.toLong(), msg).await()
         delay(duration.toLong())
         callback.resolve(null)
     }
 
-    @ReactMethod
-    fun fadeOutPause(duration: Int = 0, interval: Int = 20, callback: Promise) = launchInScope {
+    override fun fadeOutPause(duration: Double, interval: Double, callback: Promise) = launchInScope {
         if (verifyServiceBoundOrReject(callback)) return@launchInScope
         musicService.fadeOutPause(duration.toLong(), interval.toLong())
         delay(duration.toLong())
         callback.resolve(null)
     }
 
-    @ReactMethod
-    fun fadeOutNext(duration: Int = 0, interval: Int = 20, toVolume: Float = 1f, callback: Promise) = launchInScope {
+    override fun fadeOutNext(duration: Double, interval: Double, toVolume: Double, callback: Promise) = launchInScope {
         if (verifyServiceBoundOrReject(callback)) return@launchInScope
-        musicService.fadeOutNext(duration.toLong(), interval.toLong(), toVolume)
+        musicService.fadeOutNext(duration.toLong(), interval.toLong(), toVolume.toFloat())
         delay(duration.toLong())
         callback.resolve(null)
     }
 
-    @ReactMethod
-    fun fadeOutPrevious(duration: Int = 0, interval: Int = 20, toVolume: Float = 1f, callback: Promise) = launchInScope {
+    override fun fadeOutPrevious(duration: Double, interval: Double, toVolume: Double, callback: Promise) = launchInScope {
         if (verifyServiceBoundOrReject(callback)) return@launchInScope
-        musicService.fadeOutPrevious(duration.toLong(), interval.toLong(), toVolume)
+        musicService.fadeOutPrevious(duration.toLong(), interval.toLong(), toVolume.toFloat())
         delay(duration.toLong())
         callback.resolve(null)
     }
 
-    @ReactMethod
-    fun fadeOutJump(index: Int, duration: Int = 0, interval: Int = 20, toVolume: Float = 1f, callback: Promise) = launchInScope {
+    override fun fadeOutJump(
+        index: Double,
+        duration: Double,
+        interval: Double,
+        toVolume: Double,
+        callback: Promise
+    ) = launchInScope {
         if (verifyServiceBoundOrReject(callback)) return@launchInScope
-        musicService.fadeOutJump(index, duration.toLong(), interval.toLong(), toVolume)
+        musicService.fadeOutJump(index.toInt(), duration.toLong(), interval.toLong(), toVolume.toFloat())
         delay(duration.toLong())
         callback.resolve(null)
     }
     
-    @ReactMethod
-    fun setBrowseTree(mediaItems: ReadableMap, callback: Promise) = launchInScope {
+    override fun setBrowseTree(mediaItems: ReadableMap, callback: Promise) = launchInScope {
         if (verifyServiceBoundOrReject(callback)) return@launchInScope
         val mediaItemsMap = mediaItems.toHashMap()
         musicService.mediaTree = mediaItemsMap.mapValues { readableArrayToMediaItems(it.value as ArrayList<HashMap<String, String>>) }
@@ -694,9 +688,12 @@ class MusicModule(reactContext: ReactApplicationContext) : NativeTrackPlayerSpec
         callback.resolve(musicService.mediaTree.toString())
     }
 
-    @ReactMethod
     // this method doesn't seem to affect style after onGetRoot is called, and won't change if notifyChildrenChanged is emitted.
-    fun setBrowseTreeStyle(browsableStyle: Int, playableStyle: Int, callback: Promise) = launchInScope {
+    override fun setBrowseTreeStyle(
+        browsableStyle: Double,
+        playableStyle: Double,
+        callback: Promise
+    ) = launchInScope {
         fun getStyle(check: Int): Int {
             return when (check) {
                 1 -> MediaConstants.DESCRIPTION_EXTRAS_VALUE_CONTENT_STYLE_GRID_ITEM
@@ -707,51 +704,46 @@ class MusicModule(reactContext: ReactApplicationContext) : NativeTrackPlayerSpec
         }
         if (verifyServiceBoundOrReject(callback)) return@launchInScope
         musicService.mediaTreeStyle = listOf(
-            getStyle(browsableStyle),
-            getStyle(playableStyle)
+            getStyle(browsableStyle.toInt()),
+            getStyle(playableStyle.toInt())
         )
         callback.resolve(null)
     }
 
-    @ReactMethod
-    fun setPlaybackState(mediaID: String, callback: Promise) = launchInScope {
+    override fun setPlaybackState(mediaID: String, callback: Promise) = launchInScope {
         // TODO: not implemented!
         if (verifyServiceBoundOrReject(callback)) return@launchInScope
         callback.resolve(null)
     }
 
-    @ReactMethod
-    fun acquireWakeLock(callback: Promise) = launchInScope {
+    override fun acquireWakeLock(callback: Promise) = launchInScope {
         if (verifyServiceBoundOrReject(callback)) return@launchInScope
         musicService.acquireWakeLock()
         callback.resolve(null)
     }
 
-    @ReactMethod
-    fun abandonWakeLock(callback: Promise) = launchInScope {
+    override fun abandonWakeLock(callback: Promise) = launchInScope {
         if (verifyServiceBoundOrReject(callback)) return@launchInScope
         musicService.abandonWakeLock()
         callback.resolve(null)
     }
 
-    @ReactMethod
-    fun crossFadePrepare(previous: Boolean, callback: Promise) = launchInScope {
+    override fun crossFadePrepare(previous: Boolean, callback: Promise) = launchInScope {
         if (verifyServiceBoundOrReject(callback)) return@launchInScope
         musicService.crossFadePrepare(previous)
         callback.resolve(null)
     }
 
-    @ReactMethod
-    fun switchExoPlayer(
-        fadeDuration: Int = 2500,
-        fadeInterval: Int = 20,
-        fadeToVolume: Float = 1f,
+    override fun switchExoPlayer(
+        fadeDuration: Double,
+        fadeInterval: Double,
+        fadeToVolume: Double,
         callback: Promise) = launchInScope {
         if (verifyServiceBoundOrReject(callback)) return@launchInScope
         musicService.switchExoPlayer(
             fadeDuration = fadeDuration.toLong(),
             fadeInterval = fadeInterval.toLong(),
-            fadeToVolume = fadeToVolume
+            fadeToVolume = fadeToVolume.toFloat()
         )
         callback.resolve(null)
     }
