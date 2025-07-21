@@ -232,6 +232,15 @@ class MusicModule(reactContext: ReactApplicationContext) : NativeTrackPlayerSpec
             this["REPEAT_OFF"] = Player.REPEAT_MODE_OFF
             this["REPEAT_TRACK"] = Player.REPEAT_MODE_ONE
             this["REPEAT_QUEUE"] = Player.REPEAT_MODE_ALL
+
+            // TODO: not implemented
+            this["PITCH_ALGORITHM_LINEAR"] = -1
+            this["PITCH_ALGORITHM_MUSIC"] = -1
+            this["PITCH_ALGORITHM_VOICE"] = -1
+            this["CAPABILITY_LIKE"] = -1
+            this["CAPABILITY_DISLIKE"] = -1
+            this["CAPABILITY_BOOKMARK"] = -1
+
         }
     }
 
