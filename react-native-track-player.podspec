@@ -13,10 +13,10 @@ Pod::Spec.new do |s|
   s.platform = :ios, "11.0"
 
   s.source = { :git => package["repository"]["url"], :tag => "v#{s.version}" }
-  s.source_files = "ios/**/*.{h,m,swift}"
+  s.source_files = "ios/**/*.{h,m,mm,swift}"
 
   s.swift_version = "4.2"
 
-  s.dependency "React-Core"
   s.dependency "SwiftAudioEx", "1.1.0"
+  install_modules_dependencies(s)
 end
