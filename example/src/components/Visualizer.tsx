@@ -1,10 +1,10 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, Platform } from 'react-native';
 import { useTrackPlayerEvents, Event } from 'react-native-track-player';
 
 export const Visualizer = () => {
   const [fftArray, setFFTArray] = React.useState<number[]>([]);
-  useTrackPlayerEvents([Event.fftUpdate], async (event) => {
+  useTrackPlayerEvents(Platform.OS === 'android' ? [Event.fftUpdate] : [], async (event) => {
     setFFTArray(event.data);
   });
 
