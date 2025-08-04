@@ -182,78 +182,60 @@ RCT_EXPORT_MODULE()
 
 // android only. placeholder.
 - (void)abandonWakeLock:(nonnull RCTPromiseResolveBlock)resolve reject:(nonnull RCTPromiseRejectBlock)reject {
-    <#code#>
 }
 
 - (void)acquireWakeLock:(nonnull RCTPromiseResolveBlock)resolve reject:(nonnull RCTPromiseRejectBlock)reject {
-    <#code#>
 }
 
 - (void)getCurrentEqualizerPreset:(nonnull RCTPromiseResolveBlock)resolve reject:(nonnull RCTPromiseRejectBlock)reject {
-    <#code#>
 }
 
 - (void)getEqualizerPresets:(nonnull RCTPromiseResolveBlock)resolve reject:(nonnull RCTPromiseRejectBlock)reject {
-    <#code#>
 }
 
 - (void)getLastConnectedPackage:(nonnull RCTPromiseResolveBlock)resolve reject:(nonnull RCTPromiseRejectBlock)reject {
-    <#code#>
 }
 
 - (void)getPitch:(nonnull RCTPromiseResolveBlock)resolve reject:(nonnull RCTPromiseRejectBlock)reject {
-    <#code#>
 }
 
 - (void)crossFadePrepare:(BOOL)previous resolve:(nonnull RCTPromiseResolveBlock)resolve reject:(nonnull RCTPromiseRejectBlock)reject {
-    <#code#>
 }
 
 - (void)fadeOutJump:(double)index duration:(double)duration interval:(double)interval toVolume:(double)toVolume resolve:(nonnull RCTPromiseResolveBlock)resolve reject:(nonnull RCTPromiseRejectBlock)reject {
-    <#code#>
 }
 
 - (void)fadeOutNext:(double)duration interval:(double)interval toVolume:(double)toVolume resolve:(nonnull RCTPromiseResolveBlock)resolve reject:(nonnull RCTPromiseRejectBlock)reject {
-    <#code#>
 }
 
 - (void)fadeOutPause:(double)duration interval:(double)interval resolve:(nonnull RCTPromiseResolveBlock)resolve reject:(nonnull RCTPromiseRejectBlock)reject {
-    <#code#>
 }
 
 - (void)fadeOutPrevious:(double)duration interval:(double)interval toVolume:(double)toVolume resolve:(nonnull RCTPromiseResolveBlock)resolve reject:(nonnull RCTPromiseRejectBlock)reject {
-    <#code#>
 }
 
 - (void)setAnimatedVolume:(double)volume duration:(double)duration interval:(double)interval msg:(nonnull NSString *)msg resolve:(nonnull RCTPromiseResolveBlock)resolve reject:(nonnull RCTPromiseRejectBlock)reject {
-    <#code#>
 }
 
 - (void)setBrowseTree:(nonnull NSDictionary *)browseTree resolve:(nonnull RCTPromiseResolveBlock)resolve reject:(nonnull RCTPromiseRejectBlock)reject {
-    <#code#>
 }
 
 - (void)setBrowseTreeStyle:(double)browsableStyle playableStyle:(double)playableStyle resolve:(nonnull RCTPromiseResolveBlock)resolve reject:(nonnull RCTPromiseRejectBlock)reject {
-    <#code#>
 }
 
 - (void)setEqualizerPreset:(double)preset resolve:(nonnull RCTPromiseResolveBlock)resolve reject:(nonnull RCTPromiseRejectBlock)reject {
-    <#code#>
 }
 
 - (void)setLoudnessEnhance:(double)gain resolve:(nonnull RCTPromiseResolveBlock)resolve reject:(nonnull RCTPromiseRejectBlock)reject {
-    <#code#>
 }
 
 - (void)setPitch:(double)pitch resolve:(nonnull RCTPromiseResolveBlock)resolve reject:(nonnull RCTPromiseRejectBlock)reject {
-    <#code#>
 }
 
 - (void)setPlaybackState:(nonnull NSString *)mediaID resolve:(nonnull RCTPromiseResolveBlock)resolve reject:(nonnull RCTPromiseRejectBlock)reject {
 }
 
 - (void)switchExoPlayer:(double)fadeDuration fadeInterval:(double)fadeInterval fadeToVolume:(double)fadeToVolume resolve:(nonnull RCTPromiseResolveBlock)resolve reject:(nonnull RCTPromiseRejectBlock)reject {
-    <#code#>
 }
 
 @end
