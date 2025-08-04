@@ -82,7 +82,12 @@
     "jsSrcsDir": "specs",
     "android": {
       "javaPackageName": "com.doublesymmetry.trackplayer"
-    }
+    },
+     "ios": {
+        "modulesProvider": {
+          "TrackPlayer": "NativeTrackPlayer"
+        }
+     }
   },
   "peerDependencies": {
     "react": "*",

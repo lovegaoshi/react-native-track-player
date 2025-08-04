@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import React
 
 struct MediaURL {
     let value: URL

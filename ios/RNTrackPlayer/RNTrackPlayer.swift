@@ -9,6 +9,7 @@
 import Foundation
 import MediaPlayer
 import SwiftAudioEx
+import React
 
 @objc public protocol RNTPDelegate {
     func sendEvent(name: String, body: Any)
@@ -36,7 +37,6 @@ public class RNTrackPlayer: NSObject, AudioSessionControllerDelegate {
 
     public override init() {
         super.init()
-        EventEmitter.shared.register(eventEmitter: self)
         audioSessionController.delegate = self
         player.playWhenReady = false;
         player.event.receiveChapterMetadata.addListener(self, handleAudioPlayerChapterMetadataReceived)
