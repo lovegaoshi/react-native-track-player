@@ -1,5 +1,10 @@
 #import "TrackPlayer.h"
+
+#if __has_include("react_native_track_player-Swift.h")
 #import "react_native_track_player-Swift.h"
+#else
+#import "react_native_track_player/react_native_track_player-Swift.h"
+#endif
 
 @interface NativeTrackPlayer () <RNTPDelegate>
 @end
