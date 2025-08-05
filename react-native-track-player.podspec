@@ -16,7 +16,6 @@ Pod::Spec.new do |s|
   s.source_files = "ios/**/*.{h,m,mm,swift}"
 
   s.swift_version = "4.2"
-
-  s.dependency "SwiftAudioEx", "1.1.0"
+  
   install_modules_dependencies(s)
 end
