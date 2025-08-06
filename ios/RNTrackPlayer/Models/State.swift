@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import SwiftAudioEx
 
 enum State: String {
     case none, ready, playing, paused, stopped, buffering, loading, error, ended

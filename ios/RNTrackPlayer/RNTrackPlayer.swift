@@ -8,7 +8,6 @@
 
 import Foundation
 import MediaPlayer
-import SwiftAudioEx
 import React
 
 @objc public protocol RNTPDelegate {
@@ -537,7 +536,7 @@ public class RNTrackPlayer: NSObject, AudioSessionControllerDelegate {
     public func setRepeatMode(repeatMode: Int, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
         if (rejectWhenNotInitialized(reject: reject)) { return }
 
-        player.repeatMode = SwiftAudioEx.RepeatMode(rawValue: repeatMode) ?? .off
+        player.repeatMode = RepeatMode(rawValue: repeatMode) ?? .off
         resolve(NSNull())
     }
 
