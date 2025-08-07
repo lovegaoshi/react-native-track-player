@@ -13,13 +13,8 @@ let package = Package(
     targets: [
         .target(
             name: "SwiftAudioEx",
-            dependencies: []),
-        .testTarget(
-            name: "SwiftAudioExTests",
-            dependencies: ["SwiftAudioEx"],
-            resources: [
-                .process("Resources")
-            ]
-        ),
+            dependencies: [],
+            path: "Sources/SwiftAudioEx"
+            ),
     ]
 )

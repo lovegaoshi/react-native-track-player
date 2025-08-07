@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 60;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -13,9 +13,9 @@
 		9B8819712BC866A300E20DCE /* AudioController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B88196C2BC866A300E20DCE /* AudioController.swift */; };
 		9B8819742BC866A300E20DCE /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B88196F2BC866A300E20DCE /* Extensions.swift */; };
 		9B8819752BC866A300E20DCE /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B8819702BC866A300E20DCE /* PlayerView.swift */; };
-		9B8819782BC866E800E20DCE /* SwiftAudioEx in Frameworks */ = {isa = PBXBuildFile; productRef = 9B8819772BC866E800E20DCE /* SwiftAudioEx */; };
 		9B88197A2BC9883200E20DCE /* PlayerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B8819792BC9883200E20DCE /* PlayerViewModel.swift */; };
 		9B88197C2BC98F5000E20DCE /* QueueView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B88197B2BC98F5000E20DCE /* QueueView.swift */; };
+		CCF141D92E463E9300D6683E /* SwiftAudioEx in Frameworks */ = {isa = PBXBuildFile; productRef = CCF141D82E463E9300D6683E /* SwiftAudioEx */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -37,7 +37,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9B8819782BC866E800E20DCE /* SwiftAudioEx in Frameworks */,
+				CCF141D92E463E9300D6683E /* SwiftAudioEx in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -110,7 +110,7 @@
 			);
 			name = SwiftAudio;
 			packageProductDependencies = (
-				9B8819772BC866E800E20DCE /* SwiftAudioEx */,
+				CCF141D82E463E9300D6683E /* SwiftAudioEx */,
 			);
 			productName = SwiftAudio;
 			productReference = 9B8819592BC8657A00E20DCE /* SwiftAudio.app */;
@@ -140,6 +140,9 @@
 				Base,
 			);
 			mainGroup = 9B8819502BC8657A00E20DCE;
+			packageReferences = (
+				CCF141D72E463E9300D6683E /* XCLocalSwiftPackageReference "../SwiftAudioEx" */,
+			);
 			productRefGroup = 9B88195A2BC8657A00E20DCE /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -301,7 +304,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"SwiftAudio/Preview Content\"";
-				DEVELOPMENT_TEAM = 7U2TUNKNQX;
+				DEVELOPMENT_TEAM = K6KUHVMMR8;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -339,7 +342,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"SwiftAudio/Preview Content\"";
-				DEVELOPMENT_TEAM = 7U2TUNKNQX;
+				DEVELOPMENT_TEAM = K6KUHVMMR8;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -391,8 +394,15 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCLocalSwiftPackageReference section */
+		CCF141D72E463E9300D6683E /* XCLocalSwiftPackageReference "../SwiftAudioEx" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../SwiftAudioEx;
+		};
+/* End XCLocalSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
-		9B8819772BC866E800E20DCE /* SwiftAudioEx */ = {
+		CCF141D82E463E9300D6683E /* SwiftAudioEx */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = SwiftAudioEx;
 		};

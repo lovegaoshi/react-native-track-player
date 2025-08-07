@@ -14,6 +14,7 @@ Pod::Spec.new do |s|
 
   s.source = { :git => package["repository"]["url"], :tag => "v#{s.version}" }
   s.source_files = "ios/**/*.{h,m,mm,swift}"
+  s.exclude_files = [ 'ios/Example', 'ios/SwiftAudioEx/Package.swift' ]
 
   s.swift_version = "4.2"
   
