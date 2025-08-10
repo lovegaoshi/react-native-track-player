@@ -36,7 +36,7 @@ class AudioController {
             .previous,
             .changePlaybackPosition
         ]
-       
+        player.audioTap = WaveformAudioTap()
         player.repeatMode = .queue
         DispatchQueue.main.async {
             self.player.add(items: self.sources)

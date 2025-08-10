@@ -11,6 +11,8 @@ import AVFoundation
 
 protocol AVPlayerWrapperProtocol: AnyObject {
     
+    var audioTap: AudioTap? { get set }
+    
     var state: AVPlayerWrapperState { get set }
     
     var playWhenReady: Bool { get set }
