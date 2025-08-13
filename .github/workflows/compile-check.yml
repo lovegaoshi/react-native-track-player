@@ -22,11 +22,11 @@ jobs:
       - name: enable corepack
         run: corepack enable
 
-      - name: Install dependencies
-        run: yarn; yarn build; cd example; yarn; cd ios; pod install
-
       - name: use xcode 26
         run: sudo xcode-select -switch /Applications/Xcode_26_beta.app
+
+      - name: Install dependencies
+        run: yarn; yarn build; cd example; yarn; cd ios; pod install
 
       - name: build
         run: cd example/ios && xcodebuild -scheme RNTPExample -workspace RNTPExample.xcworkspace -configuration Release clean archive -archivePath "build/example.xcarchive" CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
