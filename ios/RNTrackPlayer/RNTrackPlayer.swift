@@ -116,6 +116,13 @@ public class RNTrackPlayer: NSObject, AudioSessionControllerDelegate {
         }
 
         // configure buffer size
+        if let fftLength = config["useFFTProcessor"] as? Int {
+            player.audioTap = WaveformAudioTap(mFFTLength: fftLength, mEmit: {data in
+                self.emit(event:EventType.FFTUpdated, body:data)})
+        }
+
+        
+        // configure buffer size
         if let bufferDuration = config["minBuffer"] as? TimeInterval {
             player.bufferDuration = bufferDuration
         }

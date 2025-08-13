@@ -27,16 +27,23 @@ public class WaveformAudioTap: AudioTap {
         (2000, 4000), // Upper mids
         (4000, 20000) // Highs
     ]
-    private let fftLength = 1024
+    private let fftLength: Int
+    
+    private let emit: (_ data: Any?) -> Void
     private var fftSetup: vDSP_DFT_Setup?
 
     let tapIndex: Int
 
-    public init(mFFTLength:Int = 4096) {
+    public init(
+        mFFTLength: Int = 1024,
+        mEmit: @escaping (_ data: Any) -> Void = { print($0) }
+    ){
         self.tapIndex = 0
+        self.fftLength = mFFTLength
+        self.emit = mEmit
         fftSetup = vDSP_DFT_zop_CreateSetup(
             nil,
-            UInt(fftLength),
+            UInt(mFFTLength),
             vDSP_DFT_Direction.FORWARD
         )
     }
@@ -47,10 +54,6 @@ public class WaveformAudioTap: AudioTap {
         }
     }
     
-    private func emit(body: Any? = nil) {
-        print(body)
-    }
-
     public override func initialize() {
         Self.outputs.append("audioTap \(tapIndex): initialize")
     }
@@ -72,9 +75,9 @@ public class WaveformAudioTap: AudioTap {
         // Get the first buffer (assuming mono/first channel of stereo)
         let firstBuffer = buffer[0]
         guard firstBuffer.mData != nil else {
-            self.emit(body: [
+            self.emit([
                 "amplitude": 0,
-                "eqBands": Array(repeating: 0, count: frequencyRanges.count)
+                "data": Array(repeating: 0, count: frequencyRanges.count)
             ])
             return
         }
@@ -146,9 +149,9 @@ public class WaveformAudioTap: AudioTap {
                     eqBands.append(max(0, min(1, normalizedValue)))
                 }
                 
-                self.emit(body: [
+                self.emit([
                     "amplitude": rms,
-                    "eqBands": eqBands
+                    "data": eqBands
                 ])
             }
         }
