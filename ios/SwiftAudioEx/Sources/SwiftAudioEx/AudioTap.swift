@@ -84,11 +84,12 @@ extension AVPlayerWrapper {
             audioTap.process(numberOfFrames: numberFrames, buffer: UnsafeMutableAudioBufferListPointer(bufferListInOut))
         }
         
-        var tapRef: MTAudioProcessingTap?
+        var tapRef: Unmanaged<MTAudioProcessingTap>?
         let error = MTAudioProcessingTapCreate(kCFAllocatorDefault, &callbacks, kMTAudioProcessingTapCreationFlag_PreEffects, &tapRef)
         assert(error == noErr)
         
-        params.audioTapProcessor = tapRef
+        params.audioTapProcessor = tapRef?.takeUnretainedValue()
+        tapRef?.release()
         
         audioMix.inputParameters = [params]
         item.audioMix = audioMix
