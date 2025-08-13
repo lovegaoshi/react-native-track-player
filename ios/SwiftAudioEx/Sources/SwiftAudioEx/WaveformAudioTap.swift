@@ -14,10 +14,11 @@ struct AudioAnalysis {
     let eqBands: [Float]        // Normalized energy in each frequency band (0-1)
 }
 
-class WaveformAudioTap: AudioTap {
+public class WaveformAudioTap: AudioTap {
     static var outputs = [String]()
     
     // Frequency ranges for EQ bands (in Hz)
+    // HACK: i dont think this works; need to review, but it compiles nonetheless
     private let frequencyRanges = [
         (20, 60),     // Sub bass
         (60, 250),    // Bass
@@ -31,7 +32,7 @@ class WaveformAudioTap: AudioTap {
 
     let tapIndex: Int
 
-    override init() {
+    public init(mFFTLength:Int = 4096) {
         self.tapIndex = 0
         fftSetup = vDSP_DFT_zop_CreateSetup(
             nil,
@@ -46,32 +47,32 @@ class WaveformAudioTap: AudioTap {
         }
     }
     
-    private func emit(event: EventType, body: Any? = nil) {
-        EventEmitter.shared.emit(event: event, body: body)
+    private func emit(body: Any? = nil) {
+        print(body)
     }
 
-    override func initialize() {
+    public override func initialize() {
         Self.outputs.append("audioTap \(tapIndex): initialize")
     }
 
-    override func finalize() {
+    public override func finalize() {
         Self.outputs.append("audioTap \(tapIndex): finalize")
     }
 
-    override func prepare(description: AudioStreamBasicDescription) {
+    public override func prepare(description: AudioStreamBasicDescription) {
         Self.outputs.append("audioTap \(tapIndex): prepare")
     }
 
-    override func unprepare() {
+    public override func unprepare() {
         Self.outputs.append("audioTap \(tapIndex): unprepare")
     }
 
-    override func process(numberOfFrames: Int, buffer: UnsafeMutableAudioBufferListPointer) {
+    public override func process(numberOfFrames: Int, buffer: UnsafeMutableAudioBufferListPointer) {
         Self.outputs.append("audioTap \(tapIndex): process")
         // Get the first buffer (assuming mono/first channel of stereo)
         let firstBuffer = buffer[0]
         guard firstBuffer.mData != nil else {
-            self.emit(event: EventType.PlaybackAudioTapReceived, body: [
+            self.emit(body: [
                 "amplitude": 0,
                 "eqBands": Array(repeating: 0, count: frequencyRanges.count)
             ])
@@ -145,7 +146,7 @@ class WaveformAudioTap: AudioTap {
                     eqBands.append(max(0, min(1, normalizedValue)))
                 }
                 
-                self.emit(event: EventType.PlaybackAudioTapReceived, body: [
+                self.emit(body: [
                     "amplitude": rms,
                     "eqBands": eqBands
                 ])
