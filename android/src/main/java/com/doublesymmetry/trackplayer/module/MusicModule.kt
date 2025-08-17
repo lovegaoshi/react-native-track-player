@@ -736,9 +736,9 @@ class MusicModule(reactContext: ReactApplicationContext) : NativeTrackPlayerSpec
         callback.resolve(null)
     }
 
-    override fun crossFadePrepare(previous: Boolean, callback: Promise) = launchInScope {
+    override fun crossFadePrepare(previous: Boolean, seektoDouble: Double?, callback: Promise) = launchInScope {
         if (verifyServiceBoundOrReject(callback)) return@launchInScope
-        musicService.crossFadePrepare(previous)
+        musicService.crossFadePrepare(previous, seektoDouble ?: 0.0)
         callback.resolve(null)
     }
 

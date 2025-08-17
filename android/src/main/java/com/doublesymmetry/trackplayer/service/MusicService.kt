@@ -91,7 +91,9 @@ class MusicService : HeadlessJsMediaService() {
         player.setLoudnessEnhance(gain)
     }
 
-    fun crossFadePrepare(previous: Boolean = false) { player.crossFadePrepare(previous) }
+    fun crossFadePrepare(previous: Boolean = false, seekTo: Double = 0.0) {
+        player.crossFadePrepare(previous, seekTo)
+    }
 
     fun switchExoPlayer(
         fadeDuration: Long = 2500,

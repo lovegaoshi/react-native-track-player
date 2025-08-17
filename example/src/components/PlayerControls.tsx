@@ -24,7 +24,7 @@ export const PlayerControls: React.FC = () => {
       </View>
       <View style={styles.row}>
         <TouchableWithoutFeedback
-          onPress={() => TrackPlayer.crossFadePrepare()}
+          onPress={() => TrackPlayer.crossFadePrepare(false, 10)}
         >
           <FontAwesome6 name={'rotate'} size={30} color={'white'} />
         </TouchableWithoutFeedback>

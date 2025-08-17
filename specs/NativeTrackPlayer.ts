@@ -54,7 +54,7 @@ export interface Spec extends TurboModule {
     browsableStyle: number,
     playableStyle: number,
   ): Promise<void>;
-  crossFadePrepare(previous: boolean): Promise<void>;
+  crossFadePrepare(previous: boolean, seekTo?: number): Promise<void>;
   switchExoPlayer(
     fadeDuration: number,
     fadeInterval: number,

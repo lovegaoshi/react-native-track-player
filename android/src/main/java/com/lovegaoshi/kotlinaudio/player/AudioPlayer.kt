@@ -378,7 +378,7 @@ abstract class AudioPlayer internal constructor(
         exoPlayer.seekTo(positionMs)
     }
 
-    fun crossFadePrepare(previous: Boolean = false) {
+    fun crossFadePrepare(previous: Boolean = false, seekTo: Double = 0.0) {
         if (!options.crossfade) { return }
         val mPlayer = if (currentExoPlayer) exoPlayer2!! else exoPlayer1
         // align playing index
@@ -386,6 +386,9 @@ abstract class AudioPlayer internal constructor(
         if (previous) { mPlayer.seekToPreviousMediaItem() }
         else { mPlayer.seekToNextMediaItem() }
         mPlayer.prepare()
+        if (seekTo > 0) {
+            mPlayer.seekTo((seekTo * 1000).toLong())
+        }
     }
 
     fun switchExoPlayer(
