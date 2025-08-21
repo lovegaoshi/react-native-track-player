@@ -98,13 +98,19 @@ class MusicService : HeadlessJsMediaService() {
     fun switchExoPlayer(
         fadeDuration: Long = 2500,
         fadeInterval: Long = 20,
-        fadeToVolume: Float = 1f
+        fadeToVolume: Float = 1f,
+        waitUntil: Long = 0
     ) {
         player.switchExoPlayer(
             fadeDuration = fadeDuration,
             fadeInterval = fadeInterval,
-            fadeToVolume = fadeToVolume)
-        emitPlaybackTrackChangedEvents(null, null, 0.0)
+            fadeToVolume = fadeToVolume,
+            waitUntil = waitUntil,
+            playerOperation = {
+                player.play()
+                emitPlaybackTrackChangedEvents(null, null, 0.0)
+            })
+
     }
 
     fun acquireWakeLock() { acquireWakeLockNow(this) }

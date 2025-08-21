@@ -59,6 +59,7 @@ export interface Spec extends TurboModule {
     fadeDuration: number,
     fadeInterval: number,
     fadeToVolume: number,
+    waitUntil?: number,
   ): Promise<void>;
   getLastConnectedPackage(): Promise<string | undefined>;
   setLoudnessEnhance(gain: number): Promise<void>;

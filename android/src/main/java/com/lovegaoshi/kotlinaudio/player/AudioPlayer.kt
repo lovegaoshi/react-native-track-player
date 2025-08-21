@@ -391,54 +391,66 @@ abstract class AudioPlayer internal constructor(
         }
     }
 
+    /**
+     * switches rotating exoplayers to achieve crossfade.
+     * playerOperation:
+     */
     fun switchExoPlayer(
         playerOperation: () -> Unit = ::play,
         fadeDuration: Long = 2500,
         fadeInterval: Long = 20,
-        fadeToVolume: Float = 1f
+        fadeToVolume: Float = 1f,
+        waitUntil: Long = 0,
     ){
         if (!options.crossfade) {
             playerOperation()
             return
         }
-        val prevPlayer: Player
-        if (currentExoPlayer) {
-            currentExoPlayer = false
-            exoPlayer = exoPlayer2!!
-            prevPlayer = exoPlayer1
-        } else {
-            currentExoPlayer = true
-            exoPlayer = exoPlayer1
-            prevPlayer = exoPlayer2!!
-        }
-        prevPlayer.setAudioAttributes(prevPlayer.audioAttributes, false)
-        player.switchCrossFadePlayer()
         scope.launch {
-            var fadeOutDuration = fadeDuration
-            val startFadeOutTime = System.currentTimeMillis()
-            val fadeFromVolume = prevPlayer.volume
-            while (fadeOutDuration > 0) {
-                fadeOutDuration -= fadeInterval
-                prevPlayer.volume = fadeFromVolume * (1 - min((System.currentTimeMillis() - startFadeOutTime), fadeDuration).toFloat() / fadeDuration)
-                delay(fadeInterval)
+            val delayAmount = if (waitUntil == 0L) 0 else {
+                0L.coerceAtLeast(waitUntil - player.currentPosition)
             }
-            prevPlayer.volume = 0f
-            prevPlayer.pause()
-        }
-        scope.launch {
-            exoPlayer.volume = 0f
-            playerOperation()
-            exoPlayer.setAudioAttributes(exoPlayer.audioAttributes, options.handleAudioFocus)
-            if (fadeToVolume > 0) {
-                var fadeInDuration = fadeDuration
-                val startTime = System.currentTimeMillis()
-                while (fadeInDuration > 0) {
-                    fadeInDuration -= fadeInterval
-                    exoPlayer.volume = fadeToVolume * min((System.currentTimeMillis() - startTime), fadeDuration) / fadeDuration
+            delay(delayAmount)
+
+            val prevPlayer: Player
+            if (currentExoPlayer) {
+                currentExoPlayer = false
+                exoPlayer = exoPlayer2!!
+                prevPlayer = exoPlayer1
+            } else {
+                currentExoPlayer = true
+                exoPlayer = exoPlayer1
+                prevPlayer = exoPlayer2!!
+            }
+            prevPlayer.setAudioAttributes(prevPlayer.audioAttributes, false)
+            player.switchCrossFadePlayer()
+            scope.launch {
+                var fadeOutDuration = fadeDuration
+                val startFadeOutTime = System.currentTimeMillis()
+                val fadeFromVolume = prevPlayer.volume
+                while (fadeOutDuration > 0) {
+                    fadeOutDuration -= fadeInterval
+                    prevPlayer.volume = fadeFromVolume * (1 - min((System.currentTimeMillis() - startFadeOutTime), fadeDuration).toFloat() / fadeDuration)
                     delay(fadeInterval)
                 }
+                prevPlayer.volume = 0f
+                prevPlayer.pause()
             }
-            // player.broadcastMediaItem()
+            scope.launch {
+                exoPlayer.volume = 0f
+                playerOperation()
+                exoPlayer.setAudioAttributes(exoPlayer.audioAttributes, options.handleAudioFocus)
+                if (fadeToVolume > 0) {
+                    var fadeInDuration = fadeDuration
+                    val startTime = System.currentTimeMillis()
+                    while (fadeInDuration > 0) {
+                        fadeInDuration -= fadeInterval
+                        exoPlayer.volume = fadeToVolume * min((System.currentTimeMillis() - startTime), fadeDuration) / fadeDuration
+                        delay(fadeInterval)
+                    }
+                }
+                // player.broadcastMediaItem()
+            }
         }
     }
 

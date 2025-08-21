@@ -722,22 +722,35 @@ export async function crossFadePrepare(previous = false, seekTo = 0) {
 }
 
 /**
- * perform crossfade (android only). fadeDuration and fadeInterval are both in ms.
+ * perform crossfade (android only).
+ *
+ * fadeDuration and fadeInterval are both in ms.
+ *
  * fadeToVolume is a float from 0-1.
+ *
+ * waitUntil is in ms.
  */
 export async function crossFade(
   fadeDuration = 2000,
   fadeInterval = 20,
   fadeToVolume = 1,
+  waitUntil = 0,
 ) {
   if (!isAndroid) return;
-  TrackPlayer.switchExoPlayer(fadeDuration, fadeInterval, fadeToVolume);
+  TrackPlayer.switchExoPlayer(
+    fadeDuration,
+    fadeInterval,
+    fadeToVolume,
+    waitUntil,
+  );
 }
 
 /**
  * get the last connected package. non android will return undefined.
+ *
  * android without a connected package (either system.UI, android auto, or media controller) yet
  * will return ''; else will be one of the three.
+ *
  * I intend to use this to determine if app crashed from android auto.
  */
 export async function getLastConnectedPackage(): Promise<string | undefined> {

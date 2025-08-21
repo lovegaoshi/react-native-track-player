@@ -746,12 +746,14 @@ class MusicModule(reactContext: ReactApplicationContext) : NativeTrackPlayerSpec
         fadeDuration: Double,
         fadeInterval: Double,
         fadeToVolume: Double,
+        waitUntil: Double?,
         callback: Promise) = launchInScope {
         if (verifyServiceBoundOrReject(callback)) return@launchInScope
         musicService.switchExoPlayer(
             fadeDuration = fadeDuration.toLong(),
             fadeInterval = fadeInterval.toLong(),
-            fadeToVolume = fadeToVolume.toFloat()
+            fadeToVolume = fadeToVolume.toFloat(),
+            waitUntil = waitUntil?.toLong() ?: 0
         )
         callback.resolve(null)
     }
