@@ -29,7 +29,7 @@ jobs:
         run: sudo xcode-select -switch /Applications/Xcode_26.0.app
 
       - name: Install dependencies
-        run: yarn; yarn build; cd example; yarn; cd ios; pod install
+        run: yarn; yarn build; cd example; yarn; cd ios; RCT_USE_PREBUILT_RNCORE=1 RCT_USE_RN_DEP=1 pod install
 
       - name: build
         run: cd example/ios && xcodebuild -downloadPlatform iOS && xcodebuild -scheme RNTPExample -workspace RNTPExample.xcworkspace -destination generic/platform=iOS -configuration Release clean archive -archivePath "build/example.xcarchive" CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
@@ -61,7 +61,7 @@ jobs:
         run: yarn; yarn build; cd example; yarn
 
       - name: gradle build AAB
-        run: cd example/android && chmod +x gradlew && ./gradlew generateCodegenArtifactsFromSchema --rerun-tasks && ./gradlew assembleRelease
+        run: cd example/android && chmod +x gradlew && ./gradlew assembleRelease
 
       - name: Upload Android Artifacts
         uses: actions/upload-artifact@v4
