@@ -24,7 +24,7 @@
     "ci:format": "prettier --check src"
   },
   "dependencies": {
-    "@react-native-community/slider": "^5.0.1",
+    "@react-native-assets/slider": "^11.0.10",
     "mux.js": "^7.0.0",
     "react": "19.1.0",
     "react-dom": "^18.0.2",

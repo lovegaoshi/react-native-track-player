@@ -1,4 +1,4 @@
-import Slider from '@react-native-community/slider';
+import Slider from '@react-native-assets/slider';
 import React from 'react';
 import { Dimensions, StyleSheet, Text, View } from 'react-native';
 import TrackPlayer, { useProgress } from 'react-native-track-player';
@@ -17,7 +17,6 @@ export const Progress: React.FC<{ live?: boolean }> = ({ live }) => {
       ) : (
         <View>
           <Slider
-            tapToSeek
             style={{ ...styles.slider, width: progressBarWidth }}
             value={position}
             minimumValue={0}

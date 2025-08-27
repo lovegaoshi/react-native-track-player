@@ -4265,6 +4265,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@react-native-assets/slider@npm:^11.0.10":
+  version: 11.0.10
+  resolution: "@react-native-assets/slider@npm:11.0.10"
+  peerDependencies:
+    react: ">=16.13.1"
+    react-native: ">=0.61.4"
+  checksum: 10c0/4bc99c11b6431bfaa50d2753e8421bc4f37176d9db411e8ee3915a0b53a7caacc6a5b8e78f5dd37897bc7d25e70f98bd9af7d492af89028fa683f952d935456c
+  languageName: node
+  linkType: hard
+
 "@react-native-community/cli-clean@npm:20.0.1":
   version: 20.0.1
   resolution: "@react-native-community/cli-clean@npm:20.0.1"
@@ -4640,13 +4650,6 @@ __metadata:
   bin:
     rnc-cli: build/bin.js
   checksum: 10c0/70fab833b60ba73d8afb95715ae390695b2fe4831bd70ba65cc3362bf9790f95ffe789ff019d14faf951e1d153dea3e31527efc73fc1f4ffe6f03c5b6583835a
-  languageName: node
-  linkType: hard
-
-"@react-native-community/slider@npm:^5.0.1":
-  version: 5.0.1
-  resolution: "@react-native-community/slider@npm:5.0.1"
-  checksum: 10c0/b2e712bf97057704ebbd00506de3b6df69b41da111234dfda94926641dd27fdd2186b31b3ba6d8b63e9804411eba7a70b74e293a4eefd3d433561bc61b5b5c3b
   languageName: node
   linkType: hard
 
@@ -8073,14 +8076,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"caniuse-lite@npm:^1.0.0, caniuse-lite@npm:^1.0.30001646, caniuse-lite@npm:^1.0.30001669":
-  version: 1.0.30001674
-  resolution: "caniuse-lite@npm:1.0.30001674"
-  checksum: 10c0/6ec4170fb5274f074fdfa6f372c40245fe94f5984df705ddc133c55f2c662eb4af5a4900441a24ef7e4f31e1dac338b7af4ce7a304ffc432958331c953e3f45f
-  languageName: node
-  linkType: hard
-
-"caniuse-lite@npm:^1.0.30001735":
+"caniuse-lite@npm:^1.0.0, caniuse-lite@npm:^1.0.30001646, caniuse-lite@npm:^1.0.30001669, caniuse-lite@npm:^1.0.30001735":
   version: 1.0.30001737
   resolution: "caniuse-lite@npm:1.0.30001737"
   checksum: 10c0/9d9cfe3b46fe670d171cee10c5c1b0fb641946fd5d6bea26149f804003d53d82ade7ef5a4a640fb3a0eaec47c7839b57e06a6ddae4f0ad2cd58e1187d31997ce
@@ -10530,10 +10526,10 @@ __metadata:
     "@babel/plugin-proposal-export-namespace-from": "npm:^7.18.9"
     "@babel/preset-env": "npm:^7.28.3"
     "@babel/runtime": "npm:^7.28.3"
+    "@react-native-assets/slider": "npm:^11.0.10"
     "@react-native-community/cli": "npm:20.0.1"
     "@react-native-community/cli-platform-android": "npm:20.0.1"
     "@react-native-community/cli-platform-ios": "npm:20.0.1"
-    "@react-native-community/slider": "npm:^5.0.1"
     "@react-native/babel-preset": "npm:0.81.1"
     "@react-native/eslint-config": "npm:0.81.1"
     "@react-native/metro-config": "npm:0.81.1"
