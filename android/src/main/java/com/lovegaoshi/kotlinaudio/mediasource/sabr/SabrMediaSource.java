@@ -35,11 +35,6 @@ import java.io.IOException;
 
 @UnstableApi
 public final class SabrMediaSource extends BaseMediaSource {
-    /**
-     * The interval in milliseconds between invocations of {@link
-     * SourceInfoRefreshListener#onSourceInfoRefreshed(MediaSource, Timeline, Object)} when the
-     * source's {@link Timeline} is changing dynamically (for example, for incomplete live streams).
-     */
     private static final int NOTIFY_MANIFEST_INTERVAL_MS = 5000;
     /**
      * The minimum default start position for live streams, relative to the start of the live window.
@@ -217,7 +212,7 @@ public final class SabrMediaSource extends BaseMediaSource {
                         windowDefaultStartPositionUs,
                         manifest,
                         tag);
-        refreshSourceInfo(timeline, manifest);
+        refreshSourceInfo(timeline);
     }
 
     private long getNowUnixTimeUs() {
@@ -228,7 +223,7 @@ public final class SabrMediaSource extends BaseMediaSource {
         }
     }
 
-    public static final class Factory implements AdsMediaSource.MediaSourceFactory {
+    public static final class Factory implements AdMediaSourceFactory {
         private final SabrChunkSource.Factory chunkSourceFactory;
         @Nullable private final DataSource.Factory manifestDataSourceFactory;
         private final DefaultLoadErrorHandlingPolicy loadErrorHandlingPolicy;
@@ -465,22 +460,24 @@ public final class SabrMediaSource extends BaseMediaSource {
         }
 
         @Override
-        public Window getWindow(
-                int windowIndex, Window window, boolean setTag, long defaultPositionProjectionUs) {
+        public Window getWindow(int windowIndex, Window window, long defaultPositionProjectionUs) {
             Assertions.checkIndex(windowIndex, 0, 1);
             long windowDefaultStartPositionUs = getAdjustedWindowDefaultStartPositionUs(
                     defaultPositionProjectionUs);
-            Object tag = setTag ? windowTag : null;
             boolean isDynamic =
                     manifest.dynamic
                             && manifest.minUpdatePeriodMs != C.TIME_UNSET
                             && manifest.durationMs == C.TIME_UNSET;
             return window.set(
-                    tag,
+                    windowTag,
+                    null,
+                    null,
                     presentationStartTimeMs,
                     windowStartTimeMs,
+                    window.elapsedRealtimeEpochOffsetMs,
                     /* isSeekable= */ true,
                     isDynamic,
+                    null,
                     windowDefaultStartPositionUs,
                     windowDurationUs,
                     /* firstPeriodIndex= */ 0,
@@ -611,4 +608,24 @@ public final class SabrMediaSource extends BaseMediaSource {
         }
 
     }
+}
+
+interface AdMediaSourceFactory {
+
+    /**
+     * Creates a new {@link MediaSource} for loading the ad media with the specified {@code uri}.
+     *
+     * @param uri The URI of the media or manifest to play.
+     * @return The new media source.
+     */
+    MediaSource createMediaSource(Uri uri);
+
+    /**
+     * Returns the content types supported by media sources created by this factory. Each element
+     * should be one of {@link C#TYPE_DASH}, {@link C#TYPE_SS}, {@link C#TYPE_HLS} or {@link
+     * C#TYPE_OTHER}.
+     *
+     * @return The content types supported by media sources created by this factory.
+     */
+    int[] getSupportedTypes();
 }
