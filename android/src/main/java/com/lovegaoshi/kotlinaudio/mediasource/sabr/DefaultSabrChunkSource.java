@@ -9,8 +9,12 @@ import androidx.annotation.Nullable;
 import androidx.annotation.OptIn;
 import androidx.media3.common.C;
 import androidx.media3.common.Format;
+import androidx.media3.datasource.DataSpec;
+import androidx.media3.exoplayer.LoadingInfo;
 import androidx.media3.exoplayer.SeekParameters;
+import androidx.media3.exoplayer.source.chunk.BundledChunkExtractor;
 import androidx.media3.exoplayer.trackselection.ExoTrackSelection;
+import androidx.media3.exoplayer.upstream.LoadErrorHandlingPolicy;
 import androidx.media3.extractor.Extractor;
 import androidx.media3.extractor.TrackOutput;
 import androidx.media3.extractor.mkv.MatroskaExtractor;
@@ -18,7 +22,6 @@ import androidx.media3.extractor.mp4.FragmentedMp4Extractor;
 import 	androidx.media3.exoplayer.source.BehindLiveWindowException;
 import androidx.media3.exoplayer.source.chunk.BaseMediaChunkIterator;
 import androidx.media3.exoplayer.source.chunk.Chunk;
-import androidx.media3.exoplayer.source.chunk.ChunkExtractorWrapper;
 import androidx.media3.exoplayer.source.chunk.ChunkHolder;
 import androidx.media3.exoplayer.source.chunk.ContainerMediaChunk;
 import androidx.media3.exoplayer.source.chunk.InitializationChunk;
@@ -34,10 +37,10 @@ import androidx.media3.common.MimeTypes;
 import androidx.media3.common.util.UnstableApi;
 import androidx.media3.datasource.DataSource;
 import androidx.media3.datasource.TransferListener;
-import androidx.media3.exoplayer.trackselection.TrackSelection;
 import androidx.media3.exoplayer.upstream.LoaderErrorThrower;
 
 import androidx.media3.common.util.Util;
+import androidx.media3.extractor.text.DefaultSubtitleParserFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -229,11 +232,16 @@ public class DefaultSabrChunkSource implements SabrChunkSource {
     }
 
     @Override
-    public void getNextChunk(long playbackPositionUs, long loadPositionUs, List<? extends MediaChunk> queue, ChunkHolder out) {
+    public boolean shouldCancelLoad(long playbackPositionUs, Chunk loadingChunk, List<? extends MediaChunk> queue) {
+        return false;
+    }
+
+    @Override
+    public void getNextChunk(LoadingInfo loadingInfo, long loadPositionUs, List<? extends MediaChunk> queue, ChunkHolder out) {
         if (fatalError != null) {
             return;
         }
-
+        long playbackPositionUs = loadingInfo.playbackPositionUs;
         long bufferedDurationUs = loadPositionUs - playbackPositionUs;
         long timeToLiveEdgeUs = resolveTimeToLiveEdgeUs(playbackPositionUs);
         long presentationPositionUs =
@@ -375,8 +383,18 @@ public class DefaultSabrChunkSource implements SabrChunkSource {
     }
 
     @Override
-    public boolean onChunkLoadError(Chunk chunk, boolean cancelable, Exception e, long blacklistDurationMs) {
+    public boolean onChunkLoadError(Chunk chunk, boolean cancelable, LoadErrorHandlingPolicy.LoadErrorInfo loadErrorInfo, LoadErrorHandlingPolicy loadErrorHandlingPolicy) {
         return false;
+    }
+
+    @Override
+    public void release() {
+        for (RepresentationHolder representationHolder : representationHolders) {
+            @Nullable ChunkExtractor chunkExtractor = representationHolder.chunkExtractor;
+            if (chunkExtractor != null) {
+                chunkExtractor.release();
+            }
+        }
     }
 
     private ArrayList<Representation> getRepresentations() {
@@ -551,7 +569,7 @@ public class DefaultSabrChunkSource implements SabrChunkSource {
     /** Holds information about a snapshot of a single {@link Representation}. */
     protected static final class RepresentationHolder {
 
-        /* package */ final @Nullable ChunkExtractorWrapper extractorWrapper;
+        /* package */ final @Nullable BundledChunkExtractor extractorWrapper;
 
         public final Representation representation;
         public final @Nullable SabrSegmentIndex segmentIndex;
@@ -582,7 +600,7 @@ public class DefaultSabrChunkSource implements SabrChunkSource {
         private RepresentationHolder(
                 long periodDurationUs,
                 Representation representation,
-                @Nullable ChunkExtractorWrapper extractorWrapper,
+                @Nullable BundledChunkExtractor extractorWrapper,
                 long segmentNumShift,
                 @Nullable SabrSegmentIndex segmentIndex) {
             this.periodDurationUs = periodDurationUs;
@@ -722,7 +740,7 @@ public class DefaultSabrChunkSource implements SabrChunkSource {
             return MimeTypes.isText(mimeType) || MimeTypes.APPLICATION_TTML.equals(mimeType);
         }
 
-        private static @Nullable ChunkExtractorWrapper createExtractorWrapper(
+        private static @Nullable BundledChunkExtractor createExtractorWrapper(
                 int trackType,
                 Representation representation,
                 boolean enableEventMessageTrack,
@@ -742,11 +760,11 @@ public class DefaultSabrChunkSource implements SabrChunkSource {
                 }
                 extractor =
                         new FragmentedMp4Extractor(
-                                flags, null, null, null, closedCaptionFormats, playerEmsgTrackOutput);
+                                new DefaultSubtitleParserFactory(), flags, null, null, closedCaptionFormats, playerEmsgTrackOutput);
             }
             // Prefer drmInitData obtained from the manifest over drmInitData obtained from the stream,
             // as per DASH IF Interoperability Recommendations V3.0, 7.5.3.
-            return new ChunkExtractorWrapper(extractor, trackType, representation.format);
+            return new BundledChunkExtractor(extractor, trackType, representation.format);
         }
     }
 }
