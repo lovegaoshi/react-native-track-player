@@ -1,5 +1,6 @@
 package com.lovegaoshi.kotlinaudio.mediasource.sabr;
 
+import android.os.Looper;
 import android.util.Pair;
 import android.util.SparseIntArray;
 
@@ -9,9 +10,16 @@ import androidx.annotation.Nullable;
 import androidx.media3.common.C;
 import androidx.media3.common.Format;
 
+import androidx.media3.common.StreamKey;
+import androidx.media3.common.util.NullableType;
 import androidx.media3.common.util.UnstableApi;
 import androidx.media3.datasource.TransferListener;
+import androidx.media3.exoplayer.LoadingInfo;
 import androidx.media3.exoplayer.SeekParameters;
+import androidx.media3.exoplayer.analytics.PlayerId;
+import androidx.media3.exoplayer.drm.DrmSession;
+import androidx.media3.exoplayer.drm.DrmSessionEventListener;
+import androidx.media3.exoplayer.drm.DrmSessionManager;
 import androidx.media3.exoplayer.source.CompositeSequenceableLoaderFactory;
 import androidx.media3.exoplayer.source.EmptySampleStream;
 import androidx.media3.exoplayer.source.MediaPeriod;
@@ -31,6 +39,7 @@ import com.lovegaoshi.kotlinaudio.mediasource.sabr.manifest.Period;
 import com.lovegaoshi.kotlinaudio.mediasource.sabr.manifest.Representation;
 import com.lovegaoshi.kotlinaudio.mediasource.sabr.manifest.SabrManifest;
 
+import androidx.media3.exoplayer.trackselection.ExoTrackSelection;
 import androidx.media3.exoplayer.trackselection.TrackSelection;
 import androidx.media3.exoplayer.upstream.Allocator;
 import androidx.media3.exoplayer.upstream.LoadErrorHandlingPolicy;
@@ -45,7 +54,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.IdentityHashMap;
 import java.util.List;
-import java.util.regex.Matcher;
 
 @UnstableApi
 final class SabrMediaPeriod
@@ -130,10 +138,15 @@ final class SabrMediaPeriod
     }
 
     @Override
+    public List<StreamKey> getStreamKeys(List<ExoTrackSelection> trackSelections) {
+        return MediaPeriod.super.getStreamKeys(trackSelections);
+    }
+
+    @Override
     public long selectTracks(
-            @Nullable TrackSelection[] selections,
+            @NullableType ExoTrackSelection[] selections,
             boolean[] mayRetainStreamFlags,
-            @Nullable SampleStream[] streams,
+            @NullableType SampleStream[] streams,
             boolean[] streamResetFlags,
             long positionUs) {
         int[] streamIndexToTrackGroupIndex = getStreamIndexToTrackGroupIndex(selections);
@@ -174,7 +187,9 @@ final class SabrMediaPeriod
     @Override
     public long readDiscontinuity() {
         if (!notifiedReadingStarted) {
-            eventDispatcher.readingStarted();
+            // HACK: this is removed
+            // https://github.com/google/ExoPlayer/blob/dd430f7053a1a3958deea3ead6a0565150c06bfc/RELEASENOTES.md?plain=1#L2662
+            // eventDispatcher.readingStarted();
             notifiedReadingStarted = true;
         }
         return C.TIME_UNSET;
@@ -212,9 +227,15 @@ final class SabrMediaPeriod
     }
 
     @Override
-    public boolean continueLoading(long positionUs) {
-        return compositeSequenceableLoader.continueLoading(positionUs);
+    public boolean continueLoading(LoadingInfo loadingInfo) {
+        return compositeSequenceableLoader.continueLoading(loadingInfo);
     }
+
+    @Override
+    public boolean isLoading() {
+        return compositeSequenceableLoader.isLoading();
+    }
+
 
     @Override
     public void reevaluateBuffer(long positionUs) {
@@ -259,7 +280,8 @@ final class SabrMediaPeriod
             sampleStream.release(this);
         }
         callback = null;
-        eventDispatcher.mediaPeriodReleased();
+        // HACK: removed
+        // eventDispatcher.mediaPeriodReleased();
     }
 
     @SuppressWarnings("unchecked")
@@ -389,8 +411,10 @@ final class SabrMediaPeriod
                             eventMessageTrackGroupIndex,
                             cea608TrackGroupIndex);
             if (eventMessageTrackGroupIndex != C.INDEX_UNSET) {
-                Format format = Format.createSampleFormat(firstAdaptationSet.id + ":emsg",
-                        MimeTypes.APPLICATION_EMSG, null, Format.NO_VALUE, null);
+                Format format = new Format.Builder()
+                        .setId(firstAdaptationSet.id + ":emsg")
+                        .setSampleMimeType(MimeTypes.APPLICATION_EMSG)
+                        .build();
                 trackGroups[eventMessageTrackGroupIndex] = new TrackGroup(format);
                 trackGroupInfos[eventMessageTrackGroupIndex] =
                         TrackGroupInfo.embeddedEmsgTrack(adaptationSetIndices, primaryTrackGroupIndex);
@@ -599,8 +623,29 @@ final class SabrMediaPeriod
                         this,
                         allocator,
                         positionUs,
+                        // HACK: does drm matter here?
+                        new DrmSessionManager() {
+                            @Override
+                            public void setPlayer(Looper playbackLooper, PlayerId playerId) {
+
+                            }
+
+                            @Nullable
+                            @Override
+                            public DrmSession acquireSession(@Nullable DrmSessionEventListener.EventDispatcher eventDispatcher, Format format) {
+                                return null;
+                            }
+
+                            @Override
+                            public int getCryptoType(Format format) {
+                                return 0;
+                            }
+                        },
+                        new DrmSessionEventListener.EventDispatcher(),
                         loadErrorHandlingPolicy,
-                        eventDispatcher);
+                        eventDispatcher,
+                        false,
+                        null);
         synchronized (this) {
             // The map is also accessed on the loading thread so synchronize access.
             trackEmsgHandlerBySampleStream.put(stream, trackPlayerEmsgHandler);
