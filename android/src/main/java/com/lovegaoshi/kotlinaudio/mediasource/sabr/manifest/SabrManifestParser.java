@@ -4,17 +4,20 @@ import android.util.Pair;
 
 import androidx.annotation.NonNull;
 
-import com.google.android.exoplayer2.C;
-import com.google.android.exoplayer2.Format;
-import com.google.android.exoplayer2.drm.DrmInitData.SchemeData;
-import com.google.android.exoplayer2.util.MimeTypes;
+import androidx.annotation.OptIn;
+import androidx.media3.common.C;
+import androidx.media3.common.DrmInitData.SchemeData;
+import androidx.media3.common.Format;
+import androidx.media3.common.MimeTypes;
+import androidx.media3.common.util.UnstableApi;
+
 import com.liskovsoft.mediaserviceinterfaces.data.MediaFormat;
 import com.liskovsoft.mediaserviceinterfaces.data.MediaItemFormatInfo;
-import com.liskovsoft.sharedutils.helpers.Helpers;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@OptIn(markerClass = UnstableApi.class)
 public class SabrManifestParser {
     public SabrManifest parse(@NonNull MediaItemFormatInfo formatInfo) {
         return parseSabrManifest(formatInfo);
@@ -48,7 +51,11 @@ public class SabrManifestParser {
     }
 
     private static long getDurationMs(MediaItemFormatInfo formatInfo) {
-        return Helpers.parseLong(formatInfo.getLengthSeconds()) * 1_000;
+        try {
+            return Long.parseLong(formatInfo.getLengthSeconds()) * 1_000;
+        } catch (Exception e) {
+            return -1_000;
+        }
     }
 
     private Pair<Period, Long> parsePeriod(MediaItemFormatInfo formatInfo, long nextPeriodStartMs) {
@@ -94,59 +101,54 @@ public class SabrManifestParser {
         @C.RoleFlags int roleFlags = C.ROLE_FLAG_MAIN;
         if (sampleMimeType != null) {
             if (MimeTypes.isVideo(sampleMimeType)) {
-                return Format.createVideoContainerFormat(
-                        id,
-                        /* label= */ null,
-                        containerMimeType,
-                        sampleMimeType,
-                        codecs,
-                        /* metadata= */ null,
-                        bitrate,
-                        width,
-                        height,
-                        frameRate,
-                        /* initializationData= */ null,
-                        selectionFlags,
-                        roleFlags);
+                return new Format.Builder()
+                        .setId(id)
+                        .setContainerMimeType(containerMimeType)
+                        .setSampleMimeType(sampleMimeType)
+                        .setCodecs(codecs)
+                        .setAverageBitrate(bitrate)
+                        .setWidth(width)
+                        .setHeight(height)
+                        .setFrameRate(frameRate)
+                        .setSelectionFlags(selectionFlags)
+                        .setRoleFlags(roleFlags)
+                        .build();
             } else if (MimeTypes.isAudio(sampleMimeType)) {
-                return Format.createAudioContainerFormat(
-                        id,
-                        /* label= */ null,
-                        containerMimeType,
-                        sampleMimeType,
-                        codecs,
-                        /* metadata= */ null,
-                        bitrate,
-                        audioChannels,
-                        audioSamplingRate,
-                        /* initializationData= */ null,
-                        selectionFlags,
-                        roleFlags,
-                        language);
+                return new Format.Builder()
+                        .setId(id)
+                        .setContainerMimeType(containerMimeType)
+                        .setSampleMimeType(sampleMimeType)
+                        .setCodecs(codecs)
+                        .setAverageBitrate(bitrate)
+                        .setSampleRate(audioSamplingRate)
+                        .setSelectionFlags(selectionFlags)
+                        .setRoleFlags(roleFlags)
+                        .setLanguage(language)
+                        .build();
             } else if (mimeTypeIsRawText(sampleMimeType)) {
-                return Format.createTextContainerFormat(
-                        id,
-                        /* label= */ null,
-                        containerMimeType,
-                        sampleMimeType,
-                        codecs,
-                        bitrate,
-                        selectionFlags,
-                        roleFlags,
-                        language,
-                        Format.NO_VALUE);
+                return new Format.Builder()
+                        .setId(id)
+                        .setContainerMimeType(containerMimeType)
+                        .setSampleMimeType(sampleMimeType)
+                        .setCodecs(codecs)
+                        .setAverageBitrate(bitrate)
+                        .setSelectionFlags(selectionFlags)
+                        .setRoleFlags(roleFlags)
+                        .setLanguage(language)
+                        .setAccessibilityChannel(Format.NO_VALUE)
+                        .build();
             }
         }
-        return Format.createContainerFormat(
-                id,
-                /* label= */ null,
-                containerMimeType,
-                sampleMimeType,
-                codecs,
-                bitrate,
-                selectionFlags,
-                roleFlags,
-                language);
+        return new Format.Builder()
+                .setId(id)
+                .setContainerMimeType(containerMimeType)
+                .setSampleMimeType(sampleMimeType)
+                .setCodecs(codecs)
+                .setAverageBitrate(bitrate)
+                .setSelectionFlags(selectionFlags)
+                .setRoleFlags(roleFlags)
+                .setLanguage(language)
+                .build();
     }
 
     /**
@@ -208,6 +210,7 @@ public class SabrManifestParser {
         public final ArrayList<SchemeData> drmSchemeDatas;
         public final long revisionId;
 
+        @OptIn(markerClass = UnstableApi.class)
         public RepresentationInfo(Format format, String baseUrl, SegmentBase segmentBase,
                                   String drmSchemeType, ArrayList<SchemeData> drmSchemeDatas,
                                   long revisionId) {

@@ -2,8 +2,9 @@ package com.lovegaoshi.kotlinaudio.mediasource.sabr.manifest;
 
 import android.net.Uri;
 
-import com.google.android.exoplayer2.C;
-import com.google.android.exoplayer2.Format;
+import androidx.media3.common.C;
+import androidx.media3.common.Format;
+
 import com.lovegaoshi.kotlinaudio.mediasource.sabr.SabrSegmentIndex;
 import com.lovegaoshi.kotlinaudio.mediasource.sabr.manifest.SegmentBase.SingleSegmentBase;
 

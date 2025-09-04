@@ -1,14 +1,17 @@
 package com.lovegaoshi.kotlinaudio.mediasource.sabr.manifest;
 
-import com.google.android.exoplayer2.C;
-import com.google.android.exoplayer2.offline.FilterableManifest;
-import com.google.android.exoplayer2.offline.StreamKey;
+import androidx.media3.common.C;
+import androidx.media3.common.StreamKey;
+import androidx.media3.common.util.UnstableApi;
+import androidx.media3.exoplayer.offline.FilterableManifest;
+
 
 import java.util.List;
 
 /**
  * Represents a SABR media presentation
  */
+@UnstableApi
 public class SabrManifest implements FilterableManifest<SabrManifest> {
     /**
      * The {@code availabilityStartTime} value in milliseconds since epoch, or {@link C#TIME_UNSET} if
