@@ -6,6 +6,7 @@ import android.os.Message;
 import androidx.annotation.Nullable;
 
 import androidx.media3.common.C;
+import androidx.media3.common.DataReader;
 import androidx.media3.common.Format;
 import androidx.media3.common.Metadata;
 import androidx.media3.common.util.ParsableByteArray;
@@ -184,17 +185,34 @@ public final class PlayerEmsgHandler implements Handler.Callback {
         }
 
         @Override
+        public void durationUs(long durationUs) {
+            TrackOutput.super.durationUs(durationUs);
+        }
+
+        @Override
         public void format(Format format) {
             sampleQueue.format(format);
         }
 
         @Override
-        public int sampleData(ExtractorInput input, int length, boolean allowEndOfInput) throws IOException, InterruptedException {
+        public int sampleData(DataReader input, int length, boolean allowEndOfInput) throws IOException {
             return sampleQueue.sampleData(input, length, allowEndOfInput);
         }
 
         @Override
         public void sampleData(ParsableByteArray data, int length) {
+            sampleQueue.sampleData(data, length);
+        }
+
+        // HACK: what is sampleDataPart?
+        @Override
+        public int sampleData(DataReader input, int length, boolean allowEndOfInput, int sampleDataPart) throws IOException {
+            return sampleQueue.sampleData(input, length, allowEndOfInput);
+        }
+
+        // HACK: what is sampleDataPart?
+        @Override
+        public void sampleData(ParsableByteArray data, int length, int sampleDataPart) {
             sampleQueue.sampleData(data, length);
         }
 
@@ -222,6 +240,9 @@ public final class PlayerEmsgHandler implements Handler.Callback {
         }
 
         private void parseAndDiscardSamples() {
+            // HACK: none of these seem to do anything besides logging. removing as hasNextSample
+            // is now private
+            /**
             while (sampleQueue.hasNextSample()) {
                 MetadataInputBuffer inputBuffer = dequeueSample();
                 if (inputBuffer == null) {
@@ -237,9 +258,11 @@ public final class PlayerEmsgHandler implements Handler.Callback {
                     parsePlayerEmsgEvent(eventTimeUs, eventMessage);
                 }
             }
+             **/
             sampleQueue.discardToRead();
         }
 
+        /**
         private void parsePlayerEmsgEvent(long eventTimeUs, EventMessage eventMessage) {
             // NOP
         }
@@ -254,6 +277,7 @@ public final class PlayerEmsgHandler implements Handler.Callback {
             }
             return null;
         }
+        **/
     }
 
     /** Holds information related to a manifest expiry event. */
