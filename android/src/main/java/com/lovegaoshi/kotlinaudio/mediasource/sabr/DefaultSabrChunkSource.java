@@ -6,41 +6,44 @@ import android.os.SystemClock;
 import androidx.annotation.CheckResult;
 import androidx.annotation.Nullable;
 
-import com.google.android.exoplayer2.C;
-import com.google.android.exoplayer2.Format;
-import com.google.android.exoplayer2.SeekParameters;
-import com.google.android.exoplayer2.extractor.Extractor;
-import com.google.android.exoplayer2.extractor.TrackOutput;
-import com.google.android.exoplayer2.extractor.mkv.MatroskaExtractor;
-import com.google.android.exoplayer2.extractor.mp4.FragmentedMp4Extractor;
+import androidx.annotation.OptIn;
+import androidx.media3.common.C;
+import androidx.media3.common.Format;
+import androidx.media3.exoplayer.SeekParameters;
+import androidx.media3.extractor.Extractor;
+import androidx.media3.extractor.TrackOutput;
+import androidx.media3.extractor.mkv.MatroskaExtractor;
+import androidx.media3.extractor.mp4.FragmentedMp4Extractor;
 import com.google.android.exoplayer2.extractor.rawcc.RawCcExtractor;
-import com.google.android.exoplayer2.source.BehindLiveWindowException;
-import com.google.android.exoplayer2.source.chunk.BaseMediaChunkIterator;
-import com.google.android.exoplayer2.source.chunk.Chunk;
-import com.google.android.exoplayer2.source.chunk.ChunkExtractorWrapper;
-import com.google.android.exoplayer2.source.chunk.ChunkHolder;
-import com.google.android.exoplayer2.source.chunk.ContainerMediaChunk;
-import com.google.android.exoplayer2.source.chunk.InitializationChunk;
-import com.google.android.exoplayer2.source.chunk.MediaChunk;
-import com.google.android.exoplayer2.source.chunk.MediaChunkIterator;
-import com.google.android.exoplayer2.source.chunk.SingleSampleMediaChunk;
+import 	androidx.media3.exoplayer.source.BehindLiveWindowException;
+import androidx.media3.exoplayer.source.chunk.BaseMediaChunkIterator;
+import androidx.media3.exoplayer.source.chunk.Chunk;
+import androidx.media3.exoplayer.source.chunk.ChunkExtractorWrapper;
+import androidx.media3.exoplayer.source.chunk.ChunkHolder;
+import androidx.media3.exoplayer.source.chunk.ContainerMediaChunk;
+import androidx.media3.exoplayer.source.chunk.InitializationChunk;
+import androidx.media3.exoplayer.source.chunk.MediaChunk;
+import androidx.media3.exoplayer.source.chunk.MediaChunkIterator;
+import androidx.media3.exoplayer.source.chunk.SingleSampleMediaChunk;
 import com.lovegaoshi.kotlinaudio.mediasource.sabr.PlayerEmsgHandler.PlayerTrackEmsgHandler;
 import com.lovegaoshi.kotlinaudio.mediasource.sabr.manifest.AdaptationSet;
 import com.lovegaoshi.kotlinaudio.mediasource.sabr.manifest.RangedUri;
 import com.lovegaoshi.kotlinaudio.mediasource.sabr.manifest.Representation;
 import com.lovegaoshi.kotlinaudio.mediasource.sabr.manifest.SabrManifest;
-import com.google.android.exoplayer2.trackselection.TrackSelection;
-import com.google.android.exoplayer2.upstream.DataSource;
-import com.google.android.exoplayer2.upstream.DataSpec;
-import com.google.android.exoplayer2.upstream.LoaderErrorThrower;
-import com.google.android.exoplayer2.upstream.TransferListener;
-import com.google.android.exoplayer2.util.MimeTypes;
-import com.google.android.exoplayer2.util.Util;
+import androidx.media3.common.MimeTypes;
+import androidx.media3.common.util.UnstableApi;
+import androidx.media3.datasource.DataSource;
+import androidx.media3.datasource.TransferListener;
+import androidx.media3.exoplayer.trackselection.TrackSelection;
+import androidx.media3.exoplayer.upstream.LoaderErrorThrower;
+
+import androidx.media3.common.util.Util;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+@OptIn(markerClass = UnstableApi.class)
 public class DefaultSabrChunkSource implements SabrChunkSource {
     public static final class Factory implements SabrChunkSource.Factory {
 
@@ -201,7 +204,7 @@ public class DefaultSabrChunkSource implements SabrChunkSource {
                         firstSyncUs < positionUs && segmentNum < representationHolder.getSegmentCount() - 1
                                 ? representationHolder.getSegmentStartTimeUs(segmentNum + 1)
                                 : firstSyncUs;
-                return Util.resolveSeekPositionUs(positionUs, seekParameters, firstSyncUs, secondSyncUs);
+                return seekParameters.resolveSeekPositionUs(positionUs, firstSyncUs, secondSyncUs);
             }
         }
         // We don't have a segment index to adjust the seek position with yet.

@@ -7,8 +7,8 @@ import android.util.SparseArray;
 
 import androidx.annotation.Nullable;
 
-import com.google.android.exoplayer2.C;
-import com.google.android.exoplayer2.Timeline;
+import androidx.media3.common.C;
+import androidx.media3.common.Timeline;
 import com.google.android.exoplayer2.source.BaseMediaSource;
 import com.google.android.exoplayer2.source.CompositeSequenceableLoaderFactory;
 import com.google.android.exoplayer2.source.DefaultCompositeSequenceableLoaderFactory;
@@ -337,8 +337,8 @@ public final class SabrMediaSource extends BaseMediaSource {
 
         /**
          * Sets a tag for the media source which will be published in the {@link
-         * com.google.android.exoplayer2.Timeline} of the source as {@link
-         * com.google.android.exoplayer2.Timeline.Window#tag}.
+         * androidx.media3.common.Timeline} of the source as {@link
+         * androidx.media3.common.Timeline.Window#tag}.
          *
          * @param tag A tag for the media source.
          * @return This factory, for convenience.

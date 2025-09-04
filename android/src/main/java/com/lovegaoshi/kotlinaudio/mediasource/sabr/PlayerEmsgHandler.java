@@ -5,21 +5,22 @@ import android.os.Message;
 
 import androidx.annotation.Nullable;
 
-import com.google.android.exoplayer2.C;
-import com.google.android.exoplayer2.Format;
-import com.google.android.exoplayer2.FormatHolder;
-import com.google.android.exoplayer2.ParserException;
-import com.google.android.exoplayer2.extractor.ExtractorInput;
-import com.google.android.exoplayer2.extractor.TrackOutput;
-import com.google.android.exoplayer2.metadata.Metadata;
-import com.google.android.exoplayer2.metadata.MetadataInputBuffer;
-import com.google.android.exoplayer2.metadata.emsg.EventMessage;
-import com.google.android.exoplayer2.metadata.emsg.EventMessageDecoder;
-import com.google.android.exoplayer2.source.SampleQueue;
+import androidx.media3.common.C;
+import androidx.media3.common.Format;
+import androidx.media3.common.Metadata;
+import androidx.media3.common.util.ParsableByteArray;
+import androidx.media3.common.util.UnstableApi;
+import androidx.media3.exoplayer.FormatHolder;
+import androidx.media3.exoplayer.source.SampleQueue;
+import androidx.media3.exoplayer.upstream.Allocator;
+import androidx.media3.extractor.ExtractorInput;
+import androidx.media3.extractor.TrackOutput;
+import androidx.media3.extractor.metadata.MetadataInputBuffer;
+import androidx.media3.extractor.metadata.emsg.EventMessage;
+import androidx.media3.extractor.metadata.emsg.EventMessageDecoder;
+import androidx.media3.common.util.Util;
+
 import com.lovegaoshi.kotlinaudio.mediasource.sabr.manifest.SabrManifest;
-import com.google.android.exoplayer2.upstream.Allocator;
-import com.google.android.exoplayer2.util.ParsableByteArray;
-import com.google.android.exoplayer2.util.Util;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -27,6 +28,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
+@UnstableApi
 public final class PlayerEmsgHandler implements Handler.Callback {
     /** Callbacks for player emsg events encountered during DASH live stream. */
     public interface PlayerEmsgCallback {
@@ -68,7 +70,7 @@ public final class PlayerEmsgHandler implements Handler.Callback {
         this.allocator = allocator;
 
         manifestPublishTimeToExpiryTimeUs = new TreeMap<>();
-        handler = Util.createHandler(/* callback= */ this);
+        handler = Util.createHandlerForCurrentOrMainLooper(/* callback= */ this);
         decoder = new EventMessageDecoder();
     }
 
@@ -143,7 +145,7 @@ public final class PlayerEmsgHandler implements Handler.Callback {
 
     /** Returns a {@link TrackOutput} that emsg messages could be written to. */
     public PlayerTrackEmsgHandler newPlayerTrackEmsgHandler() {
-        return new PlayerTrackEmsgHandler(new SampleQueue(allocator));
+        return new PlayerTrackEmsgHandler(SampleQueue.createWithoutDrm(allocator));
     }
 
     /** Release this emsg handler. It should not be reused after this call. */

@@ -15,7 +15,7 @@
  */
 package com.lovegaoshi.kotlinaudio.mediasource.sabr;
 
-import com.google.android.exoplayer2.C;
+import androidx.media3.common.C;
 import com.lovegaoshi.kotlinaudio.mediasource.sabr.manifest.RangedUri;
 
 /**

@@ -15,9 +15,9 @@
  */
 package com.lovegaoshi.kotlinaudio.mediasource.sabr;
 
-import com.google.android.exoplayer2.C;
-import com.google.android.exoplayer2.Format;
-import com.google.android.exoplayer2.FormatHolder;
+import androidx.media3.common.C;
+import androidx.media3.common.Format;
+import androidx.media3.common.FormatHolder;
 import com.google.android.exoplayer2.decoder.DecoderInputBuffer;
 import com.google.android.exoplayer2.metadata.emsg.EventMessage;
 import com.google.android.exoplayer2.metadata.emsg.EventMessageEncoder;

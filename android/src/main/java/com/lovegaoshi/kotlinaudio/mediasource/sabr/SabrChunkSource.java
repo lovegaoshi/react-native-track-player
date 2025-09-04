@@ -19,19 +19,21 @@ import android.os.SystemClock;
 
 import androidx.annotation.Nullable;
 
-import com.google.android.exoplayer2.Format;
-import com.google.android.exoplayer2.source.chunk.ChunkSource;
+import androidx.media3.common.Format;
+import androidx.media3.common.util.UnstableApi;
+import androidx.media3.datasource.TransferListener;
+import androidx.media3.exoplayer.source.chunk.ChunkSource;
+import androidx.media3.exoplayer.trackselection.TrackSelection;
+import androidx.media3.exoplayer.upstream.LoaderErrorThrower;
+
 import com.lovegaoshi.kotlinaudio.mediasource.sabr.PlayerEmsgHandler.PlayerTrackEmsgHandler;
 import com.lovegaoshi.kotlinaudio.mediasource.sabr.manifest.SabrManifest;
-import com.google.android.exoplayer2.trackselection.TrackSelection;
-import com.google.android.exoplayer2.upstream.LoaderErrorThrower;
-import com.google.android.exoplayer2.upstream.TransferListener;
-
 import java.util.List;
 
 /**
  * An {@link ChunkSource} for DASH streams.
  */
+@UnstableApi
 public interface SabrChunkSource extends ChunkSource {
 
   /** Factory for {@link SabrChunkSource}s. */
