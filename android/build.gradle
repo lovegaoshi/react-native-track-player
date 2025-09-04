@@ -10,7 +10,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.8.2'
+        classpath 'com.android.tools.build:gradle:8.12.2'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.10"
     }
 }
@@ -55,6 +55,12 @@ android {
             jvmTarget = "1.8"
         }
     }
+
+    sourceSets {
+        main {
+            java.srcDirs += ["build/generated/source/codegen"]
+        }
+    }
 }
 
 repositories {
@@ -77,15 +83,15 @@ dependencies {
         implementation "com.facebook.react:react-native:+"
     }
     // Make sure we're using androidx
-    implementation "androidx.core:core-ktx:1.16.0"
+    implementation "androidx.core:core-ktx:1.17.0"
     implementation "androidx.localbroadcastmanager:localbroadcastmanager:1.1.0"
-    implementation "androidx.lifecycle:lifecycle-process:2.9.2"
-    implementation 'androidx.media:media:1.7.0'
+    implementation "androidx.lifecycle:lifecycle-process:2.9.3"
+    implementation 'androidx.media:media:1.7.1'
 
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.9.2")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.9.3")
     implementation("androidx.activity:activity-compose:1.10.1")
-    implementation("androidx.compose.ui:ui:1.8.3")
-    implementation("androidx.compose.ui:ui-graphics:1.8.3")
+    implementation("androidx.compose.ui:ui:1.9.0")
+    implementation("androidx.compose.ui:ui-graphics:1.9.0")
 
     implementation("androidx.media3:media3-exoplayer:1.8.0")
     implementation("androidx.media3:media3-session:1.8.0")

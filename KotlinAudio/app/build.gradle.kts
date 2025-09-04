@@ -1,17 +1,17 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
-    id("org.jetbrains.kotlin.plugin.compose") version "2.1.10" // this version matches your Kotlin version
+    id("org.jetbrains.kotlin.plugin.compose") version "2.2.10" // this version matches your Kotlin version
 }
 
 android {
     namespace = "com.lovegaoshi.kotlinaudio"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.lovegaoshi.kotlinaudio"
         minSdk = 24
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
 
