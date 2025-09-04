@@ -23,7 +23,7 @@ import androidx.media3.common.Format;
 import androidx.media3.common.util.UnstableApi;
 import androidx.media3.datasource.TransferListener;
 import androidx.media3.exoplayer.source.chunk.ChunkSource;
-import androidx.media3.exoplayer.trackselection.TrackSelection;
+import androidx.media3.exoplayer.trackselection.ExoTrackSelection;
 import androidx.media3.exoplayer.upstream.LoaderErrorThrower;
 
 import com.lovegaoshi.kotlinaudio.mediasource.sabr.PlayerEmsgHandler.PlayerTrackEmsgHandler;
@@ -59,7 +59,7 @@ public interface SabrChunkSource extends ChunkSource {
         SabrManifest manifest,
         int periodIndex,
         int[] adaptationSetIndices,
-        TrackSelection trackSelection,
+        ExoTrackSelection trackSelection,
         int type,
         long elapsedRealtimeOffsetMs,
         boolean enableEventMessageTrack,
@@ -80,5 +80,5 @@ public interface SabrChunkSource extends ChunkSource {
    *
    * @param trackSelection The new track selection instance. Must be equivalent to the previous one.
    */
-  void updateTrackSelection(TrackSelection trackSelection);
+  void updateTrackSelection(ExoTrackSelection trackSelection);
 }

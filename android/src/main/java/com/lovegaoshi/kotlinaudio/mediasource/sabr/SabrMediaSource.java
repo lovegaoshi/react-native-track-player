@@ -5,9 +5,11 @@ import android.os.Handler;
 import android.os.SystemClock;
 import android.util.SparseArray;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import androidx.media3.common.C;
+import androidx.media3.common.MediaItem;
 import androidx.media3.common.Timeline;
 import androidx.media3.common.util.Assertions;
 import androidx.media3.common.util.UnstableApi;
@@ -20,7 +22,6 @@ import androidx.media3.exoplayer.source.MediaPeriod;
 import androidx.media3.exoplayer.source.MediaSource;
 import androidx.media3.exoplayer.source.MediaSourceEventListener;
 import androidx.media3.exoplayer.source.MediaSourceEventListener.EventDispatcher;
-import androidx.media3.exoplayer.source.ads.AdsMediaSource;
 import androidx.media3.exoplayer.upstream.Allocator;
 import androidx.media3.exoplayer.upstream.LoadErrorHandlingPolicy;
 import androidx.media3.exoplayer.upstream.Loader;
@@ -99,6 +100,13 @@ public final class SabrMediaSource extends BaseMediaSource {
         manifestFatalError = null;
         firstPeriodId = 0;
         periodsById.clear();
+    }
+
+    @NonNull
+    @Override
+    public MediaItem getMediaItem() {
+        // HACK: returning a dummy mediaitem
+        return new MediaItem.Builder().build();
     }
 
     @Override

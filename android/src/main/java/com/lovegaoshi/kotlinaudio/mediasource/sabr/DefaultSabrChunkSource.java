@@ -10,11 +10,11 @@ import androidx.annotation.OptIn;
 import androidx.media3.common.C;
 import androidx.media3.common.Format;
 import androidx.media3.exoplayer.SeekParameters;
+import androidx.media3.exoplayer.trackselection.ExoTrackSelection;
 import androidx.media3.extractor.Extractor;
 import androidx.media3.extractor.TrackOutput;
 import androidx.media3.extractor.mkv.MatroskaExtractor;
 import androidx.media3.extractor.mp4.FragmentedMp4Extractor;
-import com.google.android.exoplayer2.extractor.rawcc.RawCcExtractor;
 import 	androidx.media3.exoplayer.source.BehindLiveWindowException;
 import androidx.media3.exoplayer.source.chunk.BaseMediaChunkIterator;
 import androidx.media3.exoplayer.source.chunk.Chunk;
@@ -65,7 +65,7 @@ public class DefaultSabrChunkSource implements SabrChunkSource {
                 SabrManifest manifest,
                 int periodIndex,
                 int[] adaptationSetIndices,
-                TrackSelection trackSelection,
+                ExoTrackSelection trackSelection,
                 int trackType,
                 long elapsedRealtimeOffsetMs,
                 boolean enableEventMessageTrack,
@@ -103,7 +103,7 @@ public class DefaultSabrChunkSource implements SabrChunkSource {
 
     protected final RepresentationHolder[] representationHolders;
 
-    private TrackSelection trackSelection;
+    private ExoTrackSelection trackSelection;
     private SabrManifest manifest;
     private int periodIndex;
     private IOException fatalError;
@@ -134,7 +134,7 @@ public class DefaultSabrChunkSource implements SabrChunkSource {
             SabrManifest manifest,
             int periodIndex,
             int[] adaptationSetIndices,
-            TrackSelection trackSelection,
+            ExoTrackSelection trackSelection,
             int trackType,
             DataSource dataSource,
             long elapsedRealtimeOffsetMs,
@@ -189,7 +189,7 @@ public class DefaultSabrChunkSource implements SabrChunkSource {
     }
 
     @Override
-    public void updateTrackSelection(TrackSelection trackSelection) {
+    public void updateTrackSelection(ExoTrackSelection trackSelection) {
         this.trackSelection = trackSelection;
     }
 
@@ -733,9 +733,7 @@ public class DefaultSabrChunkSource implements SabrChunkSource {
                 return null;
             }
             Extractor extractor;
-            if (MimeTypes.APPLICATION_RAWCC.equals(containerMimeType)) {
-                extractor = new RawCcExtractor(representation.format);
-            } else if (mimeTypeIsWebm(containerMimeType)) {
+            if (mimeTypeIsWebm(containerMimeType)) {
                 extractor = new MatroskaExtractor(MatroskaExtractor.FLAG_DISABLE_SEEK_FOR_CUES);
             } else {
                 int flags = 0;
