@@ -8,17 +8,20 @@ import androidx.annotation.Nullable;
 
 import androidx.media3.common.C;
 import androidx.media3.common.Format;
-import com.google.android.exoplayer2.SeekParameters;
-import com.google.android.exoplayer2.source.CompositeSequenceableLoaderFactory;
-import com.google.android.exoplayer2.source.EmptySampleStream;
-import com.google.android.exoplayer2.source.MediaPeriod;
-import com.google.android.exoplayer2.source.MediaSourceEventListener.EventDispatcher;
-import com.google.android.exoplayer2.source.SampleStream;
-import com.google.android.exoplayer2.source.SequenceableLoader;
+
+import androidx.media3.common.util.UnstableApi;
+import androidx.media3.datasource.TransferListener;
+import androidx.media3.exoplayer.SeekParameters;
+import androidx.media3.exoplayer.source.CompositeSequenceableLoaderFactory;
+import androidx.media3.exoplayer.source.EmptySampleStream;
+import androidx.media3.exoplayer.source.MediaPeriod;
+import androidx.media3.exoplayer.source.MediaSourceEventListener.EventDispatcher;
+import androidx.media3.exoplayer.source.SampleStream;
+import androidx.media3.exoplayer.source.SequenceableLoader;
 import androidx.media3.common.TrackGroup;
-import androidx.media3.common.TrackGroupArray;
-import com.google.android.exoplayer2.source.chunk.ChunkSampleStream;
-import com.google.android.exoplayer2.source.chunk.ChunkSampleStream.EmbeddedSampleStream;
+import androidx.media3.exoplayer.source.TrackGroupArray;
+import androidx.media3.exoplayer.source.chunk.ChunkSampleStream;
+import androidx.media3.exoplayer.source.chunk.ChunkSampleStream.EmbeddedSampleStream;
 import com.lovegaoshi.kotlinaudio.mediasource.sabr.PlayerEmsgHandler.PlayerEmsgCallback;
 import com.lovegaoshi.kotlinaudio.mediasource.sabr.PlayerEmsgHandler.PlayerTrackEmsgHandler;
 import com.lovegaoshi.kotlinaudio.mediasource.sabr.SabrChunkSource.Factory;
@@ -27,11 +30,11 @@ import com.lovegaoshi.kotlinaudio.mediasource.sabr.manifest.EventStream;
 import com.lovegaoshi.kotlinaudio.mediasource.sabr.manifest.Period;
 import com.lovegaoshi.kotlinaudio.mediasource.sabr.manifest.Representation;
 import com.lovegaoshi.kotlinaudio.mediasource.sabr.manifest.SabrManifest;
-import com.google.android.exoplayer2.trackselection.TrackSelection;
-import com.google.android.exoplayer2.upstream.Allocator;
-import com.google.android.exoplayer2.upstream.LoadErrorHandlingPolicy;
-import com.google.android.exoplayer2.upstream.LoaderErrorThrower;
-import com.google.android.exoplayer2.upstream.TransferListener;
+
+import androidx.media3.exoplayer.trackselection.TrackSelection;
+import androidx.media3.exoplayer.upstream.Allocator;
+import androidx.media3.exoplayer.upstream.LoadErrorHandlingPolicy;
+import androidx.media3.exoplayer.upstream.LoaderErrorThrower;
 import androidx.media3.common.MimeTypes;
 
 import java.io.IOException;
@@ -44,6 +47,7 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.regex.Matcher;
 
+@UnstableApi
 final class SabrMediaPeriod
    implements MediaPeriod,
         SequenceableLoader.Callback<ChunkSampleStream<SabrChunkSource>>,

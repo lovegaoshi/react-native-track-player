@@ -17,13 +17,15 @@ package com.lovegaoshi.kotlinaudio.mediasource.sabr;
 
 import androidx.media3.common.C;
 import androidx.media3.common.Format;
-import androidx.media3.common.FormatHolder;
-import com.google.android.exoplayer2.decoder.DecoderInputBuffer;
-import com.google.android.exoplayer2.metadata.emsg.EventMessage;
-import com.google.android.exoplayer2.metadata.emsg.EventMessageEncoder;
-import com.google.android.exoplayer2.source.SampleStream;
 import com.lovegaoshi.kotlinaudio.mediasource.sabr.manifest.EventStream;
-import com.google.android.exoplayer2.util.Util;
+
+import androidx.media3.common.util.UnstableApi;
+import androidx.media3.common.util.Util;
+import androidx.media3.decoder.DecoderInputBuffer;
+import androidx.media3.exoplayer.FormatHolder;
+import androidx.media3.exoplayer.source.SampleStream;
+import androidx.media3.extractor.metadata.emsg.EventMessage;
+import androidx.media3.extractor.metadata.emsg.EventMessageEncoder;
 
 import java.io.IOException;
 
@@ -31,7 +33,8 @@ import java.io.IOException;
  * A {@link SampleStream} consisting of serialized {@link EventMessage}s read from an
  * {@link EventStream}.
  */
-/* package */ final class EventSampleStream implements SampleStream {
+/* package */ @UnstableApi
+final class EventSampleStream implements SampleStream {
 
   private final Format upstreamFormat;
   private final EventMessageEncoder eventMessageEncoder;
@@ -97,9 +100,8 @@ import java.io.IOException;
   }
 
   @Override
-  public int readData(FormatHolder formatHolder, DecoderInputBuffer buffer,
-      boolean formatRequired) {
-    if (formatRequired || !isFormatSentDownstream) {
+  public int readData(FormatHolder formatHolder, DecoderInputBuffer buffer, int readFlags) {
+    if (!isFormatSentDownstream || (readFlags & FLAG_REQUIRE_FORMAT) != 0 ) {
       formatHolder.format = upstreamFormat;
       isFormatSentDownstream = true;
       return C.RESULT_FORMAT_READ;

@@ -9,28 +9,31 @@ import androidx.annotation.Nullable;
 
 import androidx.media3.common.C;
 import androidx.media3.common.Timeline;
-import com.google.android.exoplayer2.source.BaseMediaSource;
-import com.google.android.exoplayer2.source.CompositeSequenceableLoaderFactory;
-import com.google.android.exoplayer2.source.DefaultCompositeSequenceableLoaderFactory;
-import com.google.android.exoplayer2.source.MediaPeriod;
-import com.google.android.exoplayer2.source.MediaSource;
-import com.google.android.exoplayer2.source.MediaSourceEventListener;
-import com.google.android.exoplayer2.source.MediaSourceEventListener.EventDispatcher;
-import com.google.android.exoplayer2.source.ads.AdsMediaSource;
+import androidx.media3.common.util.Assertions;
+import androidx.media3.common.util.UnstableApi;
+import androidx.media3.datasource.DataSource;
+import androidx.media3.datasource.TransferListener;
+import androidx.media3.exoplayer.source.BaseMediaSource;
+import androidx.media3.exoplayer.source.CompositeSequenceableLoaderFactory;
+import androidx.media3.exoplayer.source.DefaultCompositeSequenceableLoaderFactory;
+import androidx.media3.exoplayer.source.MediaPeriod;
+import androidx.media3.exoplayer.source.MediaSource;
+import androidx.media3.exoplayer.source.MediaSourceEventListener;
+import androidx.media3.exoplayer.source.MediaSourceEventListener.EventDispatcher;
+import androidx.media3.exoplayer.source.ads.AdsMediaSource;
+import androidx.media3.exoplayer.upstream.Allocator;
+import androidx.media3.exoplayer.upstream.LoadErrorHandlingPolicy;
+import androidx.media3.exoplayer.upstream.Loader;
+import androidx.media3.exoplayer.upstream.LoaderErrorThrower;
+
 import com.lovegaoshi.kotlinaudio.mediasource.sabr.PlayerEmsgHandler.PlayerEmsgCallback;
 import com.lovegaoshi.kotlinaudio.mediasource.sabr.manifest.AdaptationSet;
 import com.lovegaoshi.kotlinaudio.mediasource.sabr.manifest.SabrManifest;
-import com.google.android.exoplayer2.upstream.Allocator;
-import com.google.android.exoplayer2.upstream.DataSource;
-import com.google.android.exoplayer2.upstream.DefaultLoadErrorHandlingPolicy;
-import com.google.android.exoplayer2.upstream.LoadErrorHandlingPolicy;
-import com.google.android.exoplayer2.upstream.Loader;
-import com.google.android.exoplayer2.upstream.LoaderErrorThrower;
-import com.google.android.exoplayer2.upstream.TransferListener;
-import com.google.android.exoplayer2.util.Assertions;
+import androidx.media3.exoplayer.upstream.DefaultLoadErrorHandlingPolicy;
 
 import java.io.IOException;
 
+@UnstableApi
 public final class SabrMediaSource extends BaseMediaSource {
     /**
      * The interval in milliseconds between invocations of {@link
