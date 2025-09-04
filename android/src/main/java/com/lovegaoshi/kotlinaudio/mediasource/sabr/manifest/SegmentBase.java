@@ -15,15 +15,19 @@
  */
 package com.lovegaoshi.kotlinaudio.mediasource.sabr.manifest;
 
-import com.google.android.exoplayer2.C;
+import androidx.annotation.OptIn;
+import androidx.media3.common.C;
+import androidx.media3.common.util.UnstableApi;
+import androidx.media3.common.util.Util;
+
 import com.lovegaoshi.kotlinaudio.mediasource.sabr.SabrSegmentIndex;
-import com.google.android.exoplayer2.util.Util;
 
 import java.util.List;
 
 /**
  * An approximate representation of a SegmentBase manifest element.
  */
+@OptIn(markerClass = UnstableApi.class)
 public abstract class SegmentBase {
 
   /* package */ final RangedUri initialization;
