@@ -433,7 +433,7 @@ final class SabrMediaPeriod
         return new Format[0];
     }
 
-    private int[] getStreamIndexToTrackGroupIndex(TrackSelection[] selections) {
+    private int[] getStreamIndexToTrackGroupIndex(ExoTrackSelection[] selections) {
         int[] streamIndexToTrackGroupIndex = new int[selections.length];
         for (int i = 0; i < selections.length; i++) {
             if (selections[i] != null) {
@@ -508,14 +508,14 @@ final class SabrMediaPeriod
     }
 
     private void selectNewStreams(
-            TrackSelection[] selections,
+            ExoTrackSelection[] selections,
             SampleStream[] streams,
             boolean[] streamResetFlags,
             long positionUs,
             int[] streamIndexToTrackGroupIndex) {
         // Create newly selected primary and event streams.
         for (int i = 0; i < selections.length; i++) {
-            TrackSelection selection = selections[i];
+            ExoTrackSelection selection = selections[i];
             if (selection == null) {
                 continue;
             }
@@ -562,7 +562,7 @@ final class SabrMediaPeriod
     }
 
     private ChunkSampleStream<SabrChunkSource> buildSampleStream(TrackGroupInfo trackGroupInfo,
-                                                                 TrackSelection selection, long positionUs) {
+                                                                 ExoTrackSelection selection, long positionUs) {
         int embeddedTrackCount = 0;
         boolean enableEventMessageTrack =
                 trackGroupInfo.embeddedEventMessageTrackGroupIndex != C.INDEX_UNSET;

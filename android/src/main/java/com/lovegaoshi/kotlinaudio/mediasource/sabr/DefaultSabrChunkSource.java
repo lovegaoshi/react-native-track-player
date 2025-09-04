@@ -13,6 +13,7 @@ import androidx.media3.datasource.DataSpec;
 import androidx.media3.exoplayer.LoadingInfo;
 import androidx.media3.exoplayer.SeekParameters;
 import androidx.media3.exoplayer.source.chunk.BundledChunkExtractor;
+import androidx.media3.exoplayer.source.chunk.ChunkExtractor;
 import androidx.media3.exoplayer.trackselection.ExoTrackSelection;
 import androidx.media3.exoplayer.upstream.LoadErrorHandlingPolicy;
 import androidx.media3.extractor.Extractor;
@@ -390,7 +391,7 @@ public class DefaultSabrChunkSource implements SabrChunkSource {
     @Override
     public void release() {
         for (RepresentationHolder representationHolder : representationHolders) {
-            @Nullable ChunkExtractor chunkExtractor = representationHolder.chunkExtractor;
+            @Nullable ChunkExtractor chunkExtractor = representationHolder.extractorWrapper;
             if (chunkExtractor != null) {
                 chunkExtractor.release();
             }

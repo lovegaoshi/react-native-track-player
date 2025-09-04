@@ -1,6 +1,6 @@
 package com.liskovsoft.mediaserviceinterfaces.data;
 
-import io.reactivex.Observable;
+// import io.reactivex.Observable;
 
 import java.io.InputStream;
 import java.util.List;
@@ -30,7 +30,7 @@ public interface MediaItemFormatInfo {
     boolean hasExtendedHlsFormats();
     float getVolumeLevel();
     InputStream createMpdStream();
-    Observable<InputStream> createMpdStreamObservable();
+    // Observable<InputStream> createMpdStreamObservable();
     List<String> createUrlList();
     MediaItemStoryboard createStoryboard();
     boolean isUnplayable();
