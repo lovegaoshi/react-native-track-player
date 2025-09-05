@@ -25,6 +25,8 @@ import androidx.media3.exoplayer.upstream.LoadErrorHandlingPolicy
 import androidx.media3.extractor.DefaultExtractorsFactory
 import com.lovegaoshi.kotlinaudio.utils.isUriLocalFile
 import androidx.core.net.toUri
+import com.lovegaoshi.kotlinaudio.mediasource.sabr.DefaultSabrChunkSource
+import com.lovegaoshi.kotlinaudio.mediasource.sabr.SabrMediaSource
 
 
 @OptIn(UnstableApi::class)
@@ -86,23 +88,30 @@ class MediaFactory (
             "dash" -> createDashSource(mediaItem, factory)
             "hls" -> createHlsSource(mediaItem, factory)
             "smoothstreaming" -> createSsSource(mediaItem, factory)
+            "sabr" -> createSabrSource(mediaItem, factory)
             else -> createProgressiveSource(mediaItem, factory)
         }
     }
 
-    private fun createDashSource(mediaItem: MediaItem, factory: DataSource.Factory?): MediaSource {
-        return DashMediaSource.Factory(DefaultDashChunkSource.Factory(factory!!), factory)
+    private fun createDashSource(mediaItem: MediaItem, factory: DataSource.Factory): MediaSource {
+        return DashMediaSource.Factory(DefaultDashChunkSource.Factory(factory), factory)
             .createMediaSource(mediaItem)
     }
 
-    private fun createHlsSource(mediaItem: MediaItem, factory: DataSource.Factory?): MediaSource {
-        return HlsMediaSource.Factory(factory!!)
+    private fun createHlsSource(mediaItem: MediaItem, factory: DataSource.Factory): MediaSource {
+        return HlsMediaSource.Factory(factory)
             .createMediaSource(mediaItem)
     }
 
-    private fun createSsSource(mediaItem: MediaItem, factory: DataSource.Factory?): MediaSource {
-        return SsMediaSource.Factory(DefaultSsChunkSource.Factory(factory!!), factory)
+    private fun createSsSource(mediaItem: MediaItem, factory: DataSource.Factory): MediaSource {
+        return SsMediaSource.Factory(DefaultSsChunkSource.Factory(factory), factory)
             .createMediaSource(mediaItem)
+    }
+
+    private fun createSabrSource(mediaItem: MediaItem, factory: DataSource.Factory): MediaSource {
+        return SabrMediaSource.Factory(
+            DefaultSabrChunkSource.Factory(factory), factory
+        ).createMediaSource(mediaItem.mediaMetadata.extras?.getString("uri")!!.toUri())
     }
 
     private fun createProgressiveSource(

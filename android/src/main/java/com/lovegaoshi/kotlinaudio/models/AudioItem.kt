@@ -68,6 +68,8 @@ enum class MediaType(val value: String) {
      */
     HLS("hls"),
 
+    SABR("sabr"),
+
     /**
      * The SmoothStreaming media type for adaptive streams. Should be used with SmoothStreaming manifests.
      */

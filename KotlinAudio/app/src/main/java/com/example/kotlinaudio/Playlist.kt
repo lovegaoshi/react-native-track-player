@@ -28,12 +28,12 @@ class Playlist {
             title = "Whip",
             artwork = "https://rntp.dev/example/hls/whip/whip.jpeg",
             type = MediaType.HLS
-
         )),
-            audioItem2MediaItem(DefaultAudioItem(
-                audioUrl = "https://ais-sa5.cdnstream1.com/b75154_128mp3",
-            title = "Smooth Jazz 24/7",
-            artist = "David Chavez",
-            artwork = "https://rntp.dev/example/smooth-jazz-24-7.jpeg"
-            )),)
+        audioItem2MediaItem(DefaultAudioItem(
+            audioUrl = "https://ais-sa5.cdnstream1.com/b75154_128mp3",
+        title = "Smooth Jazz 24/7",
+        artist = "David Chavez",
+        artwork = "https://rntp.dev/example/smooth-jazz-24-7.jpeg"
+        )),
+        )
 }
