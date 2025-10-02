@@ -16,6 +16,7 @@ import androidx.media3.exoplayer.source.chunk.BundledChunkExtractor;
 import androidx.media3.exoplayer.source.chunk.ChunkExtractor;
 import androidx.media3.exoplayer.trackselection.ExoTrackSelection;
 import androidx.media3.exoplayer.upstream.LoadErrorHandlingPolicy;
+import androidx.media3.extractor.ChunkIndex;
 import androidx.media3.extractor.Extractor;
 import androidx.media3.extractor.TrackOutput;
 import androidx.media3.extractor.mkv.MatroskaExtractor;
@@ -380,11 +381,34 @@ public class DefaultSabrChunkSource implements SabrChunkSource {
 
     @Override
     public void onChunkLoadCompleted(Chunk chunk) {
-
+        if (chunk instanceof InitializationChunk) {
+            InitializationChunk initializationChunk = (InitializationChunk) chunk;
+            int trackIndex = trackSelection.indexOf(initializationChunk.trackFormat);
+            RepresentationHolder representationHolder = representationHolders[trackIndex];
+            // The null check avoids overwriting an index obtained from the manifest with one obtained
+            // from the stream. If the manifest defines an index then the stream shouldn't, but in cases
+            // where it does we should ignore it.
+            if (representationHolder.segmentIndex == null) {
+                ChunkIndex seekMap = representationHolder.extractorWrapper.getChunkIndex();
+                if (seekMap != null) {
+                    representationHolders[trackIndex] =
+                            representationHolder.copyWithNewSegmentIndex(
+                                    new SabrWrappingSegmentIndex(
+                                            seekMap,
+                                            representationHolder.representation.presentationTimeOffsetUs));
+                }
+            }
+        }
+        if (playerTrackEmsgHandler != null) {
+            // playerTrackEmsgHandler.onChunkLoadCompleted(chunk);
+        }
     }
 
     @Override
-    public boolean onChunkLoadError(Chunk chunk, boolean cancelable, LoadErrorHandlingPolicy.LoadErrorInfo loadErrorInfo, LoadErrorHandlingPolicy loadErrorHandlingPolicy) {
+    public boolean onChunkLoadError(
+            Chunk chunk, boolean cancelable, LoadErrorHandlingPolicy.LoadErrorInfo loadErrorInfo,
+            LoadErrorHandlingPolicy loadErrorHandlingPolicy) {
+        // TODO: I have no idea how to implement.
         return false;
     }
 
