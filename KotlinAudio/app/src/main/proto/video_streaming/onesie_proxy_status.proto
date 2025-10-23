@@ -2,7 +2,7 @@ syntax = "proto2";
 package video_streaming;
 
 enum OnesieProxyStatus {
-  UNKNOWN = 0;
+  // UNKNOWN = 0;
   OK = 1;
   DECRYPTION_FAILED = 2;
   PARSING_FAILED = 3;

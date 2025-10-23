@@ -3,7 +3,7 @@ package video_streaming;
 
 enum OnesieHeaderType {
   ONESIE_PLAYER_RESPONSE = 0;
-  MEDIA = 1;
+  // MEDIA = 1;
   MEDIA_DECRYPTION_KEY = 2;
   CLEAR_MEDIA = 3;
   CLEAR_INIT_SEGMENT = 4;

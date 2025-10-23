@@ -5,9 +5,15 @@ plugins {
     id ("com.google.protobuf") version "0.9.5"
 }
 
+
+
 android {
     namespace = "com.lovegaoshi.kotlinaudio"
     compileSdk = 36
+
+    sourceSets.getByName("main") {
+        java.srcDir("build/generated/sources/proto")
+    }
 
     defaultConfig {
         applicationId = "com.lovegaoshi.kotlinaudio"
@@ -98,9 +104,6 @@ protobuf {
         all().forEach { task ->
             task.builtins {
                 create("java") {
-                    option("lite")
-                }
-                create("kotlin") {
                     option("lite")
                 }
             }
