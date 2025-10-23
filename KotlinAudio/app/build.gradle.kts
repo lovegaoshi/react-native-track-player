@@ -87,26 +87,5 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-guava:1.10.2")
     implementation("androidx.compose.material:material-icons-extended")
     implementation("io.coil-kt:coil-compose:2.7.0")
-    implementation("com.google.protobuf:protobuf-gradle-plugin:0.9.5")
-    implementation("com.google.protobuf:protobuf-javalite:4.33.0")
 }
 
-protobuf {
-    protoc {
-        artifact = "com.google.protobuf:protoc:4.33.0" // Specify the Protobuf compiler version
-    }
-    plugins {
-        create("javalite") {
-            artifact = "com.google.protobuf:protoc-gen-javalite:4.33.0"
-        }
-    }
-    generateProtoTasks {
-        all().forEach { task ->
-            task.builtins {
-                create("java") {
-                    option("lite")
-                }
-            }
-        }
-    }
-}
