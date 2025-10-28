@@ -88,13 +88,13 @@ dependencies {
     // Make sure we're using androidx
     implementation "androidx.core:core-ktx:1.17.0"
     implementation "androidx.localbroadcastmanager:localbroadcastmanager:1.1.0"
-    implementation "androidx.lifecycle:lifecycle-process:2.9.3"
+    implementation "androidx.lifecycle:lifecycle-process:2.9.4"
     implementation 'androidx.media:media:1.7.1'
 
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.9.3")
-    implementation("androidx.activity:activity-compose:1.10.1")
-    implementation("androidx.compose.ui:ui:1.9.0")
-    implementation("androidx.compose.ui:ui-graphics:1.9.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.9.4")
+    implementation("androidx.activity:activity-compose:1.11.0")
+    implementation("androidx.compose.ui:ui:1.9.4")
+    implementation("androidx.compose.ui:ui-graphics:1.9.4")
 
     implementation("androidx.media3:media3-exoplayer:1.8.0")
     implementation("androidx.media3:media3-session:1.8.0")
@@ -105,7 +105,7 @@ dependencies {
     implementation("androidx.media3:media3-common:1.8.0")
     implementation("org.jellyfin.media3:media3-ffmpeg-decoder:1.8.0+1")
 
-    implementation "com.google.guava:guava:33.4.8-android"
+    implementation "com.google.guava:guava:33.5.0-android"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-guava:1.10.2"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2"
 
@@ -114,7 +114,7 @@ dependencies {
 
     implementation 'androidx.test:rules:1.7.0'
     implementation 'jp.wasabeef.transformers:coil:1.0.6'
-    implementation "com.google.protobuf:protobuf-javalite:4.33.0"
+    api "com.google.protobuf:protobuf-javalite:4.33.0"
 }
 
 protobuf {
