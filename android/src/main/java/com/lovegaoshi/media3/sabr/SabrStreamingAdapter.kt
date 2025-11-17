@@ -1,5 +1,6 @@
 package com.lovegaoshi.media3.sabr
 
+import misc.Common.FormatId
 import video_streaming.ClientAbrStateOuterClass.ClientAbrState
 import video_streaming.StreamerContextOuterClass.StreamerContext.ClientInfo
 import video_streaming.StreamerContextOuterClass.StreamerContext
@@ -41,9 +42,23 @@ fun buildClientAbrState(
         .build()
 }
 
-fun buildVideoPlaybackAbrRequest(streamerContext: StreamerContext, clientAbrState: ClientAbrState): ByteArray {
+fun buildFormatId(itag: Int, lastModified: Long, xtags: String?): FormatId {
+    val formatId = FormatId.newBuilder().setItag(itag).setLastModified(lastModified)
+    if (xtags != null) {
+        formatId.setXtags(xtags)
+    }
+    return formatId.build()
+}
+
+fun buildVideoPlaybackAbrRequest(
+    streamerContext: StreamerContext, clientAbrState: ClientAbrState, audioFormatId: FormatId?,
+    videoFormatId: FormatId?, ustreamerConfig: String): ByteArray {
     val playbackAbrRequest = VideoPlaybackAbrRequestOuterClass.VideoPlaybackAbrRequest.newBuilder()
         .setStreamerContext(streamerContext)
         .setClientAbrState(clientAbrState)
+        .setVideoPlaybackUstreamerConfig(base64ToU8(ustreamerConfig))
+    if (audioFormatId != null) { playbackAbrRequest.addPreferredAudioFormatIds(audioFormatId) }
+    if (videoFormatId != null) { playbackAbrRequest.addPreferredVideoFormatIds(videoFormatId) }
+
     return playbackAbrRequest.build().toByteArray()
 }
