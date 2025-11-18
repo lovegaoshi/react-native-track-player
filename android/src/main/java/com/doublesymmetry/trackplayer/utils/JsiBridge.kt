@@ -1,6 +1,5 @@
 package com.doublesymmetry.trackplayer.utils
 
-import android.util.Log
 import com.facebook.react.bridge.ReactApplicationContext
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlinx.coroutines.*
@@ -109,4 +108,9 @@ class JsiBridge(private val reactContext: ReactApplicationContext) {
         fun onResolve(result: Map<String, Any?>)
         fun onReject(error: String)
     }
+}
+
+// JsiBridge converts arrays into a hashmap with index as the key.
+fun mapToByteArray(map: Map<String, Any?>): ByteArray {
+    return ByteArray(map.size) { pos -> (map[pos.toString()] as Double).toInt().toByte() }
 }
