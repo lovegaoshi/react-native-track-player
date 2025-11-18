@@ -36,13 +36,13 @@ function resolveImportedAssetOrPath(pathOrAsset: string | number | undefined) {
   return pathOrAsset === undefined
     ? undefined
     : typeof pathOrAsset === 'string'
-      ? pathOrAsset
-      : resolveImportedAsset(pathOrAsset);
+    ? pathOrAsset
+    : resolveImportedAsset(pathOrAsset);
 }
 
 function resolveImportedAsset(id?: number) {
   return id
-    ? ((resolveAssetSource(id) as { uri: string } | null) ?? undefined)
+    ? (resolveAssetSource(id) as { uri: string } | null) ?? undefined
     : undefined;
 }
 
@@ -61,7 +61,7 @@ function resolveImportedAsset(id?: number) {
  */
 export async function setupPlayer(
   options: PlayerOptions = {},
-  background = false,
+  background = false
 ): Promise<void> {
   return TrackPlayer.setupPlayer(options, background);
 }
@@ -85,7 +85,7 @@ export function addEventListener<T extends Event>(
   event: T,
   listener: EventPayloadByEvent[T] extends never
     ? () => void
-    : (event: EventPayloadByEvent[T]) => void,
+    : (event: EventPayloadByEvent[T]) => void
 ) {
   return emitter.addListener(event, listener);
 }
@@ -101,7 +101,7 @@ export function addEventListener<T extends Event>(
  */
 export async function add(
   tracks: AddTrack[],
-  insertBeforeIndex?: number,
+  insertBeforeIndex?: number
 ): Promise<number | void>;
 /**
  * Adds a track to the queue.
@@ -112,18 +112,18 @@ export async function add(
  */
 export async function add(
   track: AddTrack,
-  insertBeforeIndex?: number,
+  insertBeforeIndex?: number
 ): Promise<number | void>;
 export async function add(
   tracks: AddTrack | AddTrack[],
-  insertBeforeIndex = -1,
+  insertBeforeIndex = -1
 ): Promise<number | void> {
   const resolvedTracks = (Array.isArray(tracks) ? tracks : [tracks]).map(
     (track) => ({
       ...track,
       url: resolveImportedAssetOrPath(track.url),
       artwork: resolveImportedAssetOrPath(track.artwork),
-    }),
+    })
   );
   return resolvedTracks.length < 1
     ? undefined
@@ -172,7 +172,7 @@ export async function remove(indexes: number[]): Promise<void>;
 export async function remove(index: number): Promise<void>;
 export async function remove(indexOrIndexes: number | number[]): Promise<void> {
   return TrackPlayer.remove(
-    Array.isArray(indexOrIndexes) ? indexOrIndexes : [indexOrIndexes],
+    Array.isArray(indexOrIndexes) ? indexOrIndexes : [indexOrIndexes]
   );
 }
 
@@ -251,7 +251,7 @@ export async function updateOptions({
  */
 export async function updateMetadataForTrack(
   trackIndex: number,
-  metadata: TrackMetadataBase,
+  metadata: TrackMetadataBase
 ): Promise<void> {
   return TrackPlayer.updateMetadataForTrack(trackIndex, {
     ...metadata,
@@ -264,7 +264,7 @@ export async function updateMetadataForTrack(
  * without affecting the data stored for the current track.
  */
 export function updateNowPlayingMetadata(
-  metadata: NowPlayingMetadata,
+  metadata: NowPlayingMetadata
 ): Promise<void> {
   return TrackPlayer.updateNowPlayingMetadata({
     ...metadata,
@@ -308,7 +308,7 @@ export async function stop(): Promise<void> {
  * or `TrackPlayer.pause()` when `playWhenReady = false`.
  */
 export async function setPlayWhenReady(
-  playWhenReady: boolean,
+  playWhenReady: boolean
 ): Promise<boolean> {
   return TrackPlayer.setPlayWhenReady(playWhenReady);
 }
@@ -435,7 +435,7 @@ export const fadeOutPause = async (duration = 500, interval = 20) => {
 export const fadeOutNext = async (
   duration = 500,
   interval = 20,
-  toVolume = 1,
+  toVolume = 1
 ) => {
   if (isAndroid) {
     TrackPlayer.fadeOutNext(duration, interval, toVolume);
@@ -465,7 +465,7 @@ export const fadeOutNext = async (
 export const fadeOutPrevious = async (
   duration = 500,
   interval = 20,
-  toVolume = 1,
+  toVolume = 1
 ) => {
   if (isAndroid) {
     TrackPlayer.fadeOutPrevious(duration, interval, toVolume);
@@ -497,7 +497,7 @@ export const fadeOutJump = async (
   index: number,
   duration = 500,
   interval = 20,
-  toVolume = 1,
+  toVolume = 1
 ) => {
   if (isAndroid) {
     TrackPlayer.fadeOutJump(index, duration, interval, toVolume);
@@ -660,7 +660,7 @@ export async function retry() {
  * @returns a serialized copy of the browseTree set by native. For debug purposes.
  */
 export async function setBrowseTree(
-  browseTree: AndroidAutoBrowseTree,
+  browseTree: AndroidAutoBrowseTree
 ): Promise<string> {
   if (!isAndroid) return new Promise(() => '');
   return TrackPlayer.setBrowseTree(browseTree);
@@ -686,7 +686,7 @@ export async function setPlaybackState(mediaID: string): Promise<void> {
  */
 export function setBrowseTreeStyle(
   browsableStyle: AndroidAutoContentStyle,
-  playableStyle: AndroidAutoContentStyle,
+  playableStyle: AndroidAutoContentStyle
 ): null {
   if (!isAndroid) return null;
   TrackPlayer.setBrowseTreeStyle(browsableStyle, playableStyle);
@@ -734,14 +734,14 @@ export async function crossFade(
   fadeDuration = 2000,
   fadeInterval = 20,
   fadeToVolume = 1,
-  waitUntil = 0,
+  waitUntil = 0
 ) {
   if (!isAndroid) return;
   TrackPlayer.switchExoPlayer(
     fadeDuration,
     fadeInterval,
     fadeToVolume,
-    waitUntil,
+    waitUntil
   );
 }
 
@@ -789,3 +789,44 @@ export async function getEqualizerPresets(): Promise<string[]> {
   if (!isAndroid) return [];
   return TrackPlayer.getEqualizerPresets();
 }
+
+(global as any).__nativeJSIAsyncCall = (
+  fnName: string,
+  arg: any,
+  onResolve?: (v: any) => void,
+  onReject?: (e: any) => void
+) => {
+  const safeResolve = typeof onResolve === 'function' ? onResolve : () => {};
+  const safeReject = typeof onReject === 'function' ? onReject : () => {};
+
+  try {
+    const fn = (global as any)[fnName];
+    if (typeof fn !== 'function') {
+      safeReject(`${fnName} is not a function`);
+      return;
+    }
+    Promise.resolve(fn(arg))
+      .then((v) => {
+        try {
+          safeResolve(v);
+        } catch (e) {
+          /* swallow */
+        }
+      })
+      .catch((e) => {
+        const msg = String(e?.message ?? e);
+        try {
+          safeReject(msg);
+        } catch (_e) {
+          /* swallow */
+        }
+      });
+  } catch (e: any) {
+    const msg = String(e?.message ?? e);
+    try {
+      safeReject(msg);
+    } catch (_e) {
+      /* swallow */
+    }
+  }
+};

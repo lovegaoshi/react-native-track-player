@@ -55,6 +55,8 @@ import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import kotlin.system.exitProcess
 import androidx.core.net.toUri
+import com.doublesymmetry.trackplayer.utils.JsiBridge
+import com.facebook.react.bridge.ReactApplicationContext
 
 @OptIn(UnstableApi::class)
 @MainThread
@@ -64,6 +66,7 @@ class MusicService : HeadlessJsMediaService() {
     private val scope = MainScope()
     private lateinit var fakePlayer: ExoPlayer
     private lateinit var mediaSession: MediaLibrarySession
+    private lateinit var jsiBridge: JsiBridge
     private var progressUpdateJob: Job? = null
     var mediaTree: Map<String, List<MediaItem>> = HashMap()
     var mediaTreeStyle: List<Int> = listOf(
@@ -216,6 +219,7 @@ class MusicService : HeadlessJsMediaService() {
             print("Player was initialized. Prevent re-initializing again")
             return
         }
+        jsiBridge = JsiBridge(reactContext as ReactApplicationContext)
         Timber.tag("APM").d("RNTP musicservice set up")
         val fftSampleRate = playerOptions?.getDouble(USE_FFT_PROCESSOR)?.toInt() ?: 0
         val mPlayerOptions = PlayerOptions(
@@ -993,6 +997,13 @@ class MusicService : HeadlessJsMediaService() {
     @MainThread
     inner class MusicBinder : Binder() {
         val service = this@MusicService
+    }
+
+    fun callJsFunction(fnName: String, input:String = "testdata") {
+        CoroutineScope(Dispatchers.Main).launch {
+            val result = jsiBridge.callJSAndResolve(fnName, input)
+            Timber.tag("RNTP").d("calling  $fnName; received: $result")
+        }
     }
 
     private inner class APMMediaSessionCallback: MediaLibrarySession.Callback {

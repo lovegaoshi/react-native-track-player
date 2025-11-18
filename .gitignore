@@ -17,6 +17,7 @@ android/gradle/
 android/captures/
 android/local.properties
 android/*.iml
+android/.cxx
 android/gradlew
 android/gradlew.bat
 .gradle/

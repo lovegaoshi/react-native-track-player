@@ -41,8 +41,24 @@ android {
         minSdkVersion getExtOrIntegerDefault('minSdkVersion', 23) // RN's minimum version
         targetSdkVersion getExtOrIntegerDefault('targetSdkVersion', 34)
 
-
         consumerProguardFiles 'proguard-rules.txt'
+        externalNativeBuild {
+            cmake {
+                cppFlags "-std=c++17"
+            }
+        }
+    }
+    if (!rootProject.ext.has("native")) {
+        externalNativeBuild {
+            cmake {
+                path "src/main/cpp/CMakeLists.txt"
+            }
+        }
+
+        packagingOptions {
+            // Make sure to include jsi .so
+            pickFirst '**/libtrackplayer.so'
+        }
     }
 
     compileOptions {
