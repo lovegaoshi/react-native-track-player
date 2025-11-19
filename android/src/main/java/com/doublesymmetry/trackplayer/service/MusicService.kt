@@ -56,7 +56,13 @@ import java.util.concurrent.TimeUnit
 import kotlin.system.exitProcess
 import androidx.core.net.toUri
 import com.doublesymmetry.trackplayer.utils.JsiBridge
+import com.doublesymmetry.trackplayer.utils.mapToByteArray
 import com.facebook.react.bridge.ReactApplicationContext
+
+import okhttp3.* // Import OkHttp classes
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.RequestBody.Companion.toRequestBody
+import java.io.IOException
 
 @OptIn(UnstableApi::class)
 @MainThread
@@ -256,6 +262,40 @@ class MusicService : HeadlessJsMediaService() {
         fakePlayer.release()
         mediaSession.player = player.player
         observeEvents()
+        fun log(result: Map<String, Any?>) {
+            val url = result["url"]
+            val body = mapToByteArray(result["body"] as Map<String, Any?>)
+
+            // 1. Create an OkHttpClient instance
+            val client = OkHttpClient()
+
+            // 3. Build the request
+            val request = Request.Builder()
+                .url(url as String)
+                .post(body.toRequestBody())
+                .build()
+
+            client.newCall(request).enqueue(object : Callback {
+                override fun onFailure(call: Call, e: IOException) {
+                    // Handle failure, e.g., network error
+                    Timber.tag("APM").e(e, "POST request failed")
+                }
+
+                override fun onResponse(call: Call, response: Response) {
+                    // Handle success
+                    // The response body is available in response.body?.string()
+                    // Remember that response.body?.string() can only be called once.
+                    response.use {
+                        if (!it.isSuccessful) {
+                            Timber.tag("APM").w("POST request was not successful: ${it.code}")
+                            return
+                        }
+                        Timber.tag("APM").d("POST request successful: ${it.body?.string()}")
+                    }
+                }
+            })
+        }
+        callJsFunctionAsync("testFunction", callback = ::log)
     }
 
     @MainThread
