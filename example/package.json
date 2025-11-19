@@ -25,6 +25,8 @@
   },
   "dependencies": {
     "@react-native-assets/slider": "^11.0.10",
+    "event-target-polyfill": "^0.0.4",
+    "googlevideo": "^4.0.4",
     "mux.js": "^7.0.0",
     "react": "19.1.0",
     "react-dom": "^18.0.2",
@@ -34,7 +36,8 @@
     "react-native-web": "^0.18.10",
     "react-native-windows": "0.71.12",
     "react-scripts": "5.0.1",
-    "shaka-player": "^4.7.9"
+    "shaka-player": "^4.7.9",
+    "youtubei.js": "^16.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.28.3",

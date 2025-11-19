@@ -3022,6 +3022,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@bufbuild/protobuf@npm:^2.0.0":
+  version: 2.10.1
+  resolution: "@bufbuild/protobuf@npm:2.10.1"
+  checksum: 10c0/47fde36740663e8b45c8290dc9107780a579971fae9664ece6ed0da24add458b46492cc1ff4847db218ec918a9cdf76b8e74ab0b21d79912163f3c4cb0ceda22
+  languageName: node
+  linkType: hard
+
 "@csstools/normalize.css@npm:*":
   version: 12.1.1
   resolution: "@csstools/normalize.css@npm:12.1.1"
@@ -10497,6 +10504,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"event-target-polyfill@npm:^0.0.4":
+  version: 0.0.4
+  resolution: "event-target-polyfill@npm:0.0.4"
+  checksum: 10c0/7052b838df6509e8290f110daf94604dd05828834db4ad6fe4a12abc693da1a3274100cfd4ff3e47a941d5aa3fb7cdb8164d85402b93d85340bb3adc596d8732
+  languageName: node
+  linkType: hard
+
 "event-target-shim@npm:^5.0.0, event-target-shim@npm:^5.0.1":
   version: 5.0.1
   resolution: "event-target-shim@npm:5.0.1"
@@ -10546,6 +10560,8 @@ __metadata:
     cpx: "npm:^1.5.0"
     eslint: "npm:^8.57.1"
     eslint-plugin-react-hooks: "npm:^5.2.0"
+    event-target-polyfill: "npm:^0.0.4"
+    googlevideo: "npm:^4.0.4"
     jest: "npm:^30.1.1"
     mux.js: "npm:^7.0.0"
     prettier: "npm:^3.6.2"
@@ -10563,6 +10579,7 @@ __metadata:
     rimraf: "npm:^3.0.2"
     shaka-player: "npm:^4.7.9"
     typescript: "npm:5.9.2"
+    youtubei.js: "npm:^16.0.1"
   languageName: unknown
   linkType: soft
 
@@ -11617,6 +11634,15 @@ __metadata:
     pify: "npm:^3.0.0"
     slash: "npm:^1.0.0"
   checksum: 10c0/016d4dfac6069221b2db18ad6afb0011639899920dbec87492ddc048fcd433361e6c094b12451ab14cf062013a776f47ef21bb8289d5e09a2f23e81d5aec0f8e
+  languageName: node
+  linkType: hard
+
+"googlevideo@npm:^4.0.4":
+  version: 4.0.4
+  resolution: "googlevideo@npm:4.0.4"
+  dependencies:
+    "@bufbuild/protobuf": "npm:^2.0.0"
+  checksum: 10c0/5ca5a0368bcc18af095cc76218a158dfb02cc8f17d9060a630a1c669007374d5d6f182db31872bb9b69ba5c0a32546550d4235d6c556d1c407d53c4ce2c306c7
   languageName: node
   linkType: hard
 
@@ -14930,6 +14956,13 @@ __metadata:
   version: 1.4.1
   resolution: "merge2@npm:1.4.1"
   checksum: 10c0/254a8a4605b58f450308fc474c82ac9a094848081bf4c06778200207820e5193726dc563a0d2c16468810516a5c97d9d3ea0ca6585d23c58ccfff2403e8dbbeb
+  languageName: node
+  linkType: hard
+
+"meriyah@npm:^6.1.4":
+  version: 6.1.4
+  resolution: "meriyah@npm:6.1.4"
+  checksum: 10c0/d792a12df453b9e86c2bb70e73adf41b2d0fa88125381143e4d339d309ddcbb7aeb108e286411dcb19be82539d29b881279c613ae03ce514b7c296c72e9a8d00
   languageName: node
   linkType: hard
 
@@ -22142,5 +22175,15 @@ __metadata:
   version: 0.1.0
   resolution: "yocto-queue@npm:0.1.0"
   checksum: 10c0/dceb44c28578b31641e13695d200d34ec4ab3966a5729814d5445b194933c096b7ced71494ce53a0e8820685d1d010df8b2422e5bf2cdea7e469d97ffbea306f
+  languageName: node
+  linkType: hard
+
+"youtubei.js@npm:^16.0.1":
+  version: 16.0.1
+  resolution: "youtubei.js@npm:16.0.1"
+  dependencies:
+    "@bufbuild/protobuf": "npm:^2.0.0"
+    meriyah: "npm:^6.1.4"
+  checksum: 10c0/46ef1c35075f33cf48a81b307636a8a5142a80f06068dc5bfac347705644da90556f6d2fdceeb91b1eec5401d17df89ffe471c46038b8f98f3eb02e1419b05a3
   languageName: node
   linkType: hard
