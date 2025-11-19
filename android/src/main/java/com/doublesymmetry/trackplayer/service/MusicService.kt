@@ -290,7 +290,9 @@ class MusicService : HeadlessJsMediaService() {
                             Timber.tag("APM").w("POST request was not successful: ${it.code}")
                             return
                         }
-                        Timber.tag("APM").d("POST request successful: ${it.body?.string()}")
+                        val res = it.body?.bytes()
+                        val res2 = res?.toString(Charsets.UTF_8)
+                        Timber.tag("APM").d("POST request successful: ${res2}")
                     }
                 }
             })
