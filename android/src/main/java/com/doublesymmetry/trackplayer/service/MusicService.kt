@@ -999,11 +999,21 @@ class MusicService : HeadlessJsMediaService() {
         val service = this@MusicService
     }
 
-    fun callJsFunction(fnName: String, input:String = "testdata") {
-        CoroutineScope(Dispatchers.Main).launch {
-            val result = jsiBridge.callJSAndResolve(fnName, input)
-            Timber.tag("RNTP").d("calling  $fnName; received: $result")
+    fun callJsFunctionSync(fnName: String, input:String = "testdata"): Map<String, Any?> {
+        return runBlocking {
+            callJsFunction(fnName, input)
         }
+    }
+
+    fun callJsFunctionAsync(fnName: String, input:String = "testdata", callback: (input: Map<String, Any?>) -> Unit) {
+        CoroutineScope(Dispatchers.Main).launch {
+            callback(callJsFunction(fnName, input))
+        }
+    }
+
+    suspend fun callJsFunction(fnName: String, input:String = "testdata"): Map<String, Any?> {
+        val result = jsiBridge.callJSAndResolve(fnName, input)
+        return result
     }
 
     private inner class APMMediaSessionCallback: MediaLibrarySession.Callback {
