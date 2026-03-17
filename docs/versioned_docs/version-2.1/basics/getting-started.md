@@ -5,7 +5,9 @@ sidebar_position: 2
 # Getting Started
 
 ## Starting off
+
 First, you need to register a [playback service](./playback-service.md) right after registering the main component of your app (typically in your `index.js` file at the root of your project):
+
 ```ts
 // AppRegistry.registerComponent(...);
 TrackPlayer.registerPlaybackService(() => require('./service'));
@@ -13,17 +15,18 @@ TrackPlayer.registerPlaybackService(() => require('./service'));
 
 ```ts
 // service.js
-module.exports = async function() {
-    // This service needs to be registered for the module to work
-    // but it will be used later in the "Receiving Events" section
-}
+module.exports = async function () {
+  // This service needs to be registered for the module to work
+  // but it will be used later in the "Receiving Events" section
+};
 ```
 
 Then, you need to set up the player. This usually takes less than a second:
+
 ```ts
 import TrackPlayer from 'react-native-track-player';
 
-await TrackPlayer.setupPlayer()
+await TrackPlayer.setupPlayer();
 // The player is ready to be used
 ```
 
@@ -42,47 +45,46 @@ Then add the track to the queue:
 
 ```ts
 var track1 = {
-    url: 'http://example.com/avaritia.mp3', // Load media from the network
-    title: 'Avaritia',
-    artist: 'deadmau5',
-    album: 'while(1<2)',
-    genre: 'Progressive House, Electro House',
-    date: '2014-05-20T07:00:00+00:00', // RFC 3339
-    artwork: 'http://example.com/cover.png', // Load artwork from the network
-    duration: 402 // Duration in seconds
+  url: 'http://example.com/avaritia.mp3', // Load media from the network
+  title: 'Avaritia',
+  artist: 'deadmau5',
+  album: 'while(1<2)',
+  genre: 'Progressive House, Electro House',
+  date: '2014-05-20T07:00:00+00:00', // RFC 3339
+  artwork: 'http://example.com/cover.png', // Load artwork from the network
+  duration: 402, // Duration in seconds
 };
 
 const track2 = {
-    url: require('./coelacanth.ogg'), // Load media from the app bundle
-    title: 'Coelacanth I',
-    artist: 'deadmau5',
-    artwork: require('./cover.jpg'), // Load artwork from the app bundle
-    duration: 166
+  url: require('./coelacanth.ogg'), // Load media from the app bundle
+  title: 'Coelacanth I',
+  artist: 'deadmau5',
+  artwork: require('./cover.jpg'), // Load artwork from the app bundle
+  duration: 166,
 };
 
 const track3 = {
-    url: 'file:///storage/sdcard0/Downloads/artwork.png', // Load media from the file system
-    title: 'Ice Age',
-    artist: 'deadmau5',
-     // Load artwork from the file system:
-    artwork: 'file:///storage/sdcard0/Downloads/cover.png',
-    duration: 411
+  url: 'file:///storage/sdcard0/Downloads/artwork.png', // Load media from the file system
+  title: 'Ice Age',
+  artist: 'deadmau5',
+  // Load artwork from the file system:
+  artwork: 'file:///storage/sdcard0/Downloads/cover.png',
+  duration: 411,
 };
 
-// You can then [add](https://rntp.dev/docs/api/functions/queue#addtracks-insertbeforeindex) the items to the queue
+// You can then [add](https://doublesymmetry.github.io/react-native-track-player/docs/api/functions/queue#addtracks-insertbeforeindex) the items to the queue
 await TrackPlayer.add([track1, track2, track3]);
 ```
 
 ### Player Information
 
 ```ts
-
 import TrackPlayer, { State } from 'react-native-track-player';
 
 const state = await TrackPlayer.getState();
 if (state === State.Playing) {
-    console.log('The player is playing');
-};
+  console.log('The player is playing');
+}
 
 let trackIndex = await TrackPlayer.getCurrentTrack();
 let trackObject = await TrackPlayer.getTrack(trackIndex);
@@ -109,6 +111,7 @@ TrackPlayer.setVolume(0.5);
 ```
 
 ### Controlling the Queue
+
 ```ts
 // Skip to a specific track index:
 await TrackPlayer.skip(trackIndex);
@@ -126,6 +129,7 @@ await TrackPlayer.remove([trackIndex1, trackIndex2]);
 const tracks = await TrackPlayer.getQueue();
 console.log(`First title: ${tracks[0].title}`);
 ```
+
 #### Playback Events
 
 You can subscribe to [player events](../api/events.md#player), which describe the
@@ -135,26 +139,25 @@ subscribe to the `Event.PlaybackState` event to be notified when the player
 buffers, plays, pauses and stops.
 
 #### Example
+
 ```tsx
 import TrackPlayer, { Event } from 'react-native-track-player';
 
 const PlayerInfo = () => {
-    const [trackTitle, setTrackTitle] = useState<string>();
+  const [trackTitle, setTrackTitle] = useState<string>();
 
-    // do initial setup, set initial trackTitle..
+  // do initial setup, set initial trackTitle..
 
-    useTrackPlayerEvents([Event.PlaybackTrackChanged], async event => {
-        if (event.type === Event.PlaybackTrackChanged && event.nextTrack != null) {
-            const track = await TrackPlayer.getTrack(event.nextTrack);
-            const {title} = track || {};
-            setTrackTitle(title);
-        }
-    });
+  useTrackPlayerEvents([Event.PlaybackTrackChanged], async (event) => {
+    if (event.type === Event.PlaybackTrackChanged && event.nextTrack != null) {
+      const track = await TrackPlayer.getTrack(event.nextTrack);
+      const { title } = track || {};
+      setTrackTitle(title);
+    }
+  });
 
-    return (
-        <Text>{trackTitle}</Text>
-    );
-}
+  return <Text>{trackTitle}</Text>;
+};
 ```
 
 ## Progress Updates
@@ -169,20 +172,16 @@ updates itself automatically.
 import TrackPlayer, { useProgress } from 'react-native-track-player';
 
 const MyPlayerBar = () => {
-    const progress = useProgress();
+  const progress = useProgress();
 
-    return (
-            // Note: formatTime and ProgressBar are just examples:
-            <View>
-                <Text>{formatTime(progress.position)}</Text>
-                <ProgressBar
-                    progress={progress.position}
-                    buffered={progress.buffered}
-                />
-            </View>
-        );
-
-}
+  return (
+    // Note: formatTime and ProgressBar are just examples:
+    <View>
+      <Text>{formatTime(progress.position)}</Text>
+      <ProgressBar progress={progress.position} buffered={progress.buffered} />
+    </View>
+  );
+};
 ```
 
 ## Track Player Options
@@ -204,25 +203,25 @@ documentation](../api/functions/player.md#updateoptionsoptions).
 import TrackPlayer, { Capability } from 'react-native-track-player';
 
 TrackPlayer.updateOptions({
-    // Media controls capabilities
-    capabilities: [
-        Capability.Play,
-        Capability.Pause,
-        Capability.SkipToNext,
-        Capability.SkipToPrevious,
-        Capability.Stop,
-    ],
+  // Media controls capabilities
+  capabilities: [
+    Capability.Play,
+    Capability.Pause,
+    Capability.SkipToNext,
+    Capability.SkipToPrevious,
+    Capability.Stop,
+  ],
 
-    // Capabilities that will show up when the notification is in the compact form on Android
-    compactCapabilities: [Capability.Play, Capability.Pause],
+  // Capabilities that will show up when the notification is in the compact form on Android
+  compactCapabilities: [Capability.Play, Capability.Pause],
 
-    // Icons for the notification on Android (if you don't like the default ones)
-    playIcon: require('./play-icon.png'),
-    pauseIcon: require('./pause-icon.png'),
-    stopIcon: require('./stop-icon.png'),
-    previousIcon: require('./previous-icon.png'),
-    nextIcon: require('./next-icon.png'),
-    icon: require('./notification-icon.png')
+  // Icons for the notification on Android (if you don't like the default ones)
+  playIcon: require('./play-icon.png'),
+  pauseIcon: require('./pause-icon.png'),
+  stopIcon: require('./stop-icon.png'),
+  previousIcon: require('./previous-icon.png'),
+  nextIcon: require('./next-icon.png'),
+  icon: require('./notification-icon.png'),
 });
 ```
 

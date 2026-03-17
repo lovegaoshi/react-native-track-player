@@ -27,8 +27,10 @@ const DemoAndroidAutoHierarchy: AndroidAutoBrowseTree = {
       title: 'Soul Searching (Demo)',
       subtitle: 'David Chavez',
       playable: '0',
-      iconUri: 'https://rntp.dev/example/Soul%20Searching.jpeg',
-      mediaUri: 'https://rntp.dev/example/Soul%20Searching.mp3',
+      iconUri:
+        'https://doublesymmetry.github.io/react-native-track-player/example/Soul%20Searching.jpeg',
+      mediaUri:
+        'https://doublesymmetry.github.io/react-native-track-player/example/Soul%20Searching.mp3',
       groupTitle: 'RNTP Demo Group',
       playbackProgress: '0',
     },
@@ -37,8 +39,10 @@ const DemoAndroidAutoHierarchy: AndroidAutoBrowseTree = {
       title: 'Lullaby (Demo)',
       subtitle: 'David Chavez',
       playable: '0',
-      iconUri: 'https://rntp.dev/example/Lullaby%20(Demo).jpeg',
-      mediaUri: 'https://rntp.dev/example/Lullaby%20(Demo).mp3',
+      iconUri:
+        'https://doublesymmetry.github.io/react-native-track-player/example/Lullaby%20(Demo).jpeg',
+      mediaUri:
+        'https://doublesymmetry.github.io/react-native-track-player/example/Lullaby%20(Demo).mp3',
       groupTitle: 'RNTP Demo Group',
       playbackProgress: '0',
     },
