@@ -5,4 +5,14 @@ Please note this is a personal fork of [RNTP v4](https://github.com/doublesymmet
 
 Functionalities used by APM [passes the play store review](https://play.google.com/store/apps/details?id=com.noxplay.noxplayer&pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1).
 
-This fork and APM proudly remains open-source and APM is published under GPLv3. As this fork is specifically developed for APM, contributions are welcome but changes modifying any APM features will NOT be accepted. For feature usages it's encouraged to look at the example app and APM. For library usages it's recommend to FORK yourself and modify any APM specific features and resources as needed, or vibe code one like the gorgeous ppl at https://github.com/bbplayer-app/BBPlayer/tree/dev/packages/orpheus and https://github.com/bilisound/bilisound/tree/main/packages/player did
+This fork and APM proudly remains open-source and APM is published under GPLv3. as an RNTP fork this inherited a lot of tech debt and so does APM depending on it. For RNTP alternatives please look at 
+
+https://github.com/riteshshukla04/react-native-nitro-player 
+
+https://www.npmjs.com/package/expo-audio 
+
+https://github.com/bbplayer-app/BBPlayer/tree/dev/packages/orpheus
+
+https://github.com/bilisound/bilisound/tree/main/packages/player
+
+https://github.com/Illusion137/RNTPvE
