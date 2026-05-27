@@ -25,6 +25,9 @@ jobs:
       - name: enable corepack
         run: corepack enable
 
+      - name: use xcode 26
+        run: sudo xcode-select -switch /Applications/Xcode_26.5.app
+
       - name: Install dependencies
         run: yarn; yarn build; cd example; yarn; cd ios; RCT_USE_PREBUILT_RNCORE=1 RCT_USE_RN_DEP=1 pod install
 
