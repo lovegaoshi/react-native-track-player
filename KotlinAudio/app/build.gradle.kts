@@ -3,12 +3,12 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
-    id("org.jetbrains.kotlin.plugin.compose") version "2.2.10" // this version matches your Kotlin version
+    id("org.jetbrains.kotlin.plugin.compose") version "2.3.21" // this version matches your Kotlin version
 }
 
 android {
     namespace = "com.lovegaoshi.kotlinaudio"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "com.lovegaoshi.kotlinaudio"
