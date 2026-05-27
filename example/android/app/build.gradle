@@ -2,7 +2,6 @@ apply plugin: "com.android.application"
 apply plugin: "org.jetbrains.kotlin.android"
 apply plugin: "com.facebook.react"
 
-import org.apache.tools.ant.taskdefs.condition.Os
 
 /**
 
@@ -85,7 +84,7 @@ android {
     ndkVersion rootProject.ext.ndkVersion
 
     buildToolsVersion rootProject.ext.buildToolsVersion
-    compileSdk rootProject.ext.compileSdkVersion
+    compileSdk = rootProject.ext.compileSdkVersion
 
     namespace "com.example"
     defaultConfig {
@@ -123,13 +122,13 @@ dependencies {
     implementation 'com.android.support:appcompat-v7:28.0.0'
     implementation 'com.android.support:support-annotations:28.0.0'
     implementation 'com.android.support:design:28.0.0'
-    implementation("androidx.media3:media3-exoplayer:1.9.3")
-    implementation("androidx.media3:media3-session:1.9.3")
-    implementation("androidx.media3:media3-ui:1.9.3")
-    implementation("androidx.media3:media3-exoplayer-hls:1.9.3")
-    implementation("androidx.media3:media3-exoplayer-dash:1.9.3")
-    implementation("androidx.media3:media3-exoplayer-smoothstreaming:1.9.3")
-    implementation("androidx.media3:media3-common:1.9.3")
+    implementation("androidx.media3:media3-exoplayer:1.10.1")
+    implementation("androidx.media3:media3-session:1.10.1")
+    implementation("androidx.media3:media3-ui:1.10.1")
+    implementation("androidx.media3:media3-exoplayer-hls:1.10.1")
+    implementation("androidx.media3:media3-exoplayer-dash:1.10.1")
+    implementation("androidx.media3:media3-exoplayer-smoothstreaming:1.10.1")
+    implementation("androidx.media3:media3-common:1.10.1")
 
     // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
@@ -145,4 +144,4 @@ project.ext.vectoricons = [
     iconFontNames: [ 'FontAwesome6_Regular.ttf', 'FontAwesome6_Brands.ttf', 'FontAwesome6_Solid.ttf' ]
 ]
 
-apply from: file("../../node_modules/react-native-vector-icons/fonts.gradle");
+apply from: file("../../node_modules/react-native-vector-icons/fonts.gradle")
