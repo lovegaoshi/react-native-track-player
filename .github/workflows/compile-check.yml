@@ -9,7 +9,7 @@ on:
       - 'APM'
 jobs:
   buildIPA:
-    runs-on: macos-latest
+    runs-on: macos-26
     name: build IPA
     permissions:
       contents: write
