@@ -12,8 +12,24 @@ public typealias AudioPlayerState = AVPlayerWrapperState
 
 public class AudioPlayer: AVPlayerWrapperDelegate {
     /// The wrapper around the underlying AVPlayer
-    let wrapper: AVPlayerWrapperProtocol = AVPlayerWrapper()
+    let wrapper1: AVPlayerWrapperProtocol = AVPlayerWrapper()
+    var wrapper2: AVPlayerWrapperProtocol? = nil
+    // this is the current wrapper
+    var wrapper: AVPlayerWrapperProtocol
+    // this is the secondary/crossfade wrapper
+    var crossfadeWrapper: AVPlayerWrapperProtocol
+    // when true, the current wrapper is wrapper1; else, wrapper2
+    // for crossfade tracking
+    var currentAVPlayer = true
+    // indicates if crossfade is enabled/wrapper2 is initialized
+    var crossfade: Bool = false
 
+    func players () -> [AVPlayerWrapperProtocol] {
+        if (self.crossfade) {
+            return [wrapper1, wrapper2!]
+        }
+        return [wrapper1]
+    }
     
     /**
      Set an instance of AudioTap, to receive frame information and audio buffer access during playback.
@@ -29,6 +45,9 @@ public class AudioPlayer: AVPlayerWrapperDelegate {
     public let event = EventHolder()
 
     private(set) var currentItem: AudioItem?
+    // as audioplayer does NOT hold queue information, the crossfading audioItem needs to be
+    // stored as such - whereas exoplayer has a built in queue and can just skipToIndex
+    var crossfadeItem: AudioItem?
 
     /**
      Set this to false to disable automatic updating of now playing info for control center and lock screen.
@@ -190,10 +209,19 @@ public class AudioPlayer: AVPlayerWrapperDelegate {
      - parameter infoCenter: The InfoCenter to update. Default is `MPNowPlayingInfoCenter.default()`.
      */
     public init(nowPlayingInfoController: NowPlayingInfoControllerProtocol = NowPlayingInfoController(),
-                remoteCommandController: RemoteCommandController = RemoteCommandController()) {
+                remoteCommandController: RemoteCommandController = RemoteCommandController(),
+                crossfade: Bool = false
+    ) {
         self.nowPlayingInfoController = nowPlayingInfoController
         self.remoteCommandController = remoteCommandController
-
+        self.wrapper = self.wrapper1
+        self.crossfade = crossfade
+        if (crossfade) {
+            self.wrapper2 = AVPlayerWrapper()
+            self.crossfadeWrapper = self.wrapper2!
+        } else {
+            self.crossfadeWrapper = self.wrapper
+        }
         wrapper.delegate = self
         self.remoteCommandController.audioPlayer = self
     }

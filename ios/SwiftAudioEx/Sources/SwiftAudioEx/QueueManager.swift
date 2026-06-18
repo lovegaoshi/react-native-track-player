@@ -37,7 +37,7 @@ class QueueManager<Element> {
     /**
      The index of the current item. `-1` when there is no current item
      */
-    private(set) var currentIndex: Int {
+    var currentIndex: Int {
         get {
             return synchronize {
                 return _currentIndex
@@ -352,5 +352,17 @@ class QueueManager<Element> {
             delegate?.onCurrentItemChanged()
         }
     }
-
+ 
+    // peek for the next item. does not change currentIndex
+    public func peek(direction: Int = 1) -> Int {
+        if (items.isEmpty) {
+            return -1
+        }
+        var finalIndex = (currentIndex + direction) % items.count
+        if (finalIndex < 0) {
+            finalIndex += items.count
+        }
+        return finalIndex
+    }
+    
 }
