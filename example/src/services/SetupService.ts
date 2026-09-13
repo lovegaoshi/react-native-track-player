@@ -10,7 +10,7 @@ export const DefaultAudioServiceBehaviour =
 
 const setupPlayer = async (
   options: Parameters<typeof TrackPlayer.setupPlayer>[0],
-  background = false
+  background = false,
 ) => {
   const setup = async () => {
     try {
@@ -33,8 +33,9 @@ export const SetupService = async (background = false) => {
       autoHandleInterruptions: true,
       crossfade: true,
       useFFTProcessor: 4096,
+      androidCropSquare: 1,
     },
-    background
+    background,
   );
   await TrackPlayer.updateOptions({
     android: {

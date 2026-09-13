@@ -74,6 +74,7 @@ class MusicService : HeadlessJsMediaService() {
     private var customLayout: List<CommandButton> = listOf()
     private var lastWake: Long = 0
     var lastConnectedPackage: String = ""
+    private lateinit var coilBitmapLoader: CoilBitmapLoader
 
     fun setEqualizerPreset(preset: Int) {
         player.setEqualizerPreset(preset)
@@ -140,8 +141,9 @@ class MusicService : HeadlessJsMediaService() {
             data = "trackplayer://notification.click".toUri()
             action = Intent.ACTION_VIEW
         }
+        coilBitmapLoader = CoilBitmapLoader(this)
         mediaSession = MediaLibrarySession.Builder(this, fakePlayer, APMMediaSessionCallback() )
-            .setBitmapLoader(CacheBitmapLoader(CoilBitmapLoader(this)))
+            .setBitmapLoader(CacheBitmapLoader(coilBitmapLoader))
             // https://github.com/androidx/media/issues/1218
             .setSessionActivity(PendingIntent.getActivity(this, 0, openAppIntent, getPendingIntentFlags()))
             .build()
@@ -252,6 +254,9 @@ class MusicService : HeadlessJsMediaService() {
         fakePlayer.release()
         mediaSession.player = player.player
         observeEvents()
+        playerOptions?.getDouble(CROP_SQUARE).let {
+            coilBitmapLoader.cropSquare = it?.toInt() ?: CoilBitmapLoader.NO_CROP_SQUARE
+        }
     }
 
     @MainThread
@@ -1247,6 +1252,7 @@ class MusicService : HeadlessJsMediaService() {
         const val ALWAYS_SHOW_NEXT = "androidAlwaysShowNext"
         const val SKIP_SILENCE = "androidSkipSilence"
         const val WAKE_MODE = "androidWakeMode"
+        const val CROP_SQUARE = "androidCropSquare"
 
         const val AA_FOR_YOU_KEY = "for-you"
         const val AA_ROOT_KEY = "/"

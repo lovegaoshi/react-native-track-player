@@ -135,4 +135,16 @@ export interface PlayerOptions {
    * Defaults to 0 (disables it).
    */
   useFFTProcessor?: number;
+  /**
+   * Controls how album artwork is cropped on Android.
+   * - `0` (default) – no crop
+   * - `1` – automatically crop when pillarbox bars are detected
+   * - `2` – always crop to square
+   *
+   * Samsung devices always crop to square regardless of this value.
+   *
+   * Supported on Android only.
+   * @default 0
+   */
+  androidCropSquare?: 0 | 1 | 2;
 }
