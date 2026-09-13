@@ -12,7 +12,7 @@ import android.provider.Settings
 import android.view.KeyEvent
 import androidx.annotation.MainThread
 import androidx.annotation.OptIn
-import androidx.media.utils.MediaConstants
+import androidx.media3.session.MediaConstants
 import androidx.media3.common.C
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
@@ -55,6 +55,7 @@ import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import kotlin.system.exitProcess
 import androidx.core.net.toUri
+import kotlin.time.Duration.Companion.milliseconds
 
 @OptIn(UnstableApi::class)
 @MainThread
@@ -67,8 +68,8 @@ class MusicService : HeadlessJsMediaService() {
     private var progressUpdateJob: Job? = null
     var mediaTree: Map<String, List<MediaItem>> = HashMap()
     var mediaTreeStyle: List<Int> = listOf(
-        MediaConstants.DESCRIPTION_EXTRAS_VALUE_CONTENT_STYLE_LIST_ITEM,
-        MediaConstants.DESCRIPTION_EXTRAS_VALUE_CONTENT_STYLE_LIST_ITEM)
+        MediaConstants.EXTRAS_VALUE_CONTENT_STYLE_LIST_ITEM,
+        MediaConstants.EXTRAS_VALUE_CONTENT_STYLE_LIST_ITEM)
     private var sessionCommands: SessionCommands? = null
     private var playerCommands: Player.Commands? = null
     private var customLayout: List<CommandButton> = listOf()
@@ -173,7 +174,7 @@ class MusicService : HeadlessJsMediaService() {
         get() {
             return try {
                 (player.currentItem as TrackAudioItem).track
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 Track(this, Bundle(), 0)
             }
         }
@@ -395,7 +396,7 @@ class MusicService : HeadlessJsMediaService() {
                 emit(bundle)
             }
 
-            delay((interval * 1000).toLong())
+            delay((interval * 1000).toLong().milliseconds)
         }
     }
 
@@ -873,12 +874,8 @@ class MusicService : HeadlessJsMediaService() {
                 // registers the service being restarted?
                 player.destroy()
                 scope.cancel()
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    stopForeground(STOP_FOREGROUND_REMOVE)
-                } else {
-                    @Suppress("DEPRECATION")
-                    stopForeground(true)
-                }
+                @Suppress("DEPRECATION")
+                stopForeground(true)
                 onDestroy()
                 // https://github.com/androidx/media/issues/27#issuecomment-1456042326
                 stopSelf()
@@ -925,7 +922,7 @@ class MusicService : HeadlessJsMediaService() {
         mediaSession.connectedControllers.forEach {
                 controller ->
             mediaTree.forEach {
-                    it -> mediaSession.notifyChildrenChanged(controller, it.key, it.value.size, null)
+                    mediaSession.notifyChildrenChanged(controller, it.key, it.value.size, null)
             }
 
         }
@@ -952,7 +949,7 @@ class MusicService : HeadlessJsMediaService() {
         val keyEvent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             intent?.getParcelableExtra(Intent.EXTRA_KEY_EVENT, KeyEvent::class.java)
         } else {
-            intent?.getParcelableExtra<KeyEvent>(Intent.EXTRA_KEY_EVENT)
+            intent?.getParcelableExtra(Intent.EXTRA_KEY_EVENT)
         }
 
         if (keyEvent?.action == KeyEvent.ACTION_DOWN) {
@@ -1141,7 +1138,6 @@ class MusicService : HeadlessJsMediaService() {
             startIndex: Int,
             startPositionMs: Long
         ): ListenableFuture<MediaSession.MediaItemsWithStartPosition> {
-            Timber.tag("APM").d("setMediaItem: ${controller.packageName}, ${mediaItems[0].toBundle()}")
             if (mediaItems[0].requestMetadata.searchQuery == null) {
                 emit(MusicEvents.BUTTON_PLAY_FROM_ID, Bundle().apply {
                     putString("id", mediaItems[0].mediaId)
@@ -1180,22 +1176,33 @@ class MusicService : HeadlessJsMediaService() {
             return super.onGetSearchResult(session, browser, query, page, pageSize, params)
         }
 
+        @Deprecated("Deprecated in Java")
         override fun onPlaybackResumption(
             mediaSession: MediaSession,
             controller: MediaSession.ControllerInfo
         ): ListenableFuture<MediaSession.MediaItemsWithStartPosition> {
+            return this.onPlaybackResumption(mediaSession, controller, true)
+        }
+
+        override fun onPlaybackResumption(
+            mediaSession: MediaSession,
+            controller: MediaSession.ControllerInfo,
+            isForPlayback: Boolean
+        ): ListenableFuture<MediaSession.MediaItemsWithStartPosition> {
             Timber.tag("APM").d("triggered onPlaybackResumption")
             try {
                 this@MusicService.player
-                emit(MusicEvents.PLAYBACK_RESUME, Bundle().apply {
-                    putString("package", controller.packageName)
-                })
-            } catch (e: Exception) {
+                if (isForPlayback) {
+                    emit(MusicEvents.PLAYBACK_RESUME, Bundle().apply {
+                        putString("package", controller.packageName)
+                    })
+                }
+            } catch (_: Exception) {
                 // player has not been initialized; forcefully trigger onStartCommand
                 // TODO: emit event after the player is initialized?
                 this@MusicService.onStartCommand(null, 0, 0)
             }
-            return super.onPlaybackResumption(mediaSession, controller)
+            return super.onPlaybackResumption(mediaSession, controller, isForPlayback)
         }
     }
 
