@@ -7,6 +7,10 @@
 
 import Foundation
 import AVFoundation
+#if targetEnvironment(macCatalyst)
+// AVFoundation re-exports UnsafeMutableAudioBufferListPointer on iOS, not on Mac Catalyst
+import CoreAudio
+#endif
 
 /**
  Subclass this and set the AudioPlayer's `audioTap` property to start receiving the
