@@ -87,6 +87,7 @@ export function addEventListener<T extends Event>(
     ? () => void
     : (event: EventPayloadByEvent[T]) => void,
 ) {
+  // @ts-ignore ts6 issues
   return emitter.addListener(event, listener);
 }
 
@@ -586,7 +587,6 @@ export async function getPitch(): Promise<number> {
  * index.
  */
 export async function getTrack(index: number): Promise<Track | undefined> {
-  // @ts-expect-error codegen issues
   return TrackPlayer.getTrack(index);
 }
 
@@ -594,7 +594,6 @@ export async function getTrack(index: number): Promise<Track | undefined> {
  * Gets the whole queue.
  */
 export async function getQueue(): Promise<Track[]> {
-  // @ts-expect-error codegen issues
   return TrackPlayer.getQueue();
 }
 
@@ -610,7 +609,6 @@ export async function getActiveTrackIndex(): Promise<number | undefined> {
  * Gets the active track or undefined if there is no current track.
  */
 export async function getActiveTrack(): Promise<Track | undefined> {
-  // @ts-expect-error codegen issues
   return (await TrackPlayer.getActiveTrack()) ?? undefined;
 }
 
@@ -620,7 +618,6 @@ export async function getActiveTrack(): Promise<Track | undefined> {
  * duration in seconds.
  */
 export async function getProgress(): Promise<Progress> {
-  // @ts-expect-error codegen issues
   return TrackPlayer.getProgress();
 }
 
@@ -630,7 +627,6 @@ export async function getProgress(): Promise<Progress> {
  * @see https://doublesymmetry.github.io/react-native-track-player/docs/api/constants/state
  */
 export async function getPlaybackState(): Promise<PlaybackState> {
-  // @ts-expect-error codegen issues
   return TrackPlayer.getPlaybackState();
 }
 
