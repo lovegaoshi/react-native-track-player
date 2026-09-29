@@ -1176,14 +1176,6 @@ class MusicService : HeadlessJsMediaService() {
             return super.onGetSearchResult(session, browser, query, page, pageSize, params)
         }
 
-        @Deprecated("Deprecated in Java")
-        override fun onPlaybackResumption(
-            mediaSession: MediaSession,
-            controller: MediaSession.ControllerInfo
-        ): ListenableFuture<MediaSession.MediaItemsWithStartPosition> {
-            return this.onPlaybackResumption(mediaSession, controller, true)
-        }
-
         override fun onPlaybackResumption(
             mediaSession: MediaSession,
             controller: MediaSession.ControllerInfo,
