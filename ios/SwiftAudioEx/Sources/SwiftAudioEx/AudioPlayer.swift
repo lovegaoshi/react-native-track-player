@@ -200,7 +200,21 @@ public class AudioPlayer: AVPlayerWrapperDelegate {
             }
         }
     }
-
+    
+    /**
+            enable crossfade later - queuedPlayer has to be initialized on TrackPlayer init, unlike
+            android which queuedPlayer init at setupOptions
+     */
+    public func enableCrossfade (crossfade: Bool) {
+        self.crossfade = crossfade
+        if (crossfade) {
+            self.wrapper2 = AVPlayerWrapper()
+            self.crossfadeWrapper = self.wrapper2!
+        } else {
+            self.crossfadeWrapper = self.wrapper
+        }
+    }
+    
     // MARK: - Init
 
     /**
@@ -215,17 +229,12 @@ public class AudioPlayer: AVPlayerWrapperDelegate {
         self.nowPlayingInfoController = nowPlayingInfoController
         self.remoteCommandController = remoteCommandController
         self.wrapper = self.wrapper1
-        self.crossfade = crossfade
-        if (crossfade) {
-            self.wrapper2 = AVPlayerWrapper()
-            self.crossfadeWrapper = self.wrapper2!
-        } else {
-            self.crossfadeWrapper = self.wrapper
-        }
+        self.crossfadeWrapper = self.wrapper
+        self.enableCrossfade(crossfade: crossfade)
         wrapper.delegate = self
         self.remoteCommandController.audioPlayer = self
     }
-
+    
     // MARK: - Player Actions
 
     /**

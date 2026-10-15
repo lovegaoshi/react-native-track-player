@@ -126,12 +126,12 @@ export interface PlayerOptions {
    */
   autoHandleInterruptions?: boolean;
   /**
-   * enables crossfade. android only.
+   * enables crossfade.
    * Defaults to `false`.
    */
   crossfade?: boolean;
   /**
-   * applies an FFT processor with the given sampling size. android only.
+   * applies an FFT processor with the given sampling size.
    * Defaults to 0 (disables it).
    */
   useFFTProcessor?: number;
