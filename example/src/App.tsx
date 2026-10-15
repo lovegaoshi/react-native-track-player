@@ -16,10 +16,8 @@ import TrackPlayer, {
 import {
   PlayerControls,
   Progress,
-  Spacer,
   TrackInfo,
   Visualizer,
-  EQ,
 } from './components';
 import { QueueInitialTracksService, SetupService } from './services';
 import DemoAndroidAutoHierarchy from './services/AndroidAutoHierarchy';
@@ -77,7 +75,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#212121',
     alignItems: 'center',
     justifyContent: 'center',
-    // @ts-expect-error web platform compatibility
     minHeight: Platform.OS === 'web' ? '100vh' : '100%',
   },
   contentContainer: {

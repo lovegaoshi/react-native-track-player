@@ -710,19 +710,18 @@ export async function abandonWakeLock() {
 }
 
 /**
- * prepare to crossfade (android only.) the crossfade alternate
+ * prepare to crossfade. the crossfade alternate
  * player will be automatically primed to the current player's index,
  * then by previous = true or not, skip to previous or next. player
  * will be prepared. its advised to call this well before actually performing
  * crossfade so the resource can be prepared.
  */
 export async function crossFadePrepare(previous = false, seekTo = 0) {
-  if (!isAndroid) return;
   TrackPlayer.crossFadePrepare(previous, seekTo);
 }
 
 /**
- * perform crossfade (android only).
+ * perform crossfade.
  *
  * fadeDuration and fadeInterval are both in ms.
  *
@@ -736,7 +735,6 @@ export async function crossFade(
   fadeToVolume = 1,
   waitUntil = 0,
 ) {
-  if (!isAndroid) return;
   TrackPlayer.switchExoPlayer(
     fadeDuration,
     fadeInterval,

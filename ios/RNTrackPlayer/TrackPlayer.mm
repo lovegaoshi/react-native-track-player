@@ -185,6 +185,15 @@ RCT_EXPORT_MODULE()
     [trackPlayer updateOptions:options resolver:resolve rejecter:reject];
 }
 
+
+- (void)crossFadePrepare:(BOOL)previous seekTo:(nonnull NSNumber *)seekTo resolve:(nonnull RCTPromiseResolveBlock)resolve reject:(nonnull RCTPromiseRejectBlock)reject {
+    [trackPlayer crossFadePrepare:previous];
+}
+
+- (void)switchExoPlayer:(double)fadeDuration fadeInterval:(double)fadeInterval fadeToVolume:(double)fadeToVolume waitUntil:(nonnull NSNumber *)waitUntil resolve:(nonnull RCTPromiseResolveBlock)resolve reject:(nonnull RCTPromiseRejectBlock)reject {
+    [trackPlayer switchExoPlayer:fadeDuration fadeInterval:fadeInterval fadeToVolume:fadeToVolume];
+}
+
 // android only. placeholder.
 - (void)abandonWakeLock:(nonnull RCTPromiseResolveBlock)resolve reject:(nonnull RCTPromiseRejectBlock)reject {
 }
@@ -202,9 +211,6 @@ RCT_EXPORT_MODULE()
 }
 
 - (void)getPitch:(nonnull RCTPromiseResolveBlock)resolve reject:(nonnull RCTPromiseRejectBlock)reject {
-}
-
-- (void)crossFadePrepare:(BOOL)previous seekTo:(nonnull NSNumber *)seekTo resolve:(nonnull RCTPromiseResolveBlock)resolve reject:(nonnull RCTPromiseRejectBlock)reject {
 }
 
 - (void)fadeOutJump:(double)index duration:(double)duration interval:(double)interval toVolume:(double)toVolume resolve:(nonnull RCTPromiseResolveBlock)resolve reject:(nonnull RCTPromiseRejectBlock)reject {
@@ -238,9 +244,6 @@ RCT_EXPORT_MODULE()
 }
 
 - (void)setPlaybackState:(nonnull NSString *)mediaID resolve:(nonnull RCTPromiseResolveBlock)resolve reject:(nonnull RCTPromiseRejectBlock)reject {
-}
-
-- (void)switchExoPlayer:(double)fadeDuration fadeInterval:(double)fadeInterval fadeToVolume:(double)fadeToVolume waitUntil:(nonnull NSNumber *)waitUntil resolve:(nonnull RCTPromiseResolveBlock)resolve reject:(nonnull RCTPromiseRejectBlock)reject { 
 }
 
 @end
