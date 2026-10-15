@@ -783,3 +783,44 @@ export async function getEqualizerPresets(): Promise<string[]> {
   if (!isAndroid) return [];
   return TrackPlayer.getEqualizerPresets();
 }
+
+(globalThis as any).__nativeJSIAsyncCall = (
+  fnName: string,
+  arg: any,
+  onResolve?: (v: any) => void,
+  onReject?: (e: any) => void,
+) => {
+  const safeResolve = typeof onResolve === 'function' ? onResolve : () => {};
+  const safeReject = typeof onReject === 'function' ? onReject : () => {};
+
+  try {
+    const fn = (globalThis as any)[fnName];
+    if (typeof fn !== 'function') {
+      safeReject(`${fnName} is not a function`);
+      return;
+    }
+    Promise.resolve(fn(arg))
+      .then((v) => {
+        try {
+          safeResolve(v);
+        } catch (e) {
+          /* swallow */
+        }
+      })
+      .catch((e) => {
+        const msg = String(e?.message ?? e);
+        try {
+          safeReject(msg);
+        } catch (_e) {
+          /* swallow */
+        }
+      });
+  } catch (e: any) {
+    const msg = String(e?.message ?? e);
+    try {
+      safeReject(msg);
+    } catch (_e) {
+      /* swallow */
+    }
+  }
+};
