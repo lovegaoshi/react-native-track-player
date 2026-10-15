@@ -6,8 +6,9 @@ import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
 import android.support.v4.media.RatingCompat
+import androidx.annotation.OptIn
 import androidx.media3.common.MediaItem
-import androidx.media.utils.MediaConstants
+import androidx.media3.session.MediaConstants
 import com.lovegaoshi.kotlinaudio.models.Capability
 import com.lovegaoshi.kotlinaudio.models.RepeatMode
 import com.doublesymmetry.trackplayer.model.State
@@ -28,8 +29,10 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.*
 import androidx.core.net.toUri
+import androidx.media3.common.util.UnstableApi
 import com.facebook.react.module.annotations.ReactModule
 import com.lovegaoshi.kotlinaudio.models.AudioPlayerState
+import kotlin.time.Duration.Companion.milliseconds
 
 
 /**
@@ -108,6 +111,7 @@ class MusicModule(reactContext: ReactApplicationContext) : NativeTrackPlayerSpec
         return Track(context, bundle, 0)
     }
 
+    @OptIn(UnstableApi::class)
     private fun hashmapToMediaItem(hashmap: HashMap<String, String>): MediaItem {
         val mediaUri = hashmap["mediaUri"]
         val iconUri = hashmap["iconUri"]
@@ -115,37 +119,37 @@ class MusicModule(reactContext: ReactApplicationContext) : NativeTrackPlayerSpec
         val extras = Bundle()
         hashmap["groupTitle"]?.let {
             extras.putString(
-                MediaConstants.DESCRIPTION_EXTRAS_KEY_CONTENT_STYLE_GROUP_TITLE, it)
+                MediaConstants.EXTRAS_KEY_CONTENT_STYLE_GROUP_TITLE, it)
         }
         hashmap["contentStyle"]?.toInt()?.let {
             extras.putInt(
-                MediaConstants.DESCRIPTION_EXTRAS_KEY_CONTENT_STYLE_SINGLE_ITEM, it)
+                MediaConstants.EXTRAS_KEY_CONTENT_STYLE_SINGLE_ITEM, it)
         }
         hashmap["childrenPlayableContentStyle"]?.toInt()?.let {
             extras.putInt(
-                MediaConstants.DESCRIPTION_EXTRAS_KEY_CONTENT_STYLE_PLAYABLE, it)
+                MediaConstants.EXTRAS_KEY_CONTENT_STYLE_PLAYABLE, it)
         }
         hashmap["childrenBrowsableContentStyle"]?.toInt()?.let {
             extras.putInt(
-                MediaConstants.DESCRIPTION_EXTRAS_KEY_CONTENT_STYLE_BROWSABLE, it)
+                MediaConstants.EXTRAS_KEY_CONTENT_STYLE_BROWSABLE, it)
         }
 
         // playbackProgress should contain a string representation of a number between 0 and 1 if present
         hashmap["playbackProgress"]?.toDouble()?.let {
             if (it > 0.98) {
                 extras.putInt(
-                    MediaConstants.DESCRIPTION_EXTRAS_KEY_COMPLETION_STATUS,
-                    MediaConstants.DESCRIPTION_EXTRAS_VALUE_COMPLETION_STATUS_FULLY_PLAYED)
+                    MediaConstants.EXTRAS_KEY_COMPLETION_STATUS,
+                    MediaConstants.EXTRAS_VALUE_COMPLETION_STATUS_FULLY_PLAYED)
             } else if (it == 0.0) {
                 extras.putInt(
-                    MediaConstants.DESCRIPTION_EXTRAS_KEY_COMPLETION_STATUS,
-                    MediaConstants.DESCRIPTION_EXTRAS_VALUE_COMPLETION_STATUS_NOT_PLAYED)
+                    MediaConstants.EXTRAS_KEY_COMPLETION_STATUS,
+                    MediaConstants.EXTRAS_VALUE_COMPLETION_STATUS_NOT_PLAYED)
             } else {
                 extras.putInt(
-                    MediaConstants.DESCRIPTION_EXTRAS_KEY_COMPLETION_STATUS,
-                    MediaConstants.DESCRIPTION_EXTRAS_VALUE_COMPLETION_STATUS_PARTIALLY_PLAYED)
+                    MediaConstants.EXTRAS_KEY_COMPLETION_STATUS,
+                    MediaConstants.EXTRAS_VALUE_COMPLETION_STATUS_PARTIALLY_PLAYED)
                 extras.putDouble(
-                    MediaConstants.DESCRIPTION_EXTRAS_KEY_COMPLETION_PERCENTAGE, it)
+                    MediaConstants.EXTRAS_KEY_COMPLETION_PERCENTAGE, it)
             }
         }
         return buildMediaItem(
@@ -381,7 +385,7 @@ class MusicModule(reactContext: ReactApplicationContext) : NativeTrackPlayerSpec
             val indexes: ArrayList<Int> = ArrayList()
             for (inputIndex in inputIndexes) {
                 val index = inputIndex as? Int ?: inputIndex.toString().toInt()
-                if (index < 0 || index >= size) {
+                if (index !in 0..<size) {
                     callback.reject(
                         "index_out_of_bounds",
                         "One or more indexes was out of bounds"
@@ -471,7 +475,7 @@ class MusicModule(reactContext: ReactApplicationContext) : NativeTrackPlayerSpec
         if (verifyServiceBoundOrReject(callback)) return@launchInScope
 
         musicService.stop()
-        delay(300) // Allow playback to stop
+        delay(300.milliseconds) // Allow playback to stop
         musicService.clear()
 
         callback.resolve(null)
@@ -650,28 +654,28 @@ class MusicModule(reactContext: ReactApplicationContext) : NativeTrackPlayerSpec
     override fun setAnimatedVolume(volume: Double, duration: Double, interval: Double, msg: String, callback: Promise) = launchInScope {
         if (verifyServiceBoundOrReject(callback)) return@launchInScope
         musicService.setAnimatedVolume(volume.toFloat(), duration.toLong(), interval.toLong(), msg).await()
-        delay(duration.toLong())
+        delay(duration.toLong().milliseconds)
         callback.resolve(null)
     }
 
     override fun fadeOutPause(duration: Double, interval: Double, callback: Promise) = launchInScope {
         if (verifyServiceBoundOrReject(callback)) return@launchInScope
         musicService.fadeOutPause(duration.toLong(), interval.toLong())
-        delay(duration.toLong())
+        delay(duration.toLong().milliseconds)
         callback.resolve(null)
     }
 
     override fun fadeOutNext(duration: Double, interval: Double, toVolume: Double, callback: Promise) = launchInScope {
         if (verifyServiceBoundOrReject(callback)) return@launchInScope
         musicService.fadeOutNext(duration.toLong(), interval.toLong(), toVolume.toFloat())
-        delay(duration.toLong())
+        delay(duration.toLong().milliseconds)
         callback.resolve(null)
     }
 
     override fun fadeOutPrevious(duration: Double, interval: Double, toVolume: Double, callback: Promise) = launchInScope {
         if (verifyServiceBoundOrReject(callback)) return@launchInScope
         musicService.fadeOutPrevious(duration.toLong(), interval.toLong(), toVolume.toFloat())
-        delay(duration.toLong())
+        delay(duration.toLong().milliseconds)
         callback.resolve(null)
     }
 
@@ -684,7 +688,7 @@ class MusicModule(reactContext: ReactApplicationContext) : NativeTrackPlayerSpec
     ) = launchInScope {
         if (verifyServiceBoundOrReject(callback)) return@launchInScope
         musicService.fadeOutJump(index.toInt(), duration.toLong(), interval.toLong(), toVolume.toFloat())
-        delay(duration.toLong())
+        delay(duration.toLong().milliseconds)
         callback.resolve(null)
     }
     
@@ -698,6 +702,7 @@ class MusicModule(reactContext: ReactApplicationContext) : NativeTrackPlayerSpec
     }
 
     // this method doesn't seem to affect style after onGetRoot is called, and won't change if notifyChildrenChanged is emitted.
+    @OptIn(UnstableApi::class)
     override fun setBrowseTreeStyle(
         browsableStyle: Double,
         playableStyle: Double,
@@ -705,10 +710,10 @@ class MusicModule(reactContext: ReactApplicationContext) : NativeTrackPlayerSpec
     ) = launchInScope {
         fun getStyle(check: Int): Int {
             return when (check) {
-                1 -> MediaConstants.DESCRIPTION_EXTRAS_VALUE_CONTENT_STYLE_GRID_ITEM
-                2 -> MediaConstants.DESCRIPTION_EXTRAS_VALUE_CONTENT_STYLE_CATEGORY_LIST_ITEM
-                3 -> MediaConstants.DESCRIPTION_EXTRAS_VALUE_CONTENT_STYLE_CATEGORY_GRID_ITEM
-                else -> MediaConstants.DESCRIPTION_EXTRAS_VALUE_CONTENT_STYLE_LIST_ITEM
+                1 -> MediaConstants.EXTRAS_VALUE_CONTENT_STYLE_GRID_ITEM
+                2 -> MediaConstants.EXTRAS_VALUE_CONTENT_STYLE_CATEGORY_LIST_ITEM
+                3 -> MediaConstants.EXTRAS_VALUE_CONTENT_STYLE_CATEGORY_GRID_ITEM
+                else -> MediaConstants.EXTRAS_VALUE_CONTENT_STYLE_LIST_ITEM
             }
         }
         if (verifyServiceBoundOrReject(callback)) return@launchInScope

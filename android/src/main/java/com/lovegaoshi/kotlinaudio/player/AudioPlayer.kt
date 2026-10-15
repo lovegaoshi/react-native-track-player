@@ -463,6 +463,7 @@ abstract class AudioPlayer internal constructor(
                 loudnessEnhancers.add(enhancer)
             } catch (e: RuntimeException) {
                 Timber.tag("APMAudioFx").e("[AudioFx] failed to load loudnessEnhancer. it's fine if in dev!")
+                Timber.tag("APMAudioFx").e(e)
             }
 
             // Try to add Equalizer
@@ -471,6 +472,7 @@ abstract class AudioPlayer internal constructor(
                 equalizers.add(equalizer)
             } catch (e: RuntimeException) {
                 Timber.tag("APMAudioFx").e("[AudioFx] failed to load equalizer. it's fine if in dev!")
+                Timber.tag("APMAudioFx").e(e)
             }
         }
     }

@@ -126,13 +126,25 @@ export interface PlayerOptions {
    */
   autoHandleInterruptions?: boolean;
   /**
-   * enables crossfade. android only.
+   * enables crossfade.
    * Defaults to `false`.
    */
   crossfade?: boolean;
   /**
-   * applies an FFT processor with the given sampling size. android only.
+   * applies an FFT processor with the given sampling size.
    * Defaults to 0 (disables it).
    */
   useFFTProcessor?: number;
+  /**
+   * Controls how album artwork is cropped on Android.
+   * - `0` (default) – no crop
+   * - `1` – automatically crop when pillarbox bars are detected
+   * - `2` – always crop to square
+   *
+   * Samsung devices always crop to square regardless of this value.
+   *
+   * Supported on Android only.
+   * @default 0
+   */
+  androidCropSquare?: 0 | 1 | 2;
 }

@@ -15,9 +15,107 @@ public class QueuedAudioPlayer: AudioPlayer, QueueManagerDelegate {
     let queue: QueueManager = QueueManager<AudioItem>()
     fileprivate var lastIndex: Int = -1
     fileprivate var lastItem: AudioItem? = nil
+    
+    func findOrInsert(item: AudioItem) -> Int {
+        var itemIndex = queue.items.firstIndex(where: {$0.getSourceUrl() == item.getSourceUrl()})
+        if (itemIndex == nil) {
+            add(item: item)
+            itemIndex = queue.items.count - 1
+        }
+        queue.currentIndex = itemIndex!
+        return itemIndex!
+    }
 
-    public override init(nowPlayingInfoController: NowPlayingInfoControllerProtocol = NowPlayingInfoController(), remoteCommandController: RemoteCommandController = RemoteCommandController()) {
-        super.init(nowPlayingInfoController: nowPlayingInfoController, remoteCommandController: remoteCommandController)
+    public func crossfadePrepare(item: AudioItem) {
+        if (!self.crossfade) {
+            return
+        }
+        self.crossfadeWrapper.load(
+            from: item.getSourceUrl(),
+            type: item.getSourceType(),
+            playWhenReady: false,
+            initialTime: (item as? InitialTiming)?.getInitialTime(),
+            options:(item as? AssetOptionsProviding)?.getAssetOptions()
+        )
+        self.crossfadeItem = item
+    }
+    
+    public func crossfadePrepare(previous: Bool = false) {
+        let nextIndex = queue.peek(direction: previous ? -1 : 1)
+        if (nextIndex < 0) {
+            // TODO: should throw error instead
+            return
+        }
+        self.crossfadePrepare(item: queue.items[nextIndex])
+    }
+    
+    public func switchExoPlayer(
+        fadeDuration: Int = 2500,
+        fadeInterval: Int = 20,
+        fadeToVolume: Float = 1
+    ) {
+        if (!self.crossfade || self.crossfadeItem == nil) {
+            return
+        }
+        if (self.currentAVPlayer) {
+            self.crossfadeWrapper = self.wrapper1
+            self.wrapper = self.wrapper2!
+        } else {
+            self.crossfadeWrapper = self.wrapper2!
+            self.wrapper = self.wrapper1
+        }
+
+        // switch the event emittting delegate
+        self.wrapper.delegate = self
+        self.crossfadeWrapper.delegate = nil
+
+        // broadcast nowplaying to system
+        self.findOrInsert(item: self.crossfadeItem!)
+        loadNowPlayingMetaValues()
+        emitCurrentItemEvent()
+
+        self.crossfadeItem = nil
+        self.currentAVPlayer = !self.currentAVPlayer
+
+        // fade volume
+        Task {
+            var fadeOutDuration = fadeDuration
+            let startFadeOutTime = DispatchTime.now()
+            let fadeFromVolume = self.crossfadeWrapper.volume
+            while (fadeOutDuration > 0) {
+                fadeOutDuration -= fadeInterval
+                let timeDiff = DispatchTime.now().uptimeNanoseconds - startFadeOutTime.uptimeNanoseconds
+                let timeElapsed = Float(min(Int(timeDiff) / 1_000_000, fadeDuration))
+                self.crossfadeWrapper.volume = fadeFromVolume * (1 -  timeElapsed / Float(fadeDuration))
+                print("crossfade fading out...\(self.crossfadeWrapper.volume)")
+                try await Task.sleep(nanoseconds: UInt64(fadeInterval * 1000000))
+            }
+        }
+        
+        Task {
+            self.wrapper.volume = 0
+            if (fadeToVolume > 0) {
+                self.wrapper.play()
+                var fadeInDuration = fadeDuration
+                let startTime = DispatchTime.now()
+                while (fadeInDuration > 0) {
+                    fadeInDuration -= fadeInterval
+                    let timeDiff = DispatchTime.now().uptimeNanoseconds - startTime.uptimeNanoseconds
+                    let timeElapsed = Float(min(Int(timeDiff) / 1_000_000, fadeDuration))
+                    self.wrapper.volume = fadeToVolume * timeElapsed / Float(fadeDuration)
+                    print("crossfade fading in...\(self.wrapper.volume)")
+                    try await Task.sleep(nanoseconds: UInt64(fadeInterval * 1000000))
+                }
+            }
+        }
+    }
+    
+    public override init(
+        nowPlayingInfoController: NowPlayingInfoControllerProtocol = NowPlayingInfoController(),
+        remoteCommandController: RemoteCommandController = RemoteCommandController(),
+        crossfade: Bool = false
+    ) {
+        super.init(nowPlayingInfoController: nowPlayingInfoController, remoteCommandController: remoteCommandController, crossfade: crossfade)
         queue.delegate = self
     }
 
@@ -202,15 +300,8 @@ public class QueuedAudioPlayer: AudioPlayer, QueueManagerDelegate {
         }
     }
 
-    // MARK: - QueueManagerDelegate
-
-    func onCurrentItemChanged() {
-        let lastPosition = currentTime;
-        if let currentItem = currentItem {
-            super.load(item: currentItem)
-        } else {
-            super.clear()
-        }
+    func emitCurrentItemEvent(lastPosition: Double = 0) {
+        let currentItem = currentItem
         event.currentItem.emit(
             data: (
                 item: currentItem,
@@ -222,6 +313,18 @@ public class QueuedAudioPlayer: AudioPlayer, QueueManagerDelegate {
         )
         lastItem = currentItem
         lastIndex = currentIndex
+    }
+
+    // MARK: - QueueManagerDelegate
+
+    func onCurrentItemChanged() {
+        let lastPosition = currentTime;
+        if let currentItem = currentItem {
+            super.load(item: currentItem)
+        } else {
+            super.clear()
+        }
+        emitCurrentItemEvent(lastPosition: lastPosition)
     }
 
     func onSkippedToSameCurrentItem() {

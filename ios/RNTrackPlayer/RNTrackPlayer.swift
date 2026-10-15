@@ -134,6 +134,11 @@ public class RNTrackPlayer: NSObject, AudioSessionControllerDelegate {
         if let waitForBuffer = config["waitForBuffer"] as? Bool {
             player.automaticallyWaitsToMinimizeStalling = waitForBuffer
         }
+        
+        // enable crossfade
+        if let crossfade = config["crossfade"] as? Bool {
+            player.enableCrossfade(crossfade: crossfade)
+        }
 
         // configure wether control center metdata should auto update
         player.automaticallyUpdateNowPlayingInfo = config["autoUpdateMetadata"] as? Bool ?? true
@@ -875,6 +880,20 @@ public class RNTrackPlayer: NSObject, AudioSessionControllerDelegate {
                 "playWhenReady": playWhenReady
             ]
         )
+    }
+    
+    @objc(crossFadePrepare:)
+    public func crossFadePrepare(previous: Bool = false) {
+        player.crossfadePrepare(previous: previous)
+    }
+    
+    @objc(switchExoPlayer:fadeInterval:fadeToVolume:)
+    public func switchExoPlayer(
+        fadeDuration: Int = 2500,
+        fadeInterval: Int = 20,
+        fadeToVolume: Float = 1,
+    ) {
+        player.switchExoPlayer(fadeDuration: fadeDuration, fadeInterval: fadeInterval, fadeToVolume: fadeToVolume)
     }
 }
 
