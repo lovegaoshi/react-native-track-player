@@ -40,6 +40,7 @@ import androidx.media3.common.util.Size;
 import androidx.media3.common.util.UnstableApi;
 
 import java.util.ArrayList;
+import java.util.IdentityHashMap;
 import java.util.List;
 
 /**
@@ -55,7 +56,7 @@ public class ForwardingPlayer implements Player {
     private final Player player2;
     public Player player;
     private boolean currentPlayer = true;
-    ArrayList<Listener> listeners = new ArrayList<>();
+    private final IdentityHashMap<Listener, ForwardingListener> listeners = new IdentityHashMap<>();
 
     public void broadcastMediaItem() {
         MediaItem currentMediaItem = player.getCurrentMediaItem();
@@ -81,9 +82,9 @@ public class ForwardingPlayer implements Player {
         Player prevPlayer = currentPlayer ? player1 : player2;
         Player nextPlayer = currentPlayer ? player2 : player1;
 
-        for (Listener listener : listeners) {
-            prevPlayer.removeListener(new ForwardingListener(this, listener));
-            nextPlayer.addListener(new ForwardingListener(this, listener));
+        for (ForwardingListener listener : listeners.values()) {
+            prevPlayer.removeListener(listener);
+            nextPlayer.addListener(listener);
         }
         this.player = nextPlayer;
         broadcastMediaItem();
@@ -97,7 +98,6 @@ public class ForwardingPlayer implements Player {
         this.player2 = player2;
         this.player = player1;
     }
-
     /** Calls {@link Player#getApplicationLooper()} on the delegate and returns the result. */
     @Override
     public Looper getApplicationLooper() {
@@ -116,8 +116,14 @@ public class ForwardingPlayer implements Player {
      */
     @Override
     public void addListener(Listener listener) {
-        listeners.add(listener);
-        player.addListener(new ForwardingListener(this, listener));
+        synchronized (listeners) {
+            ForwardingListener forwardingListener = listeners.get(listener);
+            if (forwardingListener == null) {
+                forwardingListener = new ForwardingListener(this, listener);
+            }
+            player.addListener(forwardingListener);
+            listeners.put(listener, forwardingListener);
+        }
     }
 
     /**
@@ -129,8 +135,12 @@ public class ForwardingPlayer implements Player {
      */
     @Override
     public void removeListener(Listener listener) {
-        listeners.remove(listener);
-        player.removeListener(new ForwardingListener(this, listener));
+        synchronized (listeners) {
+            Listener forwardingListener = listeners.remove(listener);
+            // If forwardingListener is null, we don't know this listener. Just pass in the real listener
+            // as the underlying player would not know it either. It can decide to throw or ignore.
+            player.removeListener(forwardingListener != null ? forwardingListener : listener);
+        }
     }
 
     /** Calls {@link Player#setMediaItems(List)} on the delegate. */
@@ -718,6 +728,12 @@ public class ForwardingPlayer implements Player {
         return player.getAudioAttributes();
     }
 
+    /** Calls {@link Player#getAudioSessionId()} on the delegate and returns the result. */
+    @Override
+    public int getAudioSessionId() {
+        return player.getAudioSessionId();
+    }
+
     /** Calls {@link Player#setVolume(float)} on the delegate. */
     @Override
     public void setVolume(float volume) {
@@ -728,6 +744,18 @@ public class ForwardingPlayer implements Player {
     @Override
     public float getVolume() {
         return player.getVolume();
+    }
+
+    /** Calls {@link Player#mute()} on the delegate. */
+    @Override
+    public void mute() {
+        player.mute();
+    }
+
+    /** Calls {@link Player#unmute()} on the delegate. */
+    @Override
+    public void unmute() {
+        player.unmute();
     }
 
     /** Calls {@link Player#getVideoSize()} on the delegate and returns the result. */
@@ -1097,28 +1125,6 @@ public class ForwardingPlayer implements Player {
         @Override
         public void onDeviceVolumeChanged(int volume, boolean muted) {
             listener.onDeviceVolumeChanged(volume, muted);
-        }
-
-        @Override
-        public boolean equals(@Nullable Object o) {
-            if (this == o) {
-                return true;
-            }
-            if (!(o instanceof ForwardingListener)) {
-                return false;
-            }
-            ForwardingListener that = (ForwardingListener) o;
-            if (!forwardingPlayer.equals(that.forwardingPlayer)) {
-                return false;
-            }
-            return listener.equals(that.listener);
-        }
-
-        @Override
-        public int hashCode() {
-            int result = forwardingPlayer.hashCode();
-            result = 31 * result + listener.hashCode();
-            return result;
         }
     }
 }

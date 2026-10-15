@@ -100,8 +100,7 @@ class QueuedAudioPlayer(
             add(item)
         } else {
             players().forEach { p ->
-                p.addMediaItem(currentIndex + 1, parseAudioItem(item))
-                p.removeMediaItem(currentIndex)
+                p.replaceMediaItem(currentIndex, parseAudioItem(item))
                 p.seekTo(currentIndex, C.TIME_UNSET)
             }
             exoPlayer.prepare()

@@ -55,8 +55,8 @@ source files, modify them, or add breakpoints. See the screenshots below for
 specifically how to navigate to react-native-track-player and SwiftAudioEx
 dependencies (see screenshots below).
 
-![Xcode RNTP](https://rntp.dev/img/debugging/debug-ios-rntp.png)
-![Xcode SwiftAudioEx](https://rntp.dev/img/debugging/debug-ios-swift-audio-ex.png)
+![Xcode RNTP](https://doublesymmetry.github.io/react-native-track-player/img/debugging/debug-ios-rntp.png)
+![Xcode SwiftAudioEx](https://doublesymmetry.github.io/react-native-track-player/img/debugging/debug-ios-swift-audio-ex.png)
 
 ## Android Native
 
@@ -99,6 +99,7 @@ Make a note of the `versionNumber` configured in the `kotlin-audio/build.gradle`
 file as you'll need this in the next step.
 
 **NOTES:**
+
 - The result of this is a local version of the build published here:
 
   ```
@@ -106,6 +107,7 @@ file as you'll need this in the next step.
   Linux: /home/<user_name>/.m2
   macOS: /Users/<user_name>/.m2
   ```
+
 - The `-x test` skips tests for faster build. Make sure you run the test
   before submitting a PR to the `KotlinAudio` project.
 
@@ -127,7 +129,6 @@ dependencies {
 ```
 
 **NOTE:** there are small differences in the package naming.
-
 
 #### 4. Install the new version of RNTP in the example app and build android:
 

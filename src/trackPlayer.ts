@@ -57,7 +57,7 @@ function resolveImportedAsset(id?: number) {
  * the app to be in the foreground and try again.
  *
  * @param options The options to initialize the player with.
- * @see https://rntp.dev/docs/api/functions/lifecycle
+ * @see https://doublesymmetry.github.io/react-native-track-player/docs/api/functions/lifecycle
  */
 export async function setupPlayer(
   options: PlayerOptions = {},
@@ -87,6 +87,7 @@ export function addEventListener<T extends Event>(
     ? () => void
     : (event: EventPayloadByEvent[T]) => void,
 ) {
+  // @ts-ignore ts6 issues
   return emitter.addListener(event, listener);
 }
 
@@ -217,7 +218,7 @@ export async function skipToPrevious(initialPosition = -1): Promise<void> {
  * Updates the configuration for the components.
  *
  * @param options The options to update.
- * @see https://rntp.dev/docs/api/functions/player#updateoptionsoptions
+ * @see https://doublesymmetry.github.io/react-native-track-player/docs/api/functions/player#updateoptionsoptions
  */
 export async function updateOptions({
   alwaysPauseOnInterruption,
@@ -539,7 +540,7 @@ export async function setPitch(pitch: number): Promise<void> {
  * Sets the queue.
  *
  * @param tracks The tracks to set as the queue.
- * @see https://rntp.dev/docs/api/constants/repeat-mode
+ * @see https://doublesymmetry.github.io/react-native-track-player/docs/api/constants/repeat-mode
  */
 export async function setQueue(tracks: Track[]): Promise<void> {
   return TrackPlayer.setQueue(tracks);
@@ -549,7 +550,7 @@ export async function setQueue(tracks: Track[]): Promise<void> {
  * Sets the queue repeat mode.
  *
  * @param repeatMode The repeat mode to set.
- * @see https://rntp.dev/docs/api/constants/repeat-mode
+ * @see https://doublesymmetry.github.io/react-native-track-player/docs/api/constants/repeat-mode
  */
 export async function setRepeatMode(mode: RepeatMode): Promise<RepeatMode> {
   return TrackPlayer.setRepeatMode(mode);
@@ -586,7 +587,6 @@ export async function getPitch(): Promise<number> {
  * index.
  */
 export async function getTrack(index: number): Promise<Track | undefined> {
-  // @ts-expect-error codegen issues
   return TrackPlayer.getTrack(index);
 }
 
@@ -594,7 +594,6 @@ export async function getTrack(index: number): Promise<Track | undefined> {
  * Gets the whole queue.
  */
 export async function getQueue(): Promise<Track[]> {
-  // @ts-expect-error codegen issues
   return TrackPlayer.getQueue();
 }
 
@@ -610,7 +609,6 @@ export async function getActiveTrackIndex(): Promise<number | undefined> {
  * Gets the active track or undefined if there is no current track.
  */
 export async function getActiveTrack(): Promise<Track | undefined> {
-  // @ts-expect-error codegen issues
   return (await TrackPlayer.getActiveTrack()) ?? undefined;
 }
 
@@ -620,24 +618,22 @@ export async function getActiveTrack(): Promise<Track | undefined> {
  * duration in seconds.
  */
 export async function getProgress(): Promise<Progress> {
-  // @ts-expect-error codegen issues
   return TrackPlayer.getProgress();
 }
 
 /**
  * Gets the playback state of the player.
  *
- * @see https://rntp.dev/docs/api/constants/state
+ * @see https://doublesymmetry.github.io/react-native-track-player/docs/api/constants/state
  */
 export async function getPlaybackState(): Promise<PlaybackState> {
-  // @ts-expect-error codegen issues
   return TrackPlayer.getPlaybackState();
 }
 
 /**
  * Gets the queue repeat mode.
  *
- * @see https://rntp.dev/docs/api/constants/repeat-mode
+ * @see https://doublesymmetry.github.io/react-native-track-player/docs/api/constants/repeat-mode
  */
 export async function getRepeatMode(): Promise<RepeatMode> {
   return TrackPlayer.getRepeatMode();
