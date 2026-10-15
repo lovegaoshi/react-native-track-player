@@ -26,7 +26,7 @@ class AudioController {
     
     init() {
         let controller = RemoteCommandController()
-        player = QueuedAudioPlayer(remoteCommandController: controller)
+        player = QueuedAudioPlayer(remoteCommandController: controller, crossfade: true)
         player.remoteCommands = [
             .stop,
             .play,
@@ -36,7 +36,7 @@ class AudioController {
             .previous,
             .changePlaybackPosition
         ]
-        player.audioTap = WaveformAudioTap()
+        // player.audioTap = WaveformAudioTap()
         player.repeatMode = .queue
         DispatchQueue.main.async {
             self.player.add(items: self.sources)
