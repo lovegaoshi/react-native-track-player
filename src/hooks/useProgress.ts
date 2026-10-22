@@ -17,11 +17,15 @@ const INITIAL_STATE = {
  * @param updateInterval - ms interval
  * @param background - if update state in background. default true. may severely affects performance.
  */
-export function useProgress(updateInterval = 1000, background = true) {
-  const [state, setState] = useState<Progress>(INITIAL_STATE);
+export function useProgress(
+  updateInterval = 1000,
+  background = true,
+  init = INITIAL_STATE,
+) {
+  const [state, setState] = useState<Progress>(init);
 
   useTrackPlayerEvents([Event.PlaybackActiveTrackChanged], () => {
-    setState(INITIAL_STATE);
+    setState(init);
   });
 
   useEffect(() => {
@@ -38,7 +42,7 @@ export function useProgress(updateInterval = 1000, background = true) {
           duration === state.duration &&
           buffered === state.buffered
             ? state
-            : { position, duration, buffered }
+            : { position, duration, buffered },
         );
       } catch {
         // these method only throw while you haven't yet setup, ignore failure.
