@@ -1,10 +1,12 @@
-apply plugin: "com.android.application"
-apply plugin: "org.jetbrains.kotlin.android"
-apply plugin: "com.facebook.react"
+import com.android.build.api.dsl.ApplicationExtension
 
+plugins {
+    id("com.android.application")
+    id("org.jetbrains.kotlin.android")
+    id("com.facebook.react")
+}
 
 /**
-
  * This is the configuration block to customize your React Native Android app.
  * By default you don't need to apply any configuration, just uncomment the lines you need.
  */
@@ -19,7 +21,7 @@ react {
     // codegenDir = file("../../node_modules/@react-native/codegen")
     //   The cli.js file which is the React Native CLI entrypoint. Default is ../../node_modules/react-native/cli.js
     // cliFile = file("../../node_modules/react-native/cli.js")
-    
+
     /* Variants */
     //   The list of variants to that are debuggable. For those we're going to
     //   skip the bundling of the JS bundle and the assets. By default is just 'debug'.
@@ -44,6 +46,7 @@ react {
     //   A list of extra flags to pass to the 'bundle' commands.
     //   See https://github.com/react-native-community/cli/blob/main/docs/commands.md#bundle
     // extraPackagerArgs = []
+
     /* Hermes Commands */
     //   The hermes compiler command to run. By default it is 'hermesc'
     // hermesCommand = "$rootDir/my-custom-hermesc/bin/hermesc"
@@ -54,11 +57,11 @@ react {
     /* Autolinking */
     autolinkLibrariesWithApp()
 }
- 
+
 /**
  * Set this to true to Run Proguard on Release builds to minify the Java bytecode.
  */
-def enableProguardInReleaseBuilds = false
+val enableProguardInReleaseBuilds = false
 
 /**
  * The preferred build flavor of JavaScriptCore (JSC)
@@ -71,57 +74,59 @@ def enableProguardInReleaseBuilds = false
  * give correct results when using with locales other than en-US. Note that
  * this variant is about 6MiB larger per architecture than default.
  */
-def jscFlavor = 'io.github.react-native-community:jsc-android:2026004.+'
+val jscFlavor = "io.github.react-native-community:jsc-android:2026004.+"
 
-android {
+val hermesEnabled = (findProperty("hermesEnabled") as String?)?.toBoolean() ?: false
+
+configure<ApplicationExtension> {
 
     compileOptions {
-        coreLibraryDesugaringEnabled true
+        isCoreLibraryDesugaringEnabled = true
     }
     buildFeatures {
-        viewBinding true
+        viewBinding = true
     }
-    ndkVersion rootProject.ext.ndkVersion
+    ndkVersion = rootProject.ext["ndkVersion"] as String
 
-    buildToolsVersion rootProject.ext.buildToolsVersion
-    compileSdk = rootProject.ext.compileSdkVersion
+    buildToolsVersion = rootProject.ext["buildToolsVersion"] as String
+    compileSdk = rootProject.ext["compileSdkVersion"] as Int
 
-    namespace "com.example"
+    namespace = "com.example"
     defaultConfig {
-        applicationId "com.example"
-        minSdkVersion rootProject.ext.minSdkVersion
-        targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        applicationId = "com.example"
+        minSdk = rootProject.ext["minSdkVersion"] as Int
+        targetSdk = rootProject.ext["targetSdkVersion"] as Int
+        versionCode = 1
+        versionName = "1.0"
     }
     signingConfigs {
-        debug {
-            storeFile file('debug.keystore')
-            storePassword 'android'
-            keyAlias 'androiddebugkey'
-            keyPassword 'android'
+        getByName("debug") {
+            storeFile = file("debug.keystore")
+            storePassword = "android"
+            keyAlias = "androiddebugkey"
+            keyPassword = "android"
         }
     }
     buildTypes {
-        debug {
-            signingConfig signingConfigs.debug
+        getByName("debug") {
+            signingConfig = signingConfigs.getByName("debug")
         }
-        release {
+        getByName("release") {
             // Caution! In production, you need to generate your own keystore file.
             // see https://reactnative.dev/docs/signed-apk-android.
-            signingConfig signingConfigs.debug
-            minifyEnabled enableProguardInReleaseBuilds
-            proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
+            signingConfig = signingConfigs.getByName("debug")
+            isMinifyEnabled = enableProguardInReleaseBuilds
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
 }
 
 dependencies {
-    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.5'
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
 
-    implementation 'com.android.support:appcompat-v7:28.0.0'
-    implementation 'com.android.support:support-annotations:28.0.0'
-    implementation 'com.android.support:design:28.0.0'
+    implementation("com.android.support:appcompat-v7:28.0.0")
+    implementation("com.android.support:support-annotations:28.0.0")
+    implementation("com.android.support:design:28.0.0")
     implementation(libs.media3.exoplayer)
     implementation(libs.media3.session)
     implementation(libs.media3.ui)
@@ -132,16 +137,23 @@ dependencies {
 
     // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
-    
-    if (hermesEnabled.toBoolean()) {
+
+    if (hermesEnabled) {
         implementation("com.facebook.react:hermes-android")
     } else {
-        implementation jscFlavor
+        implementation(jscFlavor)
     }
 }
 
-project.ext.vectoricons = [
-    iconFontNames: [ 'FontAwesome6_Regular.ttf', 'FontAwesome6_Brands.ttf', 'FontAwesome6_Solid.ttf' ]
-]
+project.ext.set(
+    "vectoricons",
+    mapOf(
+        "iconFontNames" to listOf(
+            "FontAwesome6_Regular.ttf",
+            "FontAwesome6_Brands.ttf",
+            "FontAwesome6_Solid.ttf",
+        ),
+    ),
+)
 
-apply from: file("../../node_modules/react-native-vector-icons/fonts.gradle")
+apply(from = file("../../node_modules/react-native-vector-icons/fonts.gradle"))
