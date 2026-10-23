@@ -310,6 +310,9 @@ abstract class AudioPlayer internal constructor(
         }
 
     fun play() {
+        // Re-request focus when playback resumes after a permanent loss. The player may still be in a
+        // paused state after another app took focus, so play() must not assume focus is held.
+        if (!options.handleAudioFocus) focusManager.requestAudioFocus()
         exoPlayer.play()
         if (currentItem != null) {
             exoPlayer.prepare()
@@ -752,7 +755,19 @@ abstract class AudioPlayer internal constructor(
 
     private inner class APMFocusListener: AudioManager.OnAudioFocusChangeListener {
         override fun onAudioFocusChange(focusChange: Int) {
-            // TODO: complete focusManager logic here
+            // Surface focus changes to JS as RemoteDuck(paused, permanent). Without this, a loss while
+            // the app is in the background leaves the notification and lock screen showing "playing".
+            when (focusChange) {
+                AudioManager.AUDIOFOCUS_LOSS -> {
+                    focusManager.hasAudioFocus = false
+                    playerEventHolder.updateOnAudioFocusChanged(true, true)
+                }
+                AudioManager.AUDIOFOCUS_LOSS_TRANSIENT,
+                AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK ->
+                    playerEventHolder.updateOnAudioFocusChanged(true, false)
+                AudioManager.AUDIOFOCUS_GAIN ->
+                    playerEventHolder.updateOnAudioFocusChanged(false, false)
+            }
         }
     }
 }
