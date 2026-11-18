@@ -56,9 +56,12 @@ class MediaFactory (
             mediaItem.mediaMetadata.extras?.getSerializable("headers")
         }
         val resourceId = mediaItem.mediaMetadata.extras?.getInt("resource-id")
+        val extras = mediaItem.mediaMetadata.extras
+        val useSetRange = extras?.getBoolean("setRange") == true ||
+            extras?.getString("setRange")?.toBoolean() == true
         // HACK: why are these capitalized?
-        val resourceType = mediaItem.mediaMetadata.extras?.getString("type")?.lowercase()
-        val uri = mediaItem.mediaMetadata.extras?.getString("uri")!!.toUri()
+        val resourceType = extras?.getString("type")?.lowercase()
+        val uri = extras?.getString("uri")!!.toUri()
         val factory: DataSource.Factory = when {
             resourceId != 0 && resourceId != null -> {
                 val raw = RawResourceDataSource(context)
@@ -69,16 +72,18 @@ class MediaFactory (
                 DefaultDataSource.Factory(context)
             }
             else -> {
-                val tempFactory = DefaultHttpDataSource.Factory().apply {
-                    setUserAgent(userAgent)
-                    setAllowCrossProtocolRedirects(true)
-
-                    headers?.let {
-                        setDefaultRequestProperties(it as HashMap<String, String>)
+                val httpFactory = if (useSetRange) {
+                    setRangeSource(userAgent, headers as? Map<String, String>)
+                } else {
+                    DefaultHttpDataSource.Factory().apply {
+                        setUserAgent(userAgent)
+                        setAllowCrossProtocolRedirects(true)
+                        headers?.let {
+                            setDefaultRequestProperties(it as HashMap<String, String>)
+                        }
                     }
                 }
-
-                enableCaching(tempFactory)
+                enableCaching(httpFactory)
             }
         }
 

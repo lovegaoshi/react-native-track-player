@@ -9,6 +9,8 @@ export interface Track extends TrackMetadataBase {
   userAgent?: string;
   /** Mime type of the media file */
   contentType?: string;
+  /** (Android only) Use bounded HTTP range requests instead of open ended ones. */
+  setRange?: boolean;
   /** (iOS only) The pitch algorithm to apply to the sound. */
   pitchAlgorithm?: PitchAlgorithm;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

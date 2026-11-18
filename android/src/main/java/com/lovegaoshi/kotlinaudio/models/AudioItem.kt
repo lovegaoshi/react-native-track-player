@@ -49,7 +49,8 @@ interface AudioItem {
 data class AudioItemOptions(
     val headers: HashMap<String, String>? = null,
     val userAgent: String? = null,
-    val resourceId: Int? = null
+    val resourceId: Int? = null,
+    val setRange: Boolean = false,
 )
 
 enum class MediaType(val value: String) {
@@ -106,6 +107,7 @@ fun audioItem2MediaItem(audioItem: AudioItem, context: Context? = null): MediaIt
                 audioItem.options?.resourceId?.let {
                     putInt("resource-id", it)
                 }
+                putBoolean("setRange", audioItem.options?.setRange == true)
                 putString("type", audioItem.type.toString())
                 putString("uri", audioItem.audioUrl)
             }).build())

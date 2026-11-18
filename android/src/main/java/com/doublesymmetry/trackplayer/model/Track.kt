@@ -19,6 +19,7 @@ class Track
     var uri: Uri? = null
     var resourceId: Int?
     var type = MediaType.DEFAULT
+    var setRange = false
     var contentType: String?
     var userAgent: String?
     var originalItem: Bundle?
@@ -32,7 +33,12 @@ class Track
 
     fun toAudioItem(): TrackAudioItem {
         return TrackAudioItem(this, type, uri.toString(), artist, title, album, artwork.toString(), duration,
-                AudioItemOptions(headers, userAgent, resourceId), mediaId)
+                AudioItemOptions(
+                    headers = headers,
+                    userAgent = userAgent,
+                    resourceId = resourceId,
+                    setRange = setRange,
+                ), mediaId)
     }
 
     init {
@@ -51,6 +57,7 @@ class Track
                 break
             }
         }
+        setRange = bundle.getBoolean("setRange")
         contentType = bundle.getString("contentType")
         userAgent = bundle.getString("userAgent")
         val httpHeaders = bundle.getBundle("headers")
