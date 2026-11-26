@@ -2,6 +2,7 @@ package com.lovegaoshi.kotlinaudio.player.components
 
 import android.content.Context
 import android.os.Build
+import android.os.Bundle
 import androidx.annotation.OptIn
 import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
@@ -23,8 +24,14 @@ import androidx.media3.exoplayer.source.MediaSource
 import androidx.media3.exoplayer.source.ProgressiveMediaSource
 import androidx.media3.exoplayer.upstream.LoadErrorHandlingPolicy
 import androidx.media3.extractor.DefaultExtractorsFactory
+import com.doublesymmetry.trackplayer.sabr.DefaultSabrChunkSource
+import com.doublesymmetry.trackplayer.sabr.SabrManifestFactory
+import com.doublesymmetry.trackplayer.sabr.SabrMediaSource
+import com.lovegaoshi.kotlinaudio.models.AudioItem
+import com.lovegaoshi.kotlinaudio.models.SabrOptions
 import com.lovegaoshi.kotlinaudio.utils.isUriLocalFile
 import androidx.core.net.toUri
+import java.io.Serializable
 
 
 @OptIn(UnstableApi::class)
@@ -91,8 +98,51 @@ class MediaFactory (
             "dash" -> createDashSource(mediaItem, factory)
             "hls" -> createHlsSource(mediaItem, factory)
             "smoothstreaming" -> createSsSource(mediaItem, factory)
+            "sabr" -> {
+                val sabr = getSerializableCompat(extras, "sabr", SabrOptions::class.java)
+                    ?: throw IllegalArgumentException(
+                        "SABR tracks require a 'sabr' options object"
+                    )
+                createSabrSource(mediaItem, sabr, userAgent, headers as? Map<String, String>)
+            }
             else -> createProgressiveSource(mediaItem, factory)
         }
+    }
+
+    @Suppress("DEPRECATION", "UNCHECKED_CAST")
+    private fun <T : Serializable> getSerializableCompat(
+        extras: Bundle?,
+        key: String,
+        clazz: Class<T>,
+    ): T? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        extras?.getSerializable(key, clazz)
+    } else {
+        extras?.getSerializable(key) as? T
+    }
+
+    private fun createSabrSource(
+        mediaItem: MediaItem,
+        options: SabrOptions,
+        userAgent: String?,
+        headers: Map<String, String>?,
+    ): MediaSource {
+        val url = mediaItem.localConfiguration?.uri?.toString()
+            ?: throw IllegalArgumentException("SABR tracks require a url")
+        val fallbackDurationMs = (mediaItem.localConfiguration?.tag as? AudioItem)?.duration
+        val manifest = SabrManifestFactory.create(options, url, fallbackDurationMs)
+
+        // SABR uses short-lived POST requests with a protobuf body. Do not wrap this in the
+        // caching data source, which is optimised for ranged GET requests.
+        val dataSourceFactory = DefaultHttpDataSource.Factory()
+            .setUserAgent(userAgent)
+            .setAllowCrossProtocolRedirects(true)
+            .setReadTimeoutMs(4_000)
+            .apply { headers?.let { setDefaultRequestProperties(it) } }
+
+        return SabrMediaSource.Factory(
+            DefaultSabrChunkSource.Factory(dataSourceFactory),
+            dataSourceFactory,
+        ).createMediaSource(manifest, mediaItem)
     }
 
     private fun createDashSource(mediaItem: MediaItem, factory: DataSource.Factory?): MediaSource {

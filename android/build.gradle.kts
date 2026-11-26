@@ -5,6 +5,7 @@ buildscript {
     repositories {
         google()
         mavenCentral()
+        gradlePluginPortal()
     }
     dependencies {
         classpath("com.android.tools.build:gradle:9.4.1")
@@ -15,6 +16,7 @@ buildscript {
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
+    id("com.google.protobuf") version "0.10.1"
 }
 
 if (!rootProject.extra.has("native")) {
@@ -47,7 +49,7 @@ fun getExtOrIntegerDefault(name: String, defaultInt: Int): Int {
 }
 
 configure<LibraryExtension> {
-    compileSdk = getExtOrIntegerDefault("compileSdkVersion", 35)
+    compileSdk = getExtOrIntegerDefault("compileSdkVersion", 37)
     namespace = "com.doublesymmetry.trackplayer"
 
     defaultConfig {
@@ -117,6 +119,7 @@ dependencies {
     implementation("org.jellyfin.media3:media3-ffmpeg-decoder:1.9.0+1")
 
     implementation("com.google.guava:guava:33.7.2-android")
+    implementation("com.google.protobuf:protobuf-javalite:4.31.1")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-guava:1.11.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.11.0")
 
@@ -125,4 +128,19 @@ dependencies {
 
     implementation("androidx.test:rules:1.7.0")
     implementation("jp.wasabeef.transformers:coil:1.0.6")
+}
+
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:4.31.1"
+    }
+    generateProtoTasks {
+        all().configureEach {
+            builtins {
+                create("java") {
+                    option("lite")
+                }
+            }
+        }
+    }
 }

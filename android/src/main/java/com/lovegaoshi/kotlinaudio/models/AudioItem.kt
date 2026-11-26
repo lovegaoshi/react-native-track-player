@@ -8,6 +8,7 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import com.lovegaoshi.kotlinaudio.utils.getEmbeddedBitmapArray
 import com.lovegaoshi.kotlinaudio.utils.saveMediaCoverToPng
+import java.io.Serializable
 import java.util.UUID
 
 
@@ -51,7 +52,48 @@ data class AudioItemOptions(
     val userAgent: String? = null,
     val resourceId: Int? = null,
     val setRange: Boolean = false,
+    val sabr: SabrOptions? = null,
 )
+
+/** YouTube client identity used in the SABR protobuf body. It must match the poToken's client. */
+data class SabrClientInfo(
+    val name: String,
+    val version: String,
+    val osName: String,
+    val osVersion: String,
+) : Serializable
+
+/** A SABR representation supplied by the caller, normally derived from a player response. */
+data class SabrFormatInfo(
+    val itag: Int,
+    val mimeType: String,
+    val codecs: String? = null,
+    val bitrate: Int = -1,
+    val width: Int = -1,
+    val height: Int = -1,
+    val fps: Float = -1f,
+    val language: String? = null,
+    val qualityLabel: String? = null,
+    val drc: Boolean = false,
+    val lmt: Long = 0L,
+    val xtags: String? = null,
+    val audioTrackId: String? = null,
+) : Serializable
+
+/**
+ * Sideloaded SABR configuration. A URL and poToken alone are not enough: the streaming config,
+ * client identity, video id and format metadata are all needed to build the ABR request.
+ */
+data class SabrOptions(
+    val poToken: String,
+    val videoPlaybackUstreamerConfig: String,
+    val videoId: String,
+    val client: SabrClientInfo,
+    val formats: List<SabrFormatInfo>,
+    val visitorCookie: String? = null,
+    val durationMs: Long? = null,
+    val subtitles: List<SabrFormatInfo> = emptyList(),
+) : Serializable
 
 enum class MediaType(val value: String) {
     /**
@@ -72,7 +114,13 @@ enum class MediaType(val value: String) {
     /**
      * The SmoothStreaming media type for adaptive streams. Should be used with SmoothStreaming manifests.
      */
-    SMOOTH_STREAMING("smoothstreaming");
+    SMOOTH_STREAMING("smoothstreaming"),
+
+    /**
+     * Android-only YouTube SABR streams. The track URL is the signed server ABR streaming URL and
+     * the remaining request data is provided through the track's `sabr` option.
+     */
+    SABR("sabr");
 }
 
 
@@ -108,6 +156,7 @@ fun audioItem2MediaItem(audioItem: AudioItem, context: Context? = null): MediaIt
                     putInt("resource-id", it)
                 }
                 putBoolean("setRange", audioItem.options?.setRange == true)
+                audioItem.options?.sabr?.let { putSerializable("sabr", it) }
                 putString("type", audioItem.type.toString())
                 putString("uri", audioItem.audioUrl)
             }).build())
